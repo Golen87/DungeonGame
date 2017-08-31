@@ -1,0 +1,34 @@
+
+body {
+	background: black;
+	margin: auto;
+	padding: 1em;
+	text-align: center;
+}
+
+canvas {
+	margin: auto;
+	cursor: crosshair;
+	width: 100%;
+
+	image-rendering: optimizeSpeed;             /* Older versions of FF          */
+	image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
+	image-rendering: -webkit-optimize-contrast; /* Safari                        */
+	image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+	image-rendering: pixelated;                 /* Awesome future-browsers       */
+	-ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+
+	zoom: 1;
+}
+
+@media (min-width: 512px) and (min-height: 480px) {
+	canvas {
+		zoom: 2;
+	}
+}
+
+@media (min-width: 1024px) and (min-height: 960px) {
+	canvas {
+		zoom: 4;
+	}
+}
