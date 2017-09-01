@@ -6,9 +6,11 @@ var RUBBLE;
 
 
 // Constructor
-function Room ( path )
+function Room ( path, group )
 {
-	var roomText = DungeonGame.game.cache.getText( path );
+	this.path = path;
+
+	var roomText = DungeonGame.game.cache.getText( this.path );
 	roomText = roomText.split( '\n' );
 
 	var temp = roomText.shift().split( ',' );
@@ -40,23 +42,31 @@ function Room ( path )
 		}
 	}
 
-	this.graphics = DungeonGame.game.add.group();
+	this.foreground = group;
+	this.background = DungeonGame.game.add.group();
 	this.physics = DungeonGame.game.add.group();
 }
 
 
-Room.prototype.addGraphic = function ( x, y, sx, sy )
+Room.prototype.addForeground = function ( x, y, sx, sy )
 {
 	var index = sx + sy*8;
-	var s = this.graphics.create( x*16, y*16, 'dungeon', index );
+	var s = this.foreground.create( x*16, y*16, 'dungeon', index );
+};
+
+Room.prototype.addBackground = function ( x, y, sx, sy )
+{
+	var index = sx + sy*8;
+	var s = this.background.create( x*16, y*16, 'dungeon', index );
 };
 
 Room.prototype.addPhysics = function ( x, y )
 {
-	var s = this.physics.create( x*16, y*16 );
-	s.scale.set(16, 16);
+	var s = this.physics.create( x*16, y*16, 'dungeon', 0 );
+	s.visible = false;
 
 	DungeonGame.game.physics.enable( s, Phaser.Physics.ARCADE );
+	//s.body.setSize(16, 12, 0, 4);
 	s.body.immovable = true;
 };
 
@@ -69,6 +79,7 @@ Room.prototype.get = function ( x, y )
 {
 	if ( this.isWithin( x, y ) )
 		return this.grid[y][x];
+	return WALL;
 };
 
 Room.prototype.isWall = function ( x, y )
@@ -108,43 +119,90 @@ Room.prototype.generate = function ()
 
 				if ( this.isFloor( x, y+1 ) )
 				{
-					this.addGraphic( x, y, 1, 0 );
+					this.addForeground( x, y, 1, 0 );
+					//this.addForeground( x, y-1, 1, 5 );
+
 					if ( this.isFloor( x-1, y ) && !this.isFloor( x+1, y ) || this.isWall( x-1, y+1 ) )
 					{
-						//this.addGraphic( x, y, 0, 0, true );
-						//this.addGraphic( x, y-1, 1, 5, false );
+						//this.addForeground( x, y, 0, 0 );
+						//this.addForeground( x, y-1, 1, 5 );
 					}
 					else if ( !this.isFloor( x-1, y ) && this.isFloor( x+1, y ) || this.isWall( x+1, y+1 ) )
 					{
-						//this.addGraphic( x, y, 2, 0, true );
-						//this.addGraphic( x, y-1, 2, 0, false );
+						//this.addForeground( x, y, 2, 0 );
+						//this.addForeground( x, y-1, 2, 0 );
 					}
 					//else
 					{
-						//this.addGraphic( x, y, 1, 0, true );
-						//this.addGraphic( x, y-1, 1, 5, false );
+						//this.addForeground( x, y, 1, 0 );
+						//this.addForeground( x, y-1, 1, 5 );
 					}
 				}
-				else if ( this.isFloor( x, y-1 ) )
+				else
 				{
-					//var spos = Phaser.ArrayUtils.getRandomItem( [[8,0], [7,1], [8,1]] );
-					//this.addGraphic( x, y, spos[0], spos[1], true );
+					// Edges
+					if ( this.isFloor( x-1, y ) || this.isFloor( x-1, y+1 ) )
+					{
+						this.addForeground( x, y, 2, 6 );
+					}
+					if ( this.isFloor( x+1, y ) || this.isFloor( x+1, y+1 ) )
+					{
+						this.addForeground( x, y, 0, 6 );
+					}
+					if ( this.isFloor( x, y-1 ) )
+					{
+						this.addForeground( x, y, 1, 7 );
+					}
+					if ( this.isFloor( x, y+2 ) )
+					{
+						this.addForeground( x, y, 1, 5 );
+					}
+
+					// Floor corners
+					if ( ( this.isFloor( x-1, y+1 ) || this.isFloor( x-1, y ) ) && this.isFloor( x, y+2 ) )
+					{
+						this.addForeground( x, y, 4, 6 );
+					}
+					if ( ( this.isFloor( x+1, y+1 ) || this.isFloor( x+1, y ) ) && this.isFloor( x, y+2 ) )
+					{
+						this.addForeground( x, y, 3, 6 );
+					}
+					if ( ( this.isFloor( x-1, y ) || this.isFloor( x-1, y+1 ) ) && this.isFloor( x, y-1 ) )
+					{
+						this.addForeground( x, y, 4, 7 );
+					}
+					if ( ( this.isFloor( x+1, y ) || this.isFloor( x+1, y+1 ) ) && this.isFloor( x, y-1 ) )
+					{
+						this.addForeground( x, y, 3, 7 );
+					}
+
+					// Void corners
+					if ( this.isWall( x-1, y ) && this.isWall( x, y-1 ) && this.isWall( x-1, y+1 ) && this.isFloor( x-1, y-1 ) )
+					{
+						this.addForeground( x, y, 2, 7 );
+					}
+					if ( this.isWall( x+1, y ) && this.isWall( x, y-1 ) && this.isWall( x+1, y+1 ) && this.isFloor( x+1, y-1 ) )
+					{
+						this.addForeground( x, y, 0, 7 );
+					}
+					if ( this.isWall( x-1, y+1 ) && this.isWall( x, y+2 ) && this.isFloor( x-1, y+2 ) && this.isWall( x-1, y ) )
+					{
+						this.addForeground( x, y, 2, 5 );
+					}
+					if ( this.isWall( x+1, y+1 ) && this.isWall( x, y+2 ) && this.isFloor( x+1, y+2 ) && this.isWall( x+1, y ) )
+					{
+						this.addForeground( x, y, 0, 5 );
+					}
 				}
-				else if (
-					this.isFloor( x-1, y ) ||
-					this.isFloor( x+1, y ) ||
-					this.isFloor( x-1, y+1 ) ||
-					this.isFloor( x+1, y+1 ) ||
-					this.isFloor( x-1, y-1 ) ||
-					this.isFloor( x+1, y-1 ) )
-				{
-					//this.addGraphic( x, y, 0, 2, true );
-				}
+
+				// For floor without wall? Like bottomless pit
+				//var spos = Phaser.ArrayUtils.getRandomItem( [[8,0], [7,1], [8,1]] );
+				//this.addForeground( x, y, spos[0], spos[1] );
 			}
 			// Add rubble
 			else if ( this.isRubble( x, y ) )
 			{
-				this.addGraphic( x, y, 0, 2, false );
+				this.addBackground( x, y, 0, 2 );
 
 				var neighbours = '';
 				neighbours += this.isRubbleOrWall( x-1, y ) ? '<' : '-';
@@ -174,17 +232,17 @@ Room.prototype.generate = function ()
 
 				if ( spos )
 				{
-					//this.addGraphic( x, y, spos[0], spos[1] );
+					//this.addBackground( x, y, spos[0], spos[1] );
 				}
 			}
 			// Add floor
 			else if ( this.isFloor( x, y ) )
 			{
-				this.addGraphic( x, y, 0, 2, false );
+				this.addBackground( x, y, 0, 2 );
 				if ( this.isWall( x, y-1 ) )
 				{
 					var spos = Phaser.ArrayUtils.getRandomItem( [[1,2], [2,2], [3,2]] );
-					this.addGraphic( x, y, spos[0], spos[1], false );
+					this.addBackground( x, y, spos[0], spos[1] );
 				}
 			}
 		}
@@ -195,7 +253,7 @@ Room.prototype.render = function ()
 {
 	if ( DungeonGame.debug )
 	{
-		DungeonGame.game.debug.body( this.physics );
-		this.physics.forEachAlive( function ( member ) {DungeonGame.game.debug.body( member );}, this );
+		//DungeonGame.game.debug.body( this.physics );
+		this.physics.forEach( function ( member ) {DungeonGame.game.debug.body( member );}, this );
 	}
 };

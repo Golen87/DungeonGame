@@ -1,5 +1,5 @@
-var DungeonGame = DungeonGame ||
-{};
+
+var DungeonGame = DungeonGame || {};
 
 DungeonGame.Game = function()
 {
@@ -11,8 +11,6 @@ DungeonGame.Game.prototype =
 	create: function()
 	{
 		//  This group will hold the main player + all the tree sprites to depth sort against
-		this.objects = DungeonGame.game.add.group();
-
 		this.World.create();
 
 
@@ -20,8 +18,6 @@ DungeonGame.Game.prototype =
 
 		this.createItems();
 		this.createDoors();
-
-		this.objects.sort();
 
 		this.debugToggle = DungeonGame.game.input.keyboard.addKey(Phaser.Keyboard.Q);
 	},

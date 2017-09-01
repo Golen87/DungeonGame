@@ -14,15 +14,15 @@ Player.prototype.preload = function ()
 {
 };
 
-Player.prototype.create = function ()
+Player.prototype.create = function ( group )
 {
 	this.speed = 80;
 
-	this.sprite = DungeonGame.game.add.sprite( 128, 64, 'player', 0 );
+	this.sprite = group.create( 128, 64, 'player', 0 );
 	DungeonGame.game.physics.arcade.enable( this.sprite, Phaser.Physics.ARCADE );
 	this.sprite.anchor.set( 0.5 );
-	this.sprite.body.setSize(10, 12, 3, 4);
-	//this.sprite.body.setCircle( 8 );
+	this.sprite.body.setSize(10, 8, 3, 5);
+	//this.sprite.body.setCircle( 6, 2, 4 );
 
 	//this.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
 
