@@ -10,14 +10,15 @@ function World ()
 
 World.prototype.create = function ()
 {
-	this.Room = new Room( 'room_1' );
+	this.Room = new Room( 'room_2' );
+	this.Room.generate();
 
 	this.Player.create();
 };
 
 World.prototype.update = function ()
 {
-	DungeonGame.game.physics.arcade.collide( this.Player.sprite, this.Room.sprites );
+	DungeonGame.game.physics.arcade.collide( this.Player.sprite, this.Room.group );
 
 	this.Player.update();
 };

@@ -22,9 +22,12 @@ DungeonGame.Preload.prototype = {
 		//this.load.audio('Ambient Jungle', 'https://archive.org/download/OldRunescapeSoundtrack/Ambient Jungle.mp3' )
 		//this.load.audio('Anywhere', 'https://archive.org/download/OldRunescapeSoundtrack/Anywhere.mp3' )
 
-		this.load.spritesheet( 'dungeon', 'assets/sprites/0x72_16x16DungeonTileset.v3.png', 16, 16 );
+		this.load.spritesheet( 'dungeon', 'assets/sprites/dungeon.png', 16, 16 );
+		this.load.spritesheet( 'player', 'assets/sprites/player.png', 16, 16 );
+
 		this.load.text( 'room_0', 'assets/rooms/room_0.txt' );
 		this.load.text( 'room_1', 'assets/rooms/room_1.txt' );
+		this.load.text( 'room_2', 'assets/rooms/room_2.txt' );
 
 
 		// Loading percentage text

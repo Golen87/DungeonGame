@@ -41,23 +41,27 @@ function Room ( path )
 	}
 
 	this.sprites = [];
-
-
-	this.generate();
+	this.group = DungeonGame.game.add.group();
 }
 
 
-Room.prototype.add = function ( x, y, sx, sy, collision )
+Room.prototype.addGraphic = function ( x, y, sx, sy )
 {
-	var index = sx + sy*16;
-	var s = DungeonGame.game.add.sprite( x*16, y*16, 'dungeon', index );
+	var index = sx + sy*8;
+	var s = this.group.create( x*16, y*16, 'dungeon', index );
+
+	this.sprites.push( s );
+};
+
+Room.prototype.addPhysics = function ( x, y )
+{
+	var index = sx + sy*8;
+	var s = this.group.create( x*16, y*16, 'dungeon', index );
 
 	if ( collision )
 	{
 		DungeonGame.game.physics.enable( s, Phaser.Physics.ARCADE );
 		s.body.immovable = true;
-		s.body.bounce.x = 1;
-		s.body.bounce.y = 1;
 	}
 
 	this.sprites.push( s );
@@ -107,30 +111,31 @@ Room.prototype.generate = function ()
 			// Add wall
 			if ( this.isWall( x, y ) )
 			{
-				var index = -1;
+				this.addPhysics( x, y );
 
 				if ( this.isFloor( x, y+1 ) )
 				{
+					this.addGraphic( x, y, 1, 0 );
 					if ( this.isFloor( x-1, y ) && !this.isFloor( x+1, y ) || this.isWall( x-1, y+1 ) )
 					{
-						this.add( x, y, 0, 1, true );
-						this.add( x, y-1, 0, 0, false );
+						//this.addGraphic( x, y, 0, 0, true );
+						//this.addGraphic( x, y-1, 1, 5, false );
 					}
 					else if ( !this.isFloor( x-1, y ) && this.isFloor( x+1, y ) || this.isWall( x+1, y+1 ) )
 					{
-						this.add( x, y, 2, 1, true );
-						this.add( x, y-1, 2, 0, false );
+						//this.addGraphic( x, y, 2, 0, true );
+						//this.addGraphic( x, y-1, 2, 0, false );
 					}
-					else
+					//else
 					{
-						this.add( x, y, 1, 1, true );
-						this.add( x, y-1, 1, 0, false );
+						//this.addGraphic( x, y, 1, 0, true );
+						//this.addGraphic( x, y-1, 1, 5, false );
 					}
 				}
 				else if ( this.isFloor( x, y-1 ) )
 				{
-					var spos = Phaser.ArrayUtils.getRandomItem( [[8,0], [7,1], [8,1]] );
-					this.add( x, y, spos[0], spos[1], true );
+					//var spos = Phaser.ArrayUtils.getRandomItem( [[8,0], [7,1], [8,1]] );
+					//this.addGraphic( x, y, spos[0], spos[1], true );
 				}
 				else if (
 					this.isFloor( x-1, y ) ||
@@ -140,12 +145,14 @@ Room.prototype.generate = function ()
 					this.isFloor( x-1, y-1 ) ||
 					this.isFloor( x+1, y-1 ) )
 				{
-					this.add( x, y, 4, 6, true );
+					//this.addGraphic( x, y, 0, 2, true );
 				}
 			}
 			// Add rubble
 			else if ( this.isRubble( x, y ) )
 			{
+				this.addGraphic( x, y, 0, 2, false );
+
 				var neighbours = '';
 				neighbours += this.isRubbleOrWall( x-1, y ) ? '<' : '-';
 				neighbours += this.isRubbleOrWall( x, y-1 ) ? '^' : '-';
@@ -173,19 +180,18 @@ Room.prototype.generate = function ()
 				}[neighbours]
 
 				if ( spos )
-					this.add( x, y, spos[0], spos[1] );
+				{
+					//this.addGraphic( x, y, spos[0], spos[1] );
+				}
 			}
 			// Add floor
 			else if ( this.isFloor( x, y ) )
 			{
+				this.addGraphic( x, y, 0, 2, false );
 				if ( this.isWall( x, y-1 ) )
 				{
-					var spos = Phaser.ArrayUtils.getRandomItem( [[0,2], [1,2], [2,2]] );
-					this.add( x, y, spos[0], spos[1], false );
-				}
-				else
-				{
-					this.add( x, y, 2, 3, false );
+					var spos = Phaser.ArrayUtils.getRandomItem( [[1,2], [2,2], [3,2]] );
+					this.addGraphic( x, y, spos[0], spos[1], false );
 				}
 			}
 		}
