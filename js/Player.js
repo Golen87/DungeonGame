@@ -21,7 +21,7 @@ Player.prototype.create = function ()
 	this.sprite = DungeonGame.game.add.sprite( 128, 64, 'player', 0 );
 	DungeonGame.game.physics.arcade.enable( this.sprite, Phaser.Physics.ARCADE );
 	this.sprite.anchor.set( 0.5 );
-	this.sprite.body.setSize(10, 14, 3, 1);
+	this.sprite.body.setSize(10, 12, 3, 4);
 	//this.sprite.body.setCircle( 8 );
 
 	//this.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
@@ -116,5 +116,8 @@ Player.prototype.update = function ()
 
 Player.prototype.render = function ()
 {
-	//DungeonGame.game.debug.body( this.sprite );
+	if ( DungeonGame.debug )
+	{
+		DungeonGame.game.debug.body( this.sprite );
+	}
 };

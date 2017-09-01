@@ -18,7 +18,7 @@ World.prototype.create = function ()
 
 World.prototype.update = function ()
 {
-	DungeonGame.game.physics.arcade.collide( this.Player.sprite, this.Room.group );
+	DungeonGame.game.physics.arcade.collide( this.Player.sprite, this.Room.physics );
 
 	this.Player.update();
 };

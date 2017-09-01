@@ -22,6 +22,8 @@ DungeonGame.Game.prototype =
 		this.createDoors();
 
 		this.objects.sort();
+
+		this.debugToggle = DungeonGame.game.input.keyboard.addKey(Phaser.Keyboard.Q);
 	},
 	createItems: function()
 	{
@@ -40,37 +42,8 @@ DungeonGame.Game.prototype =
 	{
 		this.World.update();
 
-		//collision
-		//this.game.physics.arcade.collide(this.player, this.blockedLayer);
-		//this.game.physics.arcade.overlap(this.player, this.items, this.collect, null, this);
-		//this.game.physics.arcade.overlap(this.player, this.doors, this.enterDoor, null, this);
-
-		//player movement
-
-		//this.player.body.velocity.x = 0;
-
-		//if(this.cursors.up.isDown)
-		//{
-		//	if(this.player.body.velocity.y == 0)
-		//	this.player.body.velocity.y -= 50;
-		//}
-		//else if(this.cursors.down.isDown)
-		//{
-		//	if(this.player.body.velocity.y == 0)
-		//	this.player.body.velocity.y += 50;
-		//}
-		//else
-		//{
-		//	this.player.body.velocity.y = 0;
-		//}
-		//if(this.cursors.left.isDown)
-		//{
-		//	this.player.body.velocity.x -= 50;
-		//}
-		//else if(this.cursors.right.isDown)
-		//{
-		//	this.player.body.velocity.x += 50;
-		//}
+		if (this.debugToggle.justDown)
+			DungeonGame.debug = !DungeonGame.debug;
 	},
 	collect: function(player, collectable)
 	{

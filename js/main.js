@@ -9,3 +9,5 @@ DungeonGame.game.state.add( 'Preload', DungeonGame.Preload );
 DungeonGame.game.state.add( 'Game', DungeonGame.Game );
 
 DungeonGame.game.state.start( 'Boot' );
+
+DungeonGame.debug = false;

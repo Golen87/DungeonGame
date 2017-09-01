@@ -40,31 +40,24 @@ function Room ( path )
 		}
 	}
 
-	this.sprites = [];
-	this.group = DungeonGame.game.add.group();
+	this.graphics = DungeonGame.game.add.group();
+	this.physics = DungeonGame.game.add.group();
 }
 
 
 Room.prototype.addGraphic = function ( x, y, sx, sy )
 {
 	var index = sx + sy*8;
-	var s = this.group.create( x*16, y*16, 'dungeon', index );
-
-	this.sprites.push( s );
+	var s = this.graphics.create( x*16, y*16, 'dungeon', index );
 };
 
 Room.prototype.addPhysics = function ( x, y )
 {
-	var index = sx + sy*8;
-	var s = this.group.create( x*16, y*16, 'dungeon', index );
+	var s = this.physics.create( x*16, y*16 );
+	s.scale.set(16, 16);
 
-	if ( collision )
-	{
-		DungeonGame.game.physics.enable( s, Phaser.Physics.ARCADE );
-		s.body.immovable = true;
-	}
-
-	this.sprites.push( s );
+	DungeonGame.game.physics.enable( s, Phaser.Physics.ARCADE );
+	s.body.immovable = true;
 };
 
 Room.prototype.isWithin = function ( x, y )
@@ -200,6 +193,9 @@ Room.prototype.generate = function ()
 
 Room.prototype.render = function ()
 {
-	//for ( var i = 0; i < this.sprites.length; i++ )
-	//	DungeonGame.game.debug.body( this.sprites[i] );
+	if ( DungeonGame.debug )
+	{
+		DungeonGame.game.debug.body( this.physics );
+		this.physics.forEachAlive( function ( member ) {DungeonGame.game.debug.body( member );}, this );
+	}
 };
