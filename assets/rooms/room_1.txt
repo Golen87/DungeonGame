@@ -16,7 +16,8 @@
 #####-#  #-#####
 ------#  #------
 
-- NONE
-# WALL
-  FLOOR
-. RUBBLE
+- none
+# wall
+@ spiral
+  floor
+. rubble
