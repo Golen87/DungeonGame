@@ -62,11 +62,20 @@ Room.prototype.addBackground = function ( x, y, sx, sy )
 
 Room.prototype.addPhysics = function ( x, y )
 {
+	if ( this.isWall( x, y-1 ) )
+		return;
+
 	var s = this.physics.create( x*16, y*16, 'dungeon', 0 );
 	s.visible = false;
 
 	DungeonGame.game.physics.enable( s, Phaser.Physics.ARCADE );
-	//s.body.setSize(16, 12, 0, 4);
+
+	var i = 1;
+	while ( this.isWall( x, y+i ) ) {
+		s.body.setSize(16, 16*(i+1) );
+		i += 1;
+	}
+
 	s.body.immovable = true;
 };
 
@@ -79,12 +88,16 @@ Room.prototype.get = function ( x, y )
 {
 	if ( this.isWithin( x, y ) )
 		return this.grid[y][x];
-	return WALL;
+	return NONE;
 };
 
-Room.prototype.isWall = function ( x, y )
+Room.prototype.isWall = function ( x, y, allowVoid=false )
 {
 	var tile = this.get( x, y );
+	if ( allowVoid )
+	{
+		return ( tile == WALL || tile == NONE );
+	}
 	return ( tile == WALL );
 };
 
@@ -122,12 +135,12 @@ Room.prototype.generate = function ()
 					this.addForeground( x, y, 1, 0 );
 					//this.addForeground( x, y-1, 1, 5 );
 
-					if ( this.isFloor( x-1, y ) && !this.isFloor( x+1, y ) || this.isWall( x-1, y+1 ) )
+					if ( this.isFloor( x-1, y ) && !this.isFloor( x+1, y ) || this.isWall( x-1, y+1, true ) )
 					{
 						//this.addForeground( x, y, 0, 0 );
 						//this.addForeground( x, y-1, 1, 5 );
 					}
-					else if ( !this.isFloor( x-1, y ) && this.isFloor( x+1, y ) || this.isWall( x+1, y+1 ) )
+					else if ( !this.isFloor( x-1, y ) && this.isFloor( x+1, y ) || this.isWall( x+1, y+1, true ) )
 					{
 						//this.addForeground( x, y, 2, 0 );
 						//this.addForeground( x, y-1, 2, 0 );
@@ -177,19 +190,19 @@ Room.prototype.generate = function ()
 					}
 
 					// Void corners
-					if ( this.isWall( x-1, y ) && this.isWall( x, y-1 ) && this.isWall( x-1, y+1 ) && this.isFloor( x-1, y-1 ) )
+					if ( this.isWall( x-1, y, true ) && this.isWall( x, y-1, true ) && this.isWall( x-1, y+1, true ) && this.isFloor( x-1, y-1 ) )
 					{
 						this.addForeground( x, y, 2, 7 );
 					}
-					if ( this.isWall( x+1, y ) && this.isWall( x, y-1 ) && this.isWall( x+1, y+1 ) && this.isFloor( x+1, y-1 ) )
+					if ( this.isWall( x+1, y, true ) && this.isWall( x, y-1, true ) && this.isWall( x+1, y+1, true ) && this.isFloor( x+1, y-1 ) )
 					{
 						this.addForeground( x, y, 0, 7 );
 					}
-					if ( this.isWall( x-1, y+1 ) && this.isWall( x, y+2 ) && this.isFloor( x-1, y+2 ) && this.isWall( x-1, y ) )
+					if ( this.isWall( x-1, y+1, true ) && this.isWall( x, y+2, true ) && this.isFloor( x-1, y+2 ) && this.isWall( x-1, y, true ) )
 					{
 						this.addForeground( x, y, 2, 5 );
 					}
-					if ( this.isWall( x+1, y+1 ) && this.isWall( x, y+2 ) && this.isFloor( x+1, y+2 ) && this.isWall( x+1, y ) )
+					if ( this.isWall( x+1, y+1, true ) && this.isWall( x, y+2, true ) && this.isFloor( x+1, y+2 ) && this.isWall( x+1, y, true ) )
 					{
 						this.addForeground( x, y, 0, 5 );
 					}
@@ -239,7 +252,7 @@ Room.prototype.generate = function ()
 			else if ( this.isFloor( x, y ) )
 			{
 				this.addBackground( x, y, 0, 2 );
-				if ( this.isWall( x, y-1 ) )
+				if ( this.isWall( x, y-1, true ) )
 				{
 					var spos = Phaser.ArrayUtils.getRandomItem( [[1,2], [2,2], [3,2]] );
 					this.addBackground( x, y, spos[0], spos[1] );

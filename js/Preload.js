@@ -39,7 +39,7 @@ DungeonGame.Preload.prototype = {
 		var y = this.game.world.centerY;
 		var progressBg = this.game.add.sprite( x, y, 'preloader-bar' );
 		var progressFg = this.game.add.sprite( x, y, 'preloader-bar' );
-		progressBg.tint = 0x222222;
+		progressBg.tint = 0x444444;
 		progressBg.anchor.setTo( 0, 0.5 );
 		progressFg.anchor.setTo( 0, 0.5 );
 		this.game.load.setPreloadSprite( progressFg );

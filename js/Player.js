@@ -79,39 +79,40 @@ Player.prototype.update = function ()
 {
 	var p = new Phaser.Point( 0, 0 );
 
-	var state = 'idle';
-	var direction = this.direction;
-
-	if ( this.cursors.up.isDown )
+	if ( this.cursors.up.isDown || DungeonGame.game.input.keyboard.isDown( Phaser.Keyboard.W ) )
 	{
 		p.y -= 1;
-		direction = 'up';
-		state = 'walk';
 	}
-	if ( this.cursors.down.isDown )
+	if ( this.cursors.down.isDown || DungeonGame.game.input.keyboard.isDown( Phaser.Keyboard.S ) )
 	{
 		p.y += 1;
-		direction = 'down';
-		state = 'walk';
 	}
-	if ( this.cursors.left.isDown )
+	if ( this.cursors.left.isDown || DungeonGame.game.input.keyboard.isDown( Phaser.Keyboard.A ) )
 	{
 		p.x -= 1;
-		direction = 'left';
-		state = 'walk';
 	}
-	if ( this.cursors.right.isDown )
+	if ( this.cursors.right.isDown || DungeonGame.game.input.keyboard.isDown( Phaser.Keyboard.D ) )
 	{
 		p.x += 1;
-		direction = 'right';
-		state = 'walk';
 	}
 
-	p.setMagnitude(this.speed);
-	this.sprite.body.velocity.x += (p.x - this.sprite.body.velocity.x) / 5;
-	this.sprite.body.velocity.y += (p.y - this.sprite.body.velocity.y) / 5;
+	p.setMagnitude( this.speed );
+	this.sprite.body.velocity.x += ( p.x - this.sprite.body.velocity.x ) / 5;
+	this.sprite.body.velocity.y += ( p.y - this.sprite.body.velocity.y ) / 5;
 
-	this.setAnimation( state, direction );
+	if ( p.getMagnitude() > 0 )
+	{
+		var direction;
+		if ( Math.abs( p.x ) >= Math.abs( p.y ) )
+			direction = p.x > 0 ? 'right' : 'left';
+		else
+			direction = p.y > 0 ? 'down' : 'up';
+		this.setAnimation( 'walk', direction );
+	}
+	else
+	{
+		this.setAnimation( 'idle', this.direction );
+	}
 };
 
 Player.prototype.render = function ()
