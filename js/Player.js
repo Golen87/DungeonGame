@@ -28,7 +28,22 @@ Player.prototype.create = function ( x, y, group )
 
 	this.setupAnimation();
 
-	this.cursors = DungeonGame.game.input.keyboard.createCursorKeys();
+	this.keys = DungeonGame.game.input.keyboard.createCursorKeys();
+	this.keys.w = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.W );
+	this.keys.a = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.A );
+	this.keys.s = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.S );
+	this.keys.d = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.D );
+
+	this.keys.i = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.I );
+	this.keys.j = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.J );
+	this.keys.k = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.K );
+	this.keys.l = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.L );
+
+	this.keys.space = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.SPACEBAR );
+	this.keys.shift = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.SHIFT );
+
+	this.gridPos = new Phaser.Point( x, y );
+	this.prevGridPos = new Phaser.Point( x, y );
 };
 
 Player.prototype.setupAnimation = function ()
@@ -79,22 +94,23 @@ Player.prototype.update = function ()
 {
 	var p = new Phaser.Point( 0, 0 );
 
-	if ( this.cursors.up.isDown || DungeonGame.game.input.keyboard.isDown( Phaser.Keyboard.W ) )
-	{
+	if ( this.keys.up.isDown || this.keys.w.isDown )
 		p.y -= 1;
-	}
-	if ( this.cursors.down.isDown || DungeonGame.game.input.keyboard.isDown( Phaser.Keyboard.S ) )
-	{
+	if ( this.keys.down.isDown || this.keys.s.isDown )
 		p.y += 1;
-	}
-	if ( this.cursors.left.isDown || DungeonGame.game.input.keyboard.isDown( Phaser.Keyboard.A ) )
-	{
+	if ( this.keys.left.isDown || this.keys.a.isDown )
 		p.x -= 1;
-	}
-	if ( this.cursors.right.isDown || DungeonGame.game.input.keyboard.isDown( Phaser.Keyboard.D ) )
-	{
+	if ( this.keys.right.isDown || this.keys.d.isDown )
 		p.x += 1;
-	}
+
+	if ( this.keys.i.justDown )
+		this.sprite.body.y -= SCREEN_HEIGHT - 16;
+	if ( this.keys.k.justDown )
+		this.sprite.body.y += SCREEN_HEIGHT - 16;
+	if ( this.keys.j.justDown )
+		this.sprite.body.x -= SCREEN_WIDTH - 16;
+	if ( this.keys.l.justDown )
+		this.sprite.body.x += SCREEN_WIDTH - 16;
 
 	p.setMagnitude( this.speed );
 	this.sprite.body.velocity.x += ( p.x - this.sprite.body.velocity.x ) / 5;
@@ -113,6 +129,10 @@ Player.prototype.update = function ()
 	{
 		this.setAnimation( 'idle', this.direction );
 	}
+
+	this.prevGridPos.copyFrom( this.gridPos );
+	this.gridPos.x = Math.round( this.sprite.position.x / 16 ) * 16;
+	this.gridPos.y = Math.round( this.sprite.position.y / 16 ) * 16;
 };
 
 Player.prototype.render = function ()

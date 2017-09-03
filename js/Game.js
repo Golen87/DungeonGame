@@ -21,7 +21,7 @@ DungeonGame.Game.prototype =
 
 		this.debugToggle = DungeonGame.game.input.keyboard.addKey(Phaser.Keyboard.Q);
 
-		//this.game.camera.flash(0xff0000, 500);
+		this.game.camera.flash(0x111111, 1000);
 	},
 	createItems: function()
 	{

@@ -32,7 +32,8 @@ DungeonGame.Preload.prototype = {
 		this.load.spritesheet( 'dungeon', 'assets/sprites/dungeon.png', 16, 16 );
 		this.load.spritesheet( 'player', 'assets/sprites/player.png', 16, 16 );
 
-		this.load.spritesheet( 'map', 'assets/rooms/map.png', 16, 15 );
+		this.load.spritesheet( 'map', 'assets/rooms/map.png', ROOM_WIDTH, ROOM_HEIGHT );
+		this.load.spritesheet( 'overworld', 'assets/rooms/overworld.png', ROOM_WIDTH, ROOM_HEIGHT );
 
 
 		// Loading percentage text

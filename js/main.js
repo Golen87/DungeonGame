@@ -1,7 +1,9 @@
 var DungeonGame = DungeonGame || {};
 
-var SCREEN_WIDTH = 256;
-var SCREEN_HEIGHT = 240;
+var ROOM_WIDTH = 16;
+var ROOM_HEIGHT = 11;
+var SCREEN_WIDTH = ROOM_WIDTH * 16;
+var SCREEN_HEIGHT = ROOM_HEIGHT * 16;
 DungeonGame.game = new Phaser.Game( SCREEN_WIDTH, SCREEN_HEIGHT, Phaser.CANVAS, 'DungeonGame' );
 
 DungeonGame.game.state.add( 'Boot', DungeonGame.Boot );

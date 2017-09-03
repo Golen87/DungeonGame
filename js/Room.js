@@ -1,19 +1,16 @@
 
 // Constructor
-function Room ( roomData, offset_x, offset_y, group )
+function Room ( roomData, offset_x, offset_y, foreground, background, physics )
 {
 	this.offset_x = offset_x;
 	this.offset_y = offset_y;
 
-	this.width = 16;
-	this.height = 15;
-
 	this.grid = roomData;
 
 	this.objects = [];
-	this.foreground = group;
-	this.background = DungeonGame.game.add.group();
-	this.physics = DungeonGame.game.add.group();
+	this.foreground = foreground;
+	this.background = background;
+	this.physics = physics;
 
 	this.timer = DungeonGame.game.time.create( false );
 }
@@ -27,7 +24,7 @@ Room.prototype.addForeground = function ( x, y, spos )
 	}
 	var index = spos[0] + spos[1]*8;
 	var s = this.foreground.create( this.offset_x + x*16, this.offset_y + y*16, 'dungeon', index );
-	s.renderable = false;
+	s.renderable = true;
 	this.objects.push( s );
 };
 
@@ -39,7 +36,7 @@ Room.prototype.addBackground = function ( x, y, spos )
 	}
 	var index = spos[0] + spos[1]*8;
 	var s = this.background.create( this.offset_x + x*16, this.offset_y + y*16, 'dungeon', index );
-	s.renderable = false;
+	s.renderable = true;
 	this.objects.push( s );
 };
 
@@ -60,12 +57,13 @@ Room.prototype.addPhysics = function ( x, y )
 		s.body.setSize(16, 16*(i+1) );
 		i += 1;
 	}
+	this.objects.push( s );
 };
 
 
 Room.prototype.isWithin = function ( x, y )
 {
-	return ( x >= 0 ) && ( y >= 0 ) && ( x < this.width ) && ( y < this.height );
+	return ( x >= 0 ) && ( y >= 0 ) && ( x < ROOM_WIDTH ) && ( y < ROOM_HEIGHT );
 };
 
 Room.prototype.getTileType = function ( x, y )
@@ -98,18 +96,12 @@ Room.prototype.isFloor = function ( x, y )
 	return ( TYPE == TYPE_FLOOR );
 };
 
-//Room.prototype.isRubbleOrWall = function ( x, y )
-//{
-//	var name = this.get( x, y );
-//	return ( name == RUBBLE ) || ( name == 'rubble' );
-//};
-
 
 Room.prototype.generate = function ()
 {
-	for ( var y = 0; y < this.height; y++ )
+	for ( var y = 0; y < ROOM_HEIGHT; y++ )
 	{
-		for ( var x = 0; x < this.width; x++ )
+		for ( var x = 0; x < ROOM_WIDTH; x++ )
 		{
 			// Add wall
 			if ( this.isWall( x, y, true ) )
@@ -205,34 +197,34 @@ Room.prototype.generate = function ()
 				this.addBackground( x, y, TILE_FLOOR['spos'] );
 
 				var neighbours = '';
-				neighbours += this.isFloor( x-1, y ) || this.isWall( x-1, y ) ? '<' : '-';
-				neighbours += this.isFloor( x, y-1 ) || this.isWall( x, y-1 ) ? '^' : '-';
-				neighbours += this.isFloor( x+1, y ) || this.isWall( x+1, y ) ? '>' : '-';
-				neighbours += this.isFloor( x, y+1 ) || this.isWall( x, y+1 ) ? 'v' : '-';
+				neighbours += this.getTileName( x-1, y ) == 'rubble' || this.isWall( x-1, y, true ) ? '<' : '-';
+				neighbours += this.getTileName( x, y-1 ) == 'rubble' || this.isWall( x, y-1, true ) ? '^' : '-';
+				neighbours += this.getTileName( x+1, y ) == 'rubble' || this.isWall( x+1, y, true ) ? '>' : '-';
+				neighbours += this.getTileName( x, y+1 ) == 'rubble' || this.isWall( x, y+1, true ) ? 'v' : '-';
 				
 				var r = DungeonGame.game.rnd.integerInRange( 0, 1 );
 				var spos = {
-					'----': [1, 3], // missing
-					'---v': [1, 3], // missing
-					'-->-': [1, 3], // missing
-					'-->v': [0, 6],
-					'-^--': [1, 3], // missing
-					'-^-v': [1, 3], // missing
-					'-^>-': [0, 8],
-					'-^>v': [0, 7],
-					'<---': [1, 3], // missing
-					'<--v': [3, 6],
-					'<->-': [1, 3], // missing
-					'<->v': [1+r, 6],
-					'<^--': [3, 8],
-					'<^-v': [3, 7],
-					'<^>-': [1+r, 8],
-					'<^>v': [1+r, 7]
+					'----': [1+r, 3], // missing
+					'---v': [1+r, 3], // missing
+					'-->-': [1+r, 3], // missing
+					'-->v': [0, 2],
+					'-^--': [1+r, 3], // missing
+					'-^-v': [1+r, 3], // missing
+					'-^>-': [0, 4],
+					'-^>v': [0, 3],
+					'<---': [1+r, 3], // missing
+					'<--v': [3, 2],
+					'<->-': [1+r, 3], // missing
+					'<->v': [1+r, 2],
+					'<^--': [3, 4],
+					'<^-v': [3, 3],
+					'<^>-': [1+r, 4],
+					'<^>v': [1+r, 3]
 				}[neighbours]
 
 				if ( spos )
 				{
-					//this.addBackground( x, y, spos[0], spos[1] );
+					this.addBackground( x, y, [spos[0], spos[1]] );
 				}
 			}
 			// Add floor
@@ -260,17 +252,15 @@ Room.prototype.render = function ()
 
 Room.prototype.appear = function ()
 {
-	for (var i = 0, len = this.objects.length; i < len; i++)
-	{
-		this.objects[i].renderable = true;
-	}
+	if ( this.objects.length == 0 )
+		this.generate();
 	this.timer.stop();
 };
 
 Room.prototype.queueDisappear = function ()
 {
 	// (3/4)^22*240
-	this.timer.add( 22000/60, this.disappear, this );
+	this.timer.add( 50000/60, this.disappear, this );
 	this.timer.start();
 };
 
@@ -278,32 +268,34 @@ Room.prototype.disappear = function ()
 {
 	for (var i = 0, len = this.objects.length; i < len; i++)
 	{
-		this.objects[i].renderable = false;
+		this.objects[i].kill();
+		this.objects[i].destroy();
 	}
+	this.objects = [];
 };
 
 
 Room.makePixelMap = function ()
 {
-	var width = DungeonGame.game.cache.getImage( 'map' ).width;
-	var height = DungeonGame.game.cache.getImage( 'map' ).height;
+	var width = DungeonGame.game.cache.getImage( 'overworld' ).width;
+	var height = DungeonGame.game.cache.getImage( 'overworld' ).height;
 
 	var bmd = DungeonGame.game.make.bitmapData( width, height );
-	bmd.draw( DungeonGame.game.cache.getImage( 'map' ), 0, 0 );
+	bmd.draw( DungeonGame.game.cache.getImage( 'overworld' ), 0, 0 );
 	bmd.update();
 
 	var roomMap = {};
-	for ( var i = 0; i < width/16; i++ )
+	for ( var i = 0; i < width / ROOM_WIDTH; i++ )
 	{
-		for ( var j = 0; j < height/15; j++ )
+		for ( var j = 0; j < height / ROOM_HEIGHT; j++ )
 		{
 			var roomData = [];
-			for ( var y = 0; y < 15; y++ )
+			for ( var y = 0; y < ROOM_HEIGHT; y++ )
 			{
 				var row = [];
-				for ( var x = 0; x < 16; x++ )
+				for ( var x = 0; x < ROOM_WIDTH; x++ )
 				{
-					var hex = bmd.getPixel32( i*16+x, j*15+y );
+					var hex = bmd.getPixel32( i*ROOM_WIDTH+x, j*ROOM_HEIGHT+y );
 					var r = ( hex	   ) & 0xFF;
 					var g = ( hex >>  8 ) & 0xFF;
 					var b = ( hex >> 16 ) & 0xFF;

@@ -19,3 +19,7 @@ function isInt( value ) {
 	var x = parseFloat( value );
 	return ( x | 0 ) === x;
 }
+
+Number.prototype.clamp = function( min, max ) {
+	return Math.min( Math.max( this, min ), max );
+};

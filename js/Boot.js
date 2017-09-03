@@ -11,7 +11,7 @@ DungeonGame.Boot.prototype = {
 	create: function() {
 		// Physics system
 		this.game.physics.startSystem( Phaser.Physics.ARCADE );
-		//this.game.time.advancedTiming = true; // Remote later?
+		this.game.time.advancedTiming = true; // Remote later?
 
 		this.state.start( 'Preload' );
 	}

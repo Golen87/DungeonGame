@@ -32,6 +32,20 @@ var PIXEL_TABLE = {
 	'0,0,0': TILE_WALL,
 	'100,0,100': TILE_SPIRAL,
 	'255,255,255': TILE_FLOOR,
+
+	'100,0,0': TILE_WALL, // Rock
+	'0,100,0': TILE_SPIRAL, // Tree
+	'0,0,255': TILE_RUBBLE, // Water
+
+	'255,0,0': TILE_SPIRAL, // Soldiers
+
+	'100,0,255': TILE_RUBBLE, // Stairs
+	'255,100,0': TILE_FLOOR, // Bridge
+	'255,255,0': TILE_FLOOR, // Entrance
+
+	'200,200,200': TILE_FLOOR, // Gray floor
+	'0,255,255': TILE_SPIRAL, // Grave
+	'0,0,100': TILE_WALL, // Gray walls
 }
 
 var TILES = [
