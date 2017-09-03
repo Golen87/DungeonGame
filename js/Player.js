@@ -14,11 +14,11 @@ Player.prototype.preload = function ()
 {
 };
 
-Player.prototype.create = function ( group )
+Player.prototype.create = function ( x, y, group )
 {
 	this.speed = 80;
 
-	this.sprite = group.create( 128, 64, 'player', 0 );
+	this.sprite = group.create( x, y, 'player', 0 );
 	DungeonGame.game.physics.arcade.enable( this.sprite, Phaser.Physics.ARCADE );
 	this.sprite.anchor.set( 0.5 );
 	this.sprite.body.setSize(10, 8, 3, 5);

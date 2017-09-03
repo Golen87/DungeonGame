@@ -1,56 +1,21 @@
 
 // Constructor
-function Room ( path, group )
+function Room ( roomData, offset_x, offset_y, group )
 {
-	this.path = path;
+	this.offset_x = offset_x;
+	this.offset_y = offset_y;
 
-	var roomText = DungeonGame.game.cache.getText( this.path );
-	roomText = roomText.split( '\n' );
+	this.width = 16;
+	this.height = 15;
 
-	var temp = roomText.shift().split( ',' );
-	this.width = temp[0];
-	this.height = temp[1];
-	roomText.shift(); // Remove space
+	this.grid = roomData;
 
-	this.grid = [];
-	for ( var y = 0; y < this.height; y++ )
-	{
-		var line = roomText.shift();
-		if ( line.length != this.width )
-			console.error( 'Map has incorrect size!' );
-		this.grid.push( line );
-	}
-
-	this.tileMap = {};
-	while ( roomText.length > 0 )
-	{
-		var line = roomText.shift();
-		if ( line )
-		{
-			// char NAME
-			var char = line[0];
-			var name = line.substring( 2 );
-			var found = false;
-			for ( var i = 0; i < TILES.length; i++ ) {
-				if ( name == TILES[i]['name'] )
-				{
-					this.tileMap[char] = {
-						'type': TILES[i]['type'],
-						'name': name
-					};
-					found = true;
-				}
-			}
-			if ( !found )
-			{
-				console.error( 'Unknown tilename "{0}"'.format( name ) );
-			}
-		}
-	}
-
+	this.objects = [];
 	this.foreground = group;
 	this.background = DungeonGame.game.add.group();
 	this.physics = DungeonGame.game.add.group();
+
+	this.timer = DungeonGame.game.time.create( false );
 }
 
 
@@ -61,7 +26,9 @@ Room.prototype.addForeground = function ( x, y, spos )
 		spos = Phaser.ArrayUtils.getRandomItem( spos );
 	}
 	var index = spos[0] + spos[1]*8;
-	var s = this.foreground.create( x*16, y*16, 'dungeon', index );
+	var s = this.foreground.create( this.offset_x + x*16, this.offset_y + y*16, 'dungeon', index );
+	s.renderable = false;
+	this.objects.push( s );
 };
 
 Room.prototype.addBackground = function ( x, y, spos )
@@ -71,7 +38,9 @@ Room.prototype.addBackground = function ( x, y, spos )
 		spos = Phaser.ArrayUtils.getRandomItem( spos );
 	}
 	var index = spos[0] + spos[1]*8;
-	var s = this.background.create( x*16, y*16, 'dungeon', index );
+	var s = this.background.create( this.offset_x + x*16, this.offset_y + y*16, 'dungeon', index );
+	s.renderable = false;
+	this.objects.push( s );
 };
 
 Room.prototype.addPhysics = function ( x, y )
@@ -79,18 +48,18 @@ Room.prototype.addPhysics = function ( x, y )
 	if ( this.isWithin( x, y-1 ) && this.isWall( x, y-1, true ) )
 		return;
 
-	var s = this.physics.create( x*16, y*16, 'dungeon', 0 );
-	s.visible = false;
+	var s = this.physics.create( this.offset_x + x*16, this.offset_y + y*16, 'dungeon', 0 );
+	s.renderable = false;
 
 	DungeonGame.game.physics.enable( s, Phaser.Physics.ARCADE );
+	s.body.immovable = true;
+	s.body.moves = false;
 
 	var i = 1;
 	while ( this.isWithin( x, y+i ) && this.isWall( x, y+i, true ) ) {
 		s.body.setSize(16, 16*(i+1) );
 		i += 1;
 	}
-
-	s.body.immovable = true;
 };
 
 
@@ -102,14 +71,14 @@ Room.prototype.isWithin = function ( x, y )
 Room.prototype.getTileType = function ( x, y )
 {
 	if ( this.isWithin( x, y ) )
-		return this.tileMap[this.grid[y][x]]['type'];
+		return TILES[this.grid[y][x]]['type'];
 	return TYPE_NONE;
 };
 
 Room.prototype.getTileName = function ( x, y )
 {
 	if ( this.isWithin( x, y ) )
-		return this.tileMap[this.grid[y][x]]['name'];
+		return TILES[this.grid[y][x]]['name'];
 	return TYPE_NONE;
 };
 
@@ -155,11 +124,11 @@ Room.prototype.generate = function ()
 						this.addForeground( x, y, TILE_SPIRAL['spos'] );
 					}
 
-					if ( this.isFloor( x-1, y ) || ( this.isWall( x-1, y+1, true ) ) )
+					if ( this.isFloor( x-1, y ) || ( this.isWall( x-1, y+1 ) ) )
 					{
 						this.addForeground( x, y, DECO_EDGESHADE_LEFT );
 					}
-					if ( this.isFloor( x+1, y ) || ( this.isWall( x+1, y+1, true ) ) )
+					if ( this.isFloor( x+1, y ) || ( this.isWall( x+1, y+1 ) ) )
 					{
 						this.addForeground( x, y, DECO_EDGESHADE_RIGHT );
 					}
@@ -270,7 +239,7 @@ Room.prototype.generate = function ()
 			else if ( this.isFloor( x, y ) )
 			{
 				this.addBackground( x, y, TILE_FLOOR['spos'] );
-				if ( this.isWall( x, y-1, true ) )
+				if ( this.isWall( x, y-1 ) )
 				{
 					this.addBackground( x, y, DECO_FLOORSHADE );
 				}
@@ -287,3 +256,81 @@ Room.prototype.render = function ()
 		this.physics.forEach( function ( member ) {DungeonGame.game.debug.body( member );}, this );
 	}
 };
+
+
+Room.prototype.appear = function ()
+{
+	for (var i = 0, len = this.objects.length; i < len; i++)
+	{
+		this.objects[i].renderable = true;
+	}
+	this.timer.stop();
+};
+
+Room.prototype.queueDisappear = function ()
+{
+	// (3/4)^22*240
+	this.timer.add( 22000/60, this.disappear, this );
+	this.timer.start();
+};
+
+Room.prototype.disappear = function ()
+{
+	for (var i = 0, len = this.objects.length; i < len; i++)
+	{
+		this.objects[i].renderable = false;
+	}
+};
+
+
+Room.makePixelMap = function ()
+{
+	var width = DungeonGame.game.cache.getImage( 'map' ).width;
+	var height = DungeonGame.game.cache.getImage( 'map' ).height;
+
+	var bmd = DungeonGame.game.make.bitmapData( width, height );
+	bmd.draw( DungeonGame.game.cache.getImage( 'map' ), 0, 0 );
+	bmd.update();
+
+	var roomMap = {};
+	for ( var i = 0; i < width/16; i++ )
+	{
+		for ( var j = 0; j < height/15; j++ )
+		{
+			var roomData = [];
+			for ( var y = 0; y < 15; y++ )
+			{
+				var row = [];
+				for ( var x = 0; x < 16; x++ )
+				{
+					var hex = bmd.getPixel32( i*16+x, j*15+y );
+					var r = ( hex	   ) & 0xFF;
+					var g = ( hex >>  8 ) & 0xFF;
+					var b = ( hex >> 16 ) & 0xFF;
+					var a = ( hex >> 24 ) & 0xFF;
+
+					var key = [r, g, b].toString();
+					if ( a == 0 )
+					{
+						var index = TILES.map(function(e) { return e.name; }).indexOf( TILE_NONE );
+						row.push( 0 );
+					}
+					else if ( key in PIXEL_TABLE )
+					{
+						var index = TILES.map(function(e) { return e.name; }).indexOf( PIXEL_TABLE[key].name );
+						row.push( index );
+					}
+					else
+					{
+						console.error( 'Unknown color: {0}'.format( key ) );
+					}
+				}
+				roomData.push( row );
+			}
+
+			var key = [i,j].toString();
+			roomMap[key] = roomData;
+		}
+	}
+	return roomMap;
+}

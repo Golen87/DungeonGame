@@ -28,6 +28,12 @@ var TILE_RUBBLE = {
 };
 
 
+var PIXEL_TABLE = {
+	'0,0,0': TILE_WALL,
+	'100,0,100': TILE_SPIRAL,
+	'255,255,255': TILE_FLOOR,
+}
+
 var TILES = [
 	TILE_NONE,
 	TILE_WALL,

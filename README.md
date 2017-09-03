@@ -151,3 +151,9 @@ Smooth toggle between cinematic mode and gameplay mode
 > 
 > Fade in black bars, fade out gui
 
+> Sparkles! Like 5 pixels, animations thereof, nyancat?
+
+> Light and butterflies around sword in the stone. Player may be able to kill
+> butterflies and see the light go out and the others flee, an indication that
+> killing might not be the solution. Going through the game without killing
+> anything should be much harder, but will grant a different ending?

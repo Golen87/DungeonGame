@@ -14,6 +14,13 @@ DungeonGame.Preload.prototype = {
 
 		this.load.setPreloadSprite( this.preloadBar );
 
+		//this.loadingAnimation = this.add.sprite( 0, this.game.world.height, 'loading-animation', 0 );
+		//this.loadingAnimation.anchor.set( 0, 1 );
+		//this.loadingAnimation.scale.set( 4, 4 );
+		//this.loadingAnimation.animations.add( 'loading', [0,1,2,3,4,5], 8, true );
+		//this.loadingAnimation.animations.play( 'loading' );
+		//this.loadingAnimation.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
+
 		// Load game assets
 		
 		//this.load.audio('Adventure', 'https://archive.org/download/OldRunescapeSoundtrack/Adventure.mp3' )
@@ -25,9 +32,7 @@ DungeonGame.Preload.prototype = {
 		this.load.spritesheet( 'dungeon', 'assets/sprites/dungeon.png', 16, 16 );
 		this.load.spritesheet( 'player', 'assets/sprites/player.png', 16, 16 );
 
-		this.load.text( 'room_0', 'assets/rooms/room_0.txt' );
-		this.load.text( 'room_1', 'assets/rooms/room_1.txt' );
-		this.load.text( 'room_2', 'assets/rooms/room_2.txt' );
+		this.load.spritesheet( 'map', 'assets/rooms/map.png', 16, 15 );
 
 
 		// Loading percentage text
