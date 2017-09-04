@@ -157,3 +157,8 @@ Smooth toggle between cinematic mode and gameplay mode
 > butterflies and see the light go out and the others flee, an indication that
 > killing might not be the solution. Going through the game without killing
 > anything should be much harder, but will grant a different ending?
+
+> Early paths blocked due to lack of item
+>> Hammer weapon to break certain blocks
+>>
+>> Also certain type of enemies, or at least one

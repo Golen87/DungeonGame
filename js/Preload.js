@@ -31,6 +31,7 @@ DungeonGame.Preload.prototype = {
 
 		this.load.spritesheet( 'dungeon', 'assets/sprites/dungeon.png', 16, 16 );
 		this.load.spritesheet( 'player', 'assets/sprites/player.png', 16, 16 );
+		this.load.spritesheet( 'enemy', 'assets/sprites/enemy.png', 16, 16 );
 
 		this.load.spritesheet( 'map', 'assets/rooms/map.png', ROOM_WIDTH, ROOM_HEIGHT );
 		this.load.spritesheet( 'overworld', 'assets/rooms/overworld.png', ROOM_WIDTH, ROOM_HEIGHT );
@@ -41,6 +42,9 @@ DungeonGame.Preload.prototype = {
 		this.load.audio( 'rat', 'assets/sounds/rat.ogg' );
 		this.load.audio( 'mouse', 'assets/sounds/mouse.ogg' );
 		this.load.audio( 'rhino', 'assets/sounds/rhino.ogg' );
+		this.load.audio( 'spider', 'assets/sounds/spider.ogg' );
+		this.load.audio( 'slime', 'assets/sounds/slime.ogg' );
+		this.load.audio( 'creature', 'assets/sounds/creature.ogg' );
 
 
 		// Loading percentage text

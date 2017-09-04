@@ -4,16 +4,6 @@ function Player ()
 {
 }
 
-
-Player.staticMethod = function ()
-{
-};
-
-
-Player.prototype.preload = function ()
-{
-};
-
 Player.prototype.create = function ( x, y, group )
 {
 	this.speed = 80;
@@ -75,10 +65,10 @@ Player.prototype.setupAnimation = function ()
 
 	//addMarker(name, start, duration, volume, loop)
 	this.footsteps = DungeonGame.game.add.audio( 'footsteps' );
-	this.footsteps.addMarker('1', 0.0, 0.3, 0.2);
-	this.footsteps.addMarker('2', 0.4, 0.3, 0.2);
-	this.footsteps.addMarker('3', 0.8, 0.3, 0.2);
-	this.footsteps.addMarker('4', 1.2, 0.3, 0.2);
+	this.footsteps.addMarker('1', 0.0, 0.3, 0.1);
+	this.footsteps.addMarker('2', 0.4, 0.3, 0.1);
+	this.footsteps.addMarker('3', 0.8, 0.3, 0.1);
+	this.footsteps.addMarker('4', 1.2, 0.3, 0.1);
 	this.stepCooldown = 0;
 
 	this.eating = DungeonGame.game.add.audio( 'eating' );
@@ -114,6 +104,38 @@ Player.prototype.setupAnimation = function ()
 	this.rhino.addMarker('hurt_3', 6.3, 0.7 );
 	this.rhino.addMarker('hurt_4', 7.1, 0.6 );
 	this.rhino.addMarker('death', 7.8, 0.9 );
+
+	this.spider = DungeonGame.game.add.audio( 'spider' );
+	this.spider.addMarker('cry_1', 0.0, 0.9 );
+	this.spider.addMarker('cry_2', 1.0, 0.9 );
+	this.spider.addMarker('cry_3', 2.0, 0.9 );
+	this.spider.addMarker('cry_4', 3.0, 0.9 );
+	this.spider.addMarker('hurt_1', 4.0, 0.7 );
+	this.spider.addMarker('hurt_2', 4.8, 0.7 );
+	this.spider.addMarker('hurt_3', 5.6, 0.7 );
+	this.spider.addMarker('death_1', 6.4, 0.8 );
+	this.spider.addMarker('death_2', 7.3, 0.8 );
+
+	this.slime = DungeonGame.game.add.audio( 'slime' );
+	this.slime.addMarker('cry_1', 0.0, 1.2 );
+	this.slime.addMarker('cry_2', 1.3, 1.2 );
+	this.slime.addMarker('cry_3', 2.6, 1.2 );
+	this.slime.addMarker('hurt_1', 3.9, 1.2 );
+	this.slime.addMarker('hurt_2', 5.2, 1.2 );
+	this.slime.addMarker('hurt_3', 6.5, 1.2 );
+	this.slime.addMarker('death', 7.8, 1.2 );
+
+
+	this.creature = DungeonGame.game.add.audio( 'creature' );
+	this.creature.addMarker('cry_1', 0.0, 1.6 );
+	this.creature.addMarker('cry_2', 1.7, 1.3 );
+	this.creature.addMarker('cry_3', 3.1, 1.3 );
+	this.creature.addMarker('cry_4', 4.5, 1.7 );
+	this.creature.addMarker('hurt_1', 6.3, 1.4 );
+	this.creature.addMarker('hurt_2', 7.8, 1.4 );
+	this.creature.addMarker('hurt_3', 9.3, 1.4 );
+	this.creature.addMarker('death_1', 10.8, 1.1 );
+	this.creature.addMarker('death_2', 12.0, 1.3 );
 };
 
 Player.prototype.setAnimation = function ( newState, newDirection )

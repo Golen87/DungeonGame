@@ -11,6 +11,8 @@ World.prototype.create = function ()
 	this.background = DungeonGame.game.add.group();
 	this.foreground = DungeonGame.game.add.group();
 	this.physics = DungeonGame.game.add.group();
+	this.enemies = [];
+	this.items = [];
 
 	this.worldWidth = DungeonGame.game.cache.getImage( 'overworld' ).width / ROOM_WIDTH;
 	this.worldHeight = DungeonGame.game.cache.getImage( 'overworld' ).height / ROOM_HEIGHT;
@@ -41,6 +43,19 @@ World.prototype.create = function ()
 		this.foreground
 	);
 
+	for ( var i = 0; i < 2; i++ )
+	{
+		for ( var j = 0; j < 2; j++ )
+		{
+			var enemy = new Enemy(
+				this.currentArea[0] * SCREEN_WIDTH + 70 + 30*i,
+				this.currentArea[1] * SCREEN_HEIGHT + 70 + 20*j,
+				this.foreground
+			);
+			this.enemies.push( enemy );
+		}
+	}
+
 	this.camGoal = new Phaser.Point();
 	this.camGoal.x = this.currentArea[0] * SCREEN_WIDTH;
 	this.camGoal.y = this.currentArea[1] * SCREEN_HEIGHT;
@@ -62,6 +77,12 @@ World.prototype.update = function ()
 	//DungeonGame.game.physics.arcade.overlap( this.Player.sprite, this.Room.physics, this.collision, null, this );
 
 	this.Player.update();
+
+	for ( var i = 0; i < this.enemies.length; i++ )
+	{
+		DungeonGame.game.physics.arcade.collide( this.enemies[i].sprite, this.getCurrentRoom().physics );
+		this.enemies[i].update();
+	}
 
 	this.foreground.sort( 'y', Phaser.Group.SORT_ASCENDING );
 
@@ -99,9 +120,10 @@ World.prototype.update = function ()
 World.prototype.applyLighting = function ( sprite )
 {
 	var dist = this.Player.gridPos.distance( sprite.position );
-	var max = 600;
-	var fac = ( (max - dist) / max ).clamp( 0, 1 );
-	sprite.tint = (0xff*fac << 0) + (0xff*fac << 8) + (0xff*fac << 16);
+	var maxDist = 600;
+	var fac = ( (maxDist - dist) / maxDist ).clamp( 0, 1 );
+	var maxLight = 0xff;
+	sprite.tint = (maxLight*fac << 0) + (maxLight*fac << 8) + (maxLight*fac << 16);
 };
 
 World.prototype.render = function ()
@@ -109,6 +131,11 @@ World.prototype.render = function ()
 	this.getCurrentRoom().render();
 
 	this.Player.render();
+
+	for ( var i = 0; i < this.enemies.length; i++ )
+	{
+		this.enemies[i].render();
+	}
 
 	//DungeonGame.game.debug.spriteInfo(this.Player.sprite, 0, 0);
 	if ( DungeonGame.debug )

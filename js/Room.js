@@ -110,19 +110,19 @@ Room.prototype.generate = function ()
 
 				if ( this.isFloor( x, y+1 ) )
 				{
-					this.addForeground( x, y, TILE_WALL['spos'] );
+					this.addBackground( x, y, TILE_WALL['spos'] );
 					if ( this.getTileName( x, y ) == TILE_SPIRAL['name'] )
 					{
-						this.addForeground( x, y, TILE_SPIRAL['spos'] );
+						this.addBackground( x, y, TILE_SPIRAL['spos'] );
 					}
 
 					if ( this.isFloor( x-1, y ) || ( this.isWall( x-1, y+1 ) ) )
 					{
-						this.addForeground( x, y, DECO_EDGESHADE_LEFT );
+						this.addBackground( x, y, DECO_EDGESHADE_LEFT );
 					}
 					if ( this.isFloor( x+1, y ) || ( this.isWall( x+1, y+1 ) ) )
 					{
-						this.addForeground( x, y, DECO_EDGESHADE_RIGHT );
+						this.addBackground( x, y, DECO_EDGESHADE_RIGHT );
 					}
 
 					if ( this.isFloor( x, y-1 ) )
