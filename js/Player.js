@@ -72,6 +72,48 @@ Player.prototype.setupAnimation = function ()
 
 	//this.damageAnimation = false;
 	//PhaserGame.prototype.cloudBurst(this);
+
+	//addMarker(name, start, duration, volume, loop)
+	this.footsteps = DungeonGame.game.add.audio( 'footsteps' );
+	this.footsteps.addMarker('1', 0.0, 0.3, 0.2);
+	this.footsteps.addMarker('2', 0.4, 0.3, 0.2);
+	this.footsteps.addMarker('3', 0.8, 0.3, 0.2);
+	this.footsteps.addMarker('4', 1.2, 0.3, 0.2);
+	this.stepCooldown = 0;
+
+	this.eating = DungeonGame.game.add.audio( 'eating' );
+	this.eating.addMarker('1', 0.0, 0.95);
+	this.eating.addMarker('2', 1.0, 0.95);
+	this.eating.addMarker('3', 2.0, 0.95);
+
+	this.rat = DungeonGame.game.add.audio( 'rat' );
+	this.rat.addMarker('cry_1', 0.0, 0.5 );
+	this.rat.addMarker('cry_2', 0.6, 0.5 );
+	this.rat.addMarker('cry_3', 1.2, 0.5 );
+	this.rat.addMarker('hurt_1', 1.8, 0.35 );
+	this.rat.addMarker('hurt_2', 2.25, 0.35 );
+	this.rat.addMarker('hurt_3', 2.7, 0.35 );
+	this.rat.addMarker('death', 3.15, 0.55 );
+
+	this.mouse = DungeonGame.game.add.audio( 'mouse' );
+	this.mouse.addMarker('cry_1', 0.0, 0.2 );
+	this.mouse.addMarker('cry_2', 0.3, 0.2 );
+	this.mouse.addMarker('cry_3', 0.6, 0.2 );
+	this.mouse.addMarker('hurt_1', 0.9, 0.4 );
+	this.mouse.addMarker('hurt_2', 1.4, 0.4 );
+	this.mouse.addMarker('hurt_3', 1.9, 0.4 );
+	this.mouse.addMarker('death', 2.4, 0.3 );
+
+	this.rhino = DungeonGame.game.add.audio( 'rhino' );
+	this.rhino.addMarker('cry_1', 0.0, 1.1 );
+	this.rhino.addMarker('cry_2', 1.2, 1.1 );
+	this.rhino.addMarker('cry_3', 2.4, 1.1 );
+	this.rhino.addMarker('cry_4', 3.6, 1.3 );
+	this.rhino.addMarker('hurt_1', 5.0, 0.6 );
+	this.rhino.addMarker('hurt_2', 5.7, 0.5 );
+	this.rhino.addMarker('hurt_3', 6.3, 0.7 );
+	this.rhino.addMarker('hurt_4', 7.1, 0.6 );
+	this.rhino.addMarker('death', 7.8, 0.9 );
 };
 
 Player.prototype.setAnimation = function ( newState, newDirection )
@@ -92,7 +134,23 @@ Player.prototype.setAnimation = function ( newState, newDirection )
 
 Player.prototype.update = function ()
 {
+	if ( this.keys.space.justDown )
+	{
+		var s = ['cry_1', 'cry_2', 'cry_3', 'hurt_1', 'hurt_2', 'hurt_3', 'death'].choice()
+		this.rat.play( s );
+	}
+
 	var p = new Phaser.Point( 0, 0 );
+
+	var frame = this.sprite.animations.currentFrame.index % 6;
+	this.stepCooldown -= 1;
+
+	if ( this.state == 'walk' && ( frame == 2 || frame == 4 ) && this.stepCooldown <= 0 )
+	{
+		var s = ['1', '2', '3', '4'].choice()
+		this.footsteps.play( s );
+		this.stepCooldown = 10;
+	}
 
 	if ( this.keys.up.isDown || this.keys.w.isDown )
 		p.y -= 1;
@@ -113,8 +171,8 @@ Player.prototype.update = function ()
 		this.sprite.body.x += SCREEN_WIDTH - 16;
 
 	p.setMagnitude( this.speed );
-	this.sprite.body.velocity.x += ( p.x - this.sprite.body.velocity.x ) / 5;
-	this.sprite.body.velocity.y += ( p.y - this.sprite.body.velocity.y ) / 5;
+	this.sprite.body.velocity.x += ( p.x - this.sprite.body.velocity.x ) / 3;
+	this.sprite.body.velocity.y += ( p.y - this.sprite.body.velocity.y ) / 3;
 
 	if ( p.getMagnitude() > 0 )
 	{
@@ -131,8 +189,8 @@ Player.prototype.update = function ()
 	}
 
 	this.prevGridPos.copyFrom( this.gridPos );
-	this.gridPos.x = Math.round( this.sprite.position.x / 16 ) * 16;
-	this.gridPos.y = Math.round( this.sprite.position.y / 16 ) * 16;
+	this.gridPos.x = Math.round( ( this.sprite.position.x - 8 ) / 16 ) * 16;
+	this.gridPos.y = Math.round( ( this.sprite.position.y - 8 ) / 16 ) * 16;
 };
 
 Player.prototype.render = function ()

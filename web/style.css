@@ -21,13 +21,13 @@ canvas {
 	zoom: 1;
 }
 
-@media (min-width: 512px) and (min-height: 480px) {
+@media (min-width: 512px) and (min-height: 352px) {
 	canvas {
 		zoom: 2;
 	}
 }
 
-@media (min-width: 1024px) and (min-height: 960px) {
+@media (min-width: 1024px) and (min-height: 704px) {
 	canvas {
 		zoom: 4;
 	}

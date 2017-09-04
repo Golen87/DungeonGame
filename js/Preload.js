@@ -36,6 +36,13 @@ DungeonGame.Preload.prototype = {
 		this.load.spritesheet( 'overworld', 'assets/rooms/overworld.png', ROOM_WIDTH, ROOM_HEIGHT );
 
 
+		this.load.audio( 'footsteps', 'assets/sounds/footsteps.ogg' );
+		this.load.audio( 'eating', 'assets/sounds/eating.ogg' );
+		this.load.audio( 'rat', 'assets/sounds/rat.ogg' );
+		this.load.audio( 'mouse', 'assets/sounds/mouse.ogg' );
+		this.load.audio( 'rhino', 'assets/sounds/rhino.ogg' );
+
+
 		// Loading percentage text
 		//this.progress = this.game.add.text(this.game.world.centerX, this.game.world.centerY-30, '0%', {fill: 'white'});
 		//this.progress.anchor.setTo(.5,.5);

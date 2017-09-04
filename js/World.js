@@ -83,7 +83,7 @@ World.prototype.update = function ()
 	DungeonGame.game.camera.x = Math.round( this.camPos.x );
 	DungeonGame.game.camera.y = Math.round( this.camPos.y );
 
-	/*if ( this.Player.gridPos != this.Player.prevGridPos )
+	if ( this.Player.gridPos != this.Player.prevGridPos )
 	{
 		for ( var i = 0; i < this.foreground.children.length; i++ )
 		{
@@ -93,14 +93,13 @@ World.prototype.update = function ()
 		{
 			this.applyLighting( this.background.children[i] );
 		}
-	}*/
+	}
 };
 
 World.prototype.applyLighting = function ( sprite )
 {
-	var pos = new Phaser.Point( this.Player.gridPos.x - 8, this.Player.gridPos.y - 8 );
-	var dist = pos.distance( sprite.position );
-	var max = 1000;
+	var dist = this.Player.gridPos.distance( sprite.position );
+	var max = 600;
 	var fac = ( (max - dist) / max ).clamp( 0, 1 );
 	sprite.tint = (0xff*fac << 0) + (0xff*fac << 8) + (0xff*fac << 16);
 };

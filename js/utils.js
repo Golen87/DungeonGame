@@ -23,3 +23,7 @@ function isInt( value ) {
 Number.prototype.clamp = function( min, max ) {
 	return Math.min( Math.max( this, min ), max );
 };
+
+Array.prototype.choice = function() {
+	return Phaser.ArrayUtils.getRandomItem( this );
+};
