@@ -5,7 +5,8 @@ var TYPE_FLOOR = 'FLOOR';
 
 var TILE_NONE = {
 	'name': 'none',
-	'type': TYPE_NONE
+	'type': TYPE_NONE,
+	'spos': [7,6]
 };
 var TILE_WALL = {
 	'name': 'wall',

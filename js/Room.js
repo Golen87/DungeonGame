@@ -132,6 +132,9 @@ Room.prototype.generate = function ()
 				}
 				else
 				{
+					// Out of bounds background
+					this.addBackground( x, y, TILE_NONE['spos'] );
+
 					// Edges
 					if ( this.isFloor( x-1, y ) || this.isFloor( x-1, y+1 ) )
 					{

@@ -15,11 +15,13 @@ DungeonGame.Game.prototype =
 
 
 		this.stage.backgroundColor = '#1c1117';
+		this.stage.backgroundColor = '#403020';
 
 		this.createItems();
 		this.createDoors();
 
 		this.debugToggle = DungeonGame.game.input.keyboard.addKey(Phaser.Keyboard.Q);
+		this.shadowToggle = DungeonGame.game.input.keyboard.addKey(Phaser.Keyboard.F);
 
 		this.game.camera.flash(0x111111, 1000);
 	},
@@ -42,6 +44,9 @@ DungeonGame.Game.prototype =
 
 		if (this.debugToggle.justDown)
 			DungeonGame.debug = !DungeonGame.debug;
+
+		if (this.shadowToggle.justDown)
+			DungeonGame.shadow = !DungeonGame.shadow;
 	},
 	collect: function(player, collectable)
 	{

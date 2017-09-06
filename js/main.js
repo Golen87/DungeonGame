@@ -13,3 +13,4 @@ DungeonGame.game.state.add( 'Game', DungeonGame.Game );
 DungeonGame.game.state.start( 'Boot' );
 
 DungeonGame.debug = false;
+DungeonGame.shadow = false;

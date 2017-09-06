@@ -1,35 +1,24 @@
 
 // Constructor
-function Enemy( x, y, group )
+function Enemy()
 {
-	this.speed = 80;
+};
+
+Enemy.prototype.create = function ( x, y, group )
+{
+	this.speed = 50;
 
 	this.sprite = group.create( x, y, 'enemy', 0 );
 	DungeonGame.game.physics.arcade.enable( this.sprite, Phaser.Physics.ARCADE );
 	this.sprite.anchor.set( 0.5 );
-	this.sprite.body.setSize(10, 8, 3, 5);
-	//this.sprite.body.setCircle( 6, 2, 4 );
-
-	//this.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
+	//this.sprite.body.setSize(10, 8, 3, 5);
+	this.sprite.body.setCircle( 6, 2, 4 );
 
 	this.setupAnimation();
 
-	this.keys = DungeonGame.game.input.keyboard.createCursorKeys();
-	this.keys.w = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.W );
-	this.keys.a = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.A );
-	this.keys.s = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.S );
-	this.keys.d = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.D );
-
-	this.keys.i = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.I );
-	this.keys.j = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.J );
-	this.keys.k = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.K );
-	this.keys.l = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.L );
-
-	this.keys.space = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.SPACEBAR );
-	this.keys.shift = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.SHIFT );
-
-	this.gridPos = new Phaser.Point( x, y );
-	this.prevGridPos = new Phaser.Point( x, y );
+	this.aiState = 'idle';
+	this.goalPos = new Phaser.Point( this.sprite.body.position.x, this.sprite.body.position.y );
+	this.goalPos = new Phaser.Point( this.sprite.body.position.x, this.sprite.body.position.y );
 };
 
 Enemy.prototype.setupAnimation = function ()
@@ -75,44 +64,29 @@ Enemy.prototype.setAnimation = function ( newState, newDirection )
 
 Enemy.prototype.update = function ()
 {
-	if ( this.keys.space.justDown )
+	if ( this.aiState == 'idle' && Math.random() < 0.00 )
 	{
-		var s = ['cry_1', 'cry_2', 'cry_3', 'cry_4', 'hurt_1', 'hurt_2', 'hurt_3', 'death_1', 'death_2'].choice()
-		this.creature.play( s );
+		this.aiState = 'walk';
+		var movement = [[1,0], [0,1], [-1,0], [0,-1]].choice()
+		this.goalPos.x += 16 * movement[0];
+		this.goalPos.y += 16 * movement[1];
+		this.sprite.body.velocity.x = movement[0] * this.speed;
+		this.sprite.body.velocity.y = movement[1] * this.speed;
+	}
+	if ( this.aiState == 'walk' && this.sprite.body.position == this.goalPos )
+	{
+		this.aiState = 'idle';
+		this.sprite.body.velocity = 0;
 	}
 
-	var p = new Phaser.Point( 0, 0 );
-
-	var frame = this.sprite.animations.currentFrame.index % 6;
-	this.stepCooldown -= 1;
-
-	if ( this.state == 'walk' && ( frame == 2 || frame == 4 ) && this.stepCooldown <= 0 )
-	{
-		var s = ['1', '2', '3', '4'].choice()
-		//this.footsteps.play( s );
-		this.stepCooldown = 10;
-	}
-
-	if ( this.keys.up.isDown || this.keys.w.isDown )
-		p.y -= 1;
-	if ( this.keys.down.isDown || this.keys.s.isDown )
-		p.y += 1;
-	if ( this.keys.left.isDown || this.keys.a.isDown )
-		p.x -= 1;
-	if ( this.keys.right.isDown || this.keys.d.isDown )
-		p.x += 1;
-
-	p.setMagnitude( this.speed );
-	this.sprite.body.velocity.x += ( p.x - this.sprite.body.velocity.x ) / 3;
-	this.sprite.body.velocity.y += ( p.y - this.sprite.body.velocity.y ) / 3;
-
-	if ( p.getMagnitude() > 0 )
+	var v = this.sprite.body.velocity;
+	if ( v.getMagnitude() > 0 )
 	{
 		var direction;
-		if ( Math.abs( p.x ) >= Math.abs( p.y ) )
-			direction = p.x > 0 ? 'right' : 'left';
+		if ( Math.abs( v.x ) >= Math.abs( v.y ) )
+			direction = v.x > 0 ? 'right' : 'left';
 		else
-			direction = p.y > 0 ? 'down' : 'up';
+			direction = v.y > 0 ? 'down' : 'up';
 		this.setAnimation( 'walk', direction );
 	}
 	else

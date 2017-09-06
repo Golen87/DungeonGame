@@ -47,12 +47,27 @@ World.prototype.create = function ()
 	{
 		for ( var j = 0; j < 2; j++ )
 		{
-			var enemy = new Enemy(
-				this.currentArea[0] * SCREEN_WIDTH + 70 + 30*i,
-				this.currentArea[1] * SCREEN_HEIGHT + 70 + 20*j,
+			var enemy = new Enemy();
+			enemy.create(
+				this.currentArea[0] * SCREEN_WIDTH + 80 + 16*i - 8,
+				this.currentArea[1] * SCREEN_HEIGHT + 80 + 16*j - 8,
 				this.foreground
 			);
 			this.enemies.push( enemy );
+		}
+	}
+
+	for ( var i = 0; i < 2; i++ )
+	{
+		for ( var j = 0; j < 2; j++ )
+		{
+			var item = new Item();
+			item.create(
+				this.currentArea[0] * SCREEN_WIDTH + 160 + 16*i - 8,
+				this.currentArea[1] * SCREEN_HEIGHT + 128 + 16*j - 8,
+				this.foreground
+			);
+			this.items.push( item );
 		}
 	}
 
@@ -82,6 +97,11 @@ World.prototype.update = function ()
 	{
 		DungeonGame.game.physics.arcade.collide( this.enemies[i].sprite, this.getCurrentRoom().physics );
 		this.enemies[i].update();
+	}
+
+	for ( var i = 0; i < this.items.length; i++ )
+	{
+		DungeonGame.game.physics.arcade.overlap( this.Player.sprite, this.items[i].sprite, this.collision, null, this );
 	}
 
 	this.foreground.sort( 'y', Phaser.Group.SORT_ASCENDING );
@@ -120,9 +140,10 @@ World.prototype.update = function ()
 World.prototype.applyLighting = function ( sprite )
 {
 	var dist = this.Player.gridPos.distance( sprite.position );
-	var maxDist = 600;
-	var fac = ( (maxDist - dist) / maxDist ).clamp( 0, 1 );
-	var maxLight = 0xff;
+	var minDist = DungeonGame.shadow ? 32 : 128;
+	var maxDist = DungeonGame.shadow ? 80 : 960;
+	var fac = ( (maxDist - dist) / (maxDist - minDist) ).clamp( 0, 1 );
+	var maxLight = DungeonGame.shadow ? 0x55 : 0xff;
 	sprite.tint = (maxLight*fac << 0) + (maxLight*fac << 8) + (maxLight*fac << 16);
 };
 
@@ -137,6 +158,11 @@ World.prototype.render = function ()
 		this.enemies[i].render();
 	}
 
+	for ( var i = 0; i < this.items.length; i++ )
+	{
+		this.items[i].render();
+	}
+
 	//DungeonGame.game.debug.spriteInfo(this.Player.sprite, 0, 0);
 	if ( DungeonGame.debug )
 	{
@@ -147,9 +173,9 @@ World.prototype.render = function ()
 	}
 };
 
-World.prototype.collision = function ( player, wall )
+World.prototype.collision = function ( player, item )
 {
-	//console.log(player.body.position, wall.body.position);
+	console.log( player.body.position, item.body.position );
 };
 
 World.prototype.getCurrentRoom = function ()

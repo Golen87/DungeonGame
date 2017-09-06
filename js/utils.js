@@ -27,3 +27,8 @@ Number.prototype.clamp = function( min, max ) {
 Array.prototype.choice = function() {
 	return Phaser.ArrayUtils.getRandomItem( this );
 };
+
+function randInt( min, max )
+{
+	return DungeonGame.game.rnd.integerInRange( min, max );
+}
