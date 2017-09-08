@@ -9,7 +9,10 @@ function World ()
 World.prototype.create = function ()
 {
 	this.background = DungeonGame.game.add.group();
+	this.ground = DungeonGame.game.add.group();
+	this.actors = DungeonGame.game.add.group();
 	this.foreground = DungeonGame.game.add.group();
+
 	this.physics = DungeonGame.game.add.group();
 	this.enemies = [];
 	this.items = [];
@@ -40,7 +43,7 @@ World.prototype.create = function ()
 	this.Player.create(
 		this.currentArea[0] * SCREEN_WIDTH + SCREEN_WIDTH/2,
 		this.currentArea[1] * SCREEN_HEIGHT + SCREEN_HEIGHT/2,
-		this.foreground
+		this.actors
 	);
 
 	for ( var i = 0; i < 2; i++ )
@@ -51,7 +54,7 @@ World.prototype.create = function ()
 			enemy.create(
 				this.currentArea[0] * SCREEN_WIDTH + 80 + 16*i - 8,
 				this.currentArea[1] * SCREEN_HEIGHT + 80 + 16*j - 8,
-				this.foreground
+				this.actors
 			);
 			this.enemies.push( enemy );
 		}
@@ -65,7 +68,7 @@ World.prototype.create = function ()
 			item.create(
 				this.currentArea[0] * SCREEN_WIDTH + 160 + 16*i - 8,
 				this.currentArea[1] * SCREEN_HEIGHT + 128 + 16*j - 8,
-				this.foreground
+				this.ground
 			);
 			this.items.push( item );
 		}
@@ -83,6 +86,9 @@ World.prototype.create = function ()
 	this.nextRoomOffset = 8;
 	this.getCurrentRoom().appear();
 
+	DungeonGame.game.world.bringToTop( this.background );
+	DungeonGame.game.world.bringToTop( this.ground );
+	DungeonGame.game.world.bringToTop( this.actors );
 	DungeonGame.game.world.bringToTop( this.foreground );
 };
 
@@ -104,7 +110,8 @@ World.prototype.update = function ()
 		DungeonGame.game.physics.arcade.overlap( this.Player.sprite, this.items[i].sprite, this.collision, null, this );
 	}
 
-	this.foreground.sort( 'y', Phaser.Group.SORT_ASCENDING );
+	this.actors.sort( 'y', Phaser.Group.SORT_ASCENDING );
+	//this.foreground.sort( 'y', Phaser.Group.SORT_ASCENDING );
 
 	if ( this.Player.sprite.position.x > this.camGoal.x + SCREEN_WIDTH - this.nextRoomOffset ) {
 		this.shiftRoom( 1, 0 );
@@ -126,24 +133,24 @@ World.prototype.update = function ()
 
 	if ( this.Player.gridPos != this.Player.prevGridPos )
 	{
-		for ( var i = 0; i < this.foreground.children.length; i++ )
-		{
-			this.applyLighting( this.foreground.children[i] );
-		}
 		for ( var i = 0; i < this.background.children.length; i++ )
-		{
-			this.applyLighting( this.background.children[i] );
-		}
+			this.applyLighting( this.background.children[i], false );
+		for ( var i = 0; i < this.ground.children.length; i++ )
+			this.applyLighting( this.ground.children[i], true );
+		for ( var i = 0; i < this.actors.children.length; i++ )
+			this.applyLighting( this.actors.children[i], true );
+		for ( var i = 0; i < this.foreground.children.length; i++ )
+			this.applyLighting( this.foreground.children[i], false );
 	}
 };
 
-World.prototype.applyLighting = function ( sprite )
+World.prototype.applyLighting = function ( sprite, objects )
 {
 	var dist = this.Player.gridPos.distance( sprite.position );
 	var minDist = DungeonGame.shadow ? 32 : 128;
 	var maxDist = DungeonGame.shadow ? 80 : 960;
 	var fac = ( (maxDist - dist) / (maxDist - minDist) ).clamp( 0, 1 );
-	var maxLight = DungeonGame.shadow ? 0x55 : 0xff;
+	var maxLight = DungeonGame.shadow ? (objects ? 0xaa : 0x55) : 0xff;
 	sprite.tint = (maxLight*fac << 0) + (maxLight*fac << 8) + (maxLight*fac << 16);
 };
 

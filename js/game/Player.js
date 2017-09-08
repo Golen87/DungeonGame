@@ -8,11 +8,18 @@ Player.prototype.create = function ( x, y, group )
 {
 	this.speed = 80;
 
+	this.group = DungeonGame.game.add.group();
+
 	this.sprite = group.create( x, y, 'player', 0 );
 	DungeonGame.game.physics.arcade.enable( this.sprite, Phaser.Physics.ARCADE );
 	this.sprite.anchor.set( 0.5 );
 	this.sprite.body.setSize(10, 8, 3, 5);
 	//this.sprite.body.setCircle( 6, 2, 4 );
+
+	this.sword = group.create( x, y+2, 'sword', 0 );
+	DungeonGame.game.physics.arcade.enable( this.sword, Phaser.Physics.ARCADE );
+	this.sword.anchor.set( 0.5 );
+	this.sword.exists = false;
 
 	//this.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
 
@@ -59,6 +66,9 @@ Player.prototype.setupAnimation = function ()
 	this.state = 'idle';
 	this.direction = 'down';
 	this.sprite.animations.play( 'idle_down' );
+
+	this.sword.animations.add( 'attack', [1,2,3], 30, false );
+	this.sword.animations.currentAnim.onComplete.add(function () {	this.sword.kill();}, this);
 
 	//this.damageAnimation = false;
 	//PhaserGame.prototype.cloudBurst(this);
@@ -160,8 +170,19 @@ Player.prototype.update = function ()
 {
 	if ( this.keys.space.justDown )
 	{
-		var s = ['cry_1', 'cry_2', 'cry_3', 'hurt_1', 'hurt_2', 'hurt_3', 'death'].choice()
-		this.rat.play( s );
+		this.sword.reset(
+			this.sprite.body.center.x + this.sprite.body.velocity.x/60,
+			this.sprite.body.center.y + this.sprite.body.velocity.y/60
+		);
+		this.sword.animations.play( 'attack' );
+		//var s = ['cry_1', 'cry_2', 'cry_3', 'hurt_1', 'hurt_2', 'hurt_3', 'death'].choice()
+		//this.rat.play( s );
+	}
+	if ( this.keys.space.justUp )
+	{
+		//this.sword.kill();
+		//var s = ['cry_1', 'cry_2', 'cry_3', 'hurt_1', 'hurt_2', 'hurt_3', 'death'].choice()
+		//this.rat.play( s );
 	}
 
 	var p = new Phaser.Point( 0, 0 );
@@ -176,27 +197,31 @@ Player.prototype.update = function ()
 		this.stepCooldown = 10;
 	}
 
-	if ( this.keys.up.isDown || this.keys.w.isDown )
-		p.y -= 1;
-	if ( this.keys.down.isDown || this.keys.s.isDown )
-		p.y += 1;
-	if ( this.keys.left.isDown || this.keys.a.isDown )
-		p.x -= 1;
-	if ( this.keys.right.isDown || this.keys.d.isDown )
-		p.x += 1;
+	if ( !this.sword.exists )
+	{
+		if ( this.keys.up.isDown || this.keys.w.isDown )
+			p.y -= 1;
+		if ( this.keys.down.isDown || this.keys.s.isDown )
+			p.y += 1;
+		if ( this.keys.left.isDown || this.keys.a.isDown )
+			p.x -= 1;
+		if ( this.keys.right.isDown || this.keys.d.isDown )
+			p.x += 1;
 
-	if ( this.keys.i.justDown )
-		this.sprite.body.y -= SCREEN_HEIGHT - 16;
-	if ( this.keys.k.justDown )
-		this.sprite.body.y += SCREEN_HEIGHT - 16;
-	if ( this.keys.j.justDown )
-		this.sprite.body.x -= SCREEN_WIDTH - 16;
-	if ( this.keys.l.justDown )
-		this.sprite.body.x += SCREEN_WIDTH - 16;
+		if ( this.keys.i.justDown )
+			this.sprite.body.y -= SCREEN_HEIGHT - 16;
+		if ( this.keys.k.justDown )
+			this.sprite.body.y += SCREEN_HEIGHT - 16;
+		if ( this.keys.j.justDown )
+			this.sprite.body.x -= SCREEN_WIDTH - 16;
+		if ( this.keys.l.justDown )
+			this.sprite.body.x += SCREEN_WIDTH - 16;
+	}
 
 	p.setMagnitude( this.speed );
 	this.sprite.body.velocity.x += ( p.x - this.sprite.body.velocity.x ) / 3;
 	this.sprite.body.velocity.y += ( p.y - this.sprite.body.velocity.y ) / 3;
+	this.sword.body.velocity.copyFrom( this.sprite.body.velocity );
 
 	if ( p.getMagnitude() > 0 )
 	{

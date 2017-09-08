@@ -29,10 +29,17 @@ DungeonGame.Preload.prototype = {
 		//this.load.audio('Ambient Jungle', 'https://archive.org/download/OldRunescapeSoundtrack/Ambient Jungle.mp3' )
 		//this.load.audio('Anywhere', 'https://archive.org/download/OldRunescapeSoundtrack/Anywhere.mp3' )
 
+		this.load.bitmapFont( 'Adventurer', 'assets/fonts/Adventurer/font.png', 'assets/fonts/Adventurer/font.fnt' ); // 16
+		this.load.bitmapFont( 'Pixelade', 'assets/fonts/Pixelade/font.png', 'assets/fonts/Pixelade/font.fnt' ); // 13
+		this.load.bitmapFont( 'PixeladeFancy', 'assets/fonts/Pixelade/font_fancy.png', 'assets/fonts/Pixelade/font_fancy.fnt' ); // 13
+		this.load.bitmapFont( 'Love', 'assets/fonts/Love/font.png', 'assets/fonts/Love/font.fnt' ); // 8
+		this.load.bitmapFont( 'Fraktur', 'assets/fonts/Fraktur/font.png', 'assets/fonts/Fraktur/font.fnt' ); // 16
+
 		this.load.spritesheet( 'dungeon', 'assets/sprites/dungeon.png', 16, 16 );
 		this.load.spritesheet( 'player', 'assets/sprites/player.png', 16, 16 );
 		this.load.spritesheet( 'enemy', 'assets/sprites/enemy.png', 16, 16 );
 		this.load.spritesheet( 'items', 'assets/sprites/items.png', 16, 16 );
+		this.load.spritesheet( 'sword', 'assets/sprites/sword.png', 48, 48 );
 
 		this.load.spritesheet( 'map', 'assets/rooms/map.png', ROOM_WIDTH, ROOM_HEIGHT );
 		this.load.spritesheet( 'overworld', 'assets/rooms/overworld.png', ROOM_WIDTH, ROOM_HEIGHT );
@@ -65,7 +72,7 @@ DungeonGame.Preload.prototype = {
 
 	},
 	create: function() {
-		this.state.start( 'Game' );
+		this.state.start( 'MainMenu' );
 	},
 	//fileComplete: function (progress, cacheKey, success, totalLoaded, totalFiles) {
 	//	this.progress.text = progress+"%";

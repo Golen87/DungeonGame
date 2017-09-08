@@ -8,6 +8,7 @@ DungeonGame.game = new Phaser.Game( SCREEN_WIDTH, SCREEN_HEIGHT, Phaser.CANVAS, 
 
 DungeonGame.game.state.add( 'Boot', DungeonGame.Boot );
 DungeonGame.game.state.add( 'Preload', DungeonGame.Preload );
+DungeonGame.game.state.add( 'MainMenu', DungeonGame.MainMenu );
 DungeonGame.game.state.add( 'Game', DungeonGame.Game );
 
 DungeonGame.game.state.start( 'Boot' );
