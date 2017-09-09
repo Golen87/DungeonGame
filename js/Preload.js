@@ -47,12 +47,15 @@ DungeonGame.Preload.prototype = {
 
 		this.load.audio( 'footsteps', 'assets/sounds/footsteps.ogg' );
 		this.load.audio( 'eating', 'assets/sounds/eating.ogg' );
-		this.load.audio( 'rat', 'assets/sounds/rat.ogg' );
-		this.load.audio( 'mouse', 'assets/sounds/mouse.ogg' );
-		this.load.audio( 'rhino', 'assets/sounds/rhino.ogg' );
-		this.load.audio( 'spider', 'assets/sounds/spider.ogg' );
-		this.load.audio( 'slime', 'assets/sounds/slime.ogg' );
-		this.load.audio( 'creature', 'assets/sounds/creature.ogg' );
+		this.load.audio( 'swing', 'assets/sounds/swing.ogg' );
+		this.load.audio( 'chop', 'assets/sounds/chop.ogg' );
+
+		this.load.audio( 'rat', 'assets/sounds/monsters/rat.ogg' );
+		this.load.audio( 'mouse', 'assets/sounds/monsters/mouse.ogg' );
+		this.load.audio( 'rhino', 'assets/sounds/monsters/rhino.ogg' );
+		this.load.audio( 'spider', 'assets/sounds/monsters/spider.ogg' );
+		this.load.audio( 'slime', 'assets/sounds/monsters/slime.ogg' );
+		this.load.audio( 'creature', 'assets/sounds/monsters/creature.ogg' );
 
 
 		// Loading percentage text

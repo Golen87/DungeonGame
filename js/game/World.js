@@ -102,6 +102,7 @@ World.prototype.update = function ()
 	for ( var i = 0; i < this.enemies.length; i++ )
 	{
 		DungeonGame.game.physics.arcade.collide( this.enemies[i].sprite, this.getCurrentRoom().physics );
+		DungeonGame.game.physics.arcade.overlap( this.Player.sword, this.enemies[i].sprite, this.enemies[i].damage, null, this.enemies[i] );
 		this.enemies[i].update();
 	}
 

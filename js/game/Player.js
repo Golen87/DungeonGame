@@ -13,13 +13,15 @@ Player.prototype.create = function ( x, y, group )
 	this.sprite = group.create( x, y, 'player', 0 );
 	DungeonGame.game.physics.arcade.enable( this.sprite, Phaser.Physics.ARCADE );
 	this.sprite.anchor.set( 0.5 );
-	this.sprite.body.setSize(10, 8, 3, 5);
+	this.sprite.body.setSize( 10, 8, 3, 5 );
 	//this.sprite.body.setCircle( 6, 2, 4 );
 
 	this.sword = group.create( x, y+2, 'sword', 0 );
 	DungeonGame.game.physics.arcade.enable( this.sword, Phaser.Physics.ARCADE );
 	this.sword.anchor.set( 0.5 );
 	this.sword.exists = false;
+	this.sword.body.setSize( 16, 28, 5, 10 );
+	this.sword.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
 
 	//this.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
 
@@ -67,8 +69,9 @@ Player.prototype.setupAnimation = function ()
 	this.direction = 'down';
 	this.sprite.animations.play( 'idle_down' );
 
-	this.sword.animations.add( 'attack', [1,2,3], 30, false );
-	this.sword.animations.currentAnim.onComplete.add(function () {	this.sword.kill();}, this);
+	this.sword.animations.add( 'attack', [1,1,1,2,3], 60, false );
+	//this.sword.animations.currentAnim.onComplete.add(function () {	this.sword.kill();}, this);
+	this.sword.animations.currentAnim.killOnComplete = true;
 
 	//this.damageAnimation = false;
 	//PhaserGame.prototype.cloudBurst(this);
@@ -81,73 +84,18 @@ Player.prototype.setupAnimation = function ()
 	this.footsteps.addMarker( '4', 1.2, 0.3, 0.05 );
 	this.stepCooldown = 0;
 
+	this.swing = DungeonGame.game.add.audio( 'swing' );
+	this.swing.addMarker( '1', 0.0, 0.4, 0.2 );
+	this.swing.addMarker( '2', 0.5, 0.4, 0.2 );
+	this.swing.addMarker( '3', 1.0, 0.4, 0.2 );
+	this.swing.addMarker( '4', 1.5, 0.4, 0.2 );
+
 	var vol = 0.4;
 
 	this.eating = DungeonGame.game.add.audio( 'eating' );
 	this.eating.addMarker( '1', 0.0, 0.95, vol );
 	this.eating.addMarker( '2', 1.0, 0.95, vol );
 	this.eating.addMarker( '3', 2.0, 0.95, vol );
-
-	this.rat = DungeonGame.game.add.audio( 'rat' );
-	this.rat.addMarker( 'cry_1', 0.0, 0.5, vol );
-	this.rat.addMarker( 'cry_2', 0.6, 0.5, vol );
-	this.rat.addMarker( 'cry_3', 1.2, 0.5, vol );
-	this.rat.addMarker( 'hurt_1', 1.8, 0.35, vol );
-	this.rat.addMarker( 'hurt_2', 2.25, 0.35, vol );
-	this.rat.addMarker( 'hurt_3', 2.7, 0.35, vol );
-	this.rat.addMarker( 'death', 3.15, 0.55, vol );
-
-	this.mouse = DungeonGame.game.add.audio( 'mouse' );
-	this.mouse.addMarker( 'cry_1', 0.0, 0.2, vol );
-	this.mouse.addMarker( 'cry_2', 0.3, 0.2, vol );
-	this.mouse.addMarker( 'cry_3', 0.6, 0.2, vol );
-	this.mouse.addMarker( 'hurt_1', 0.9, 0.4, vol );
-	this.mouse.addMarker( 'hurt_2', 1.4, 0.4, vol );
-	this.mouse.addMarker( 'hurt_3', 1.9, 0.4, vol );
-	this.mouse.addMarker( 'death', 2.4, 0.3, vol );
-
-	this.rhino = DungeonGame.game.add.audio( 'rhino' );
-	this.rhino.addMarker( 'cry_1', 0.0, 1.1, vol );
-	this.rhino.addMarker( 'cry_2', 1.2, 1.1, vol );
-	this.rhino.addMarker( 'cry_3', 2.4, 1.1, vol );
-	this.rhino.addMarker( 'cry_4', 3.6, 1.3, vol );
-	this.rhino.addMarker( 'hurt_1', 5.0, 0.6, vol );
-	this.rhino.addMarker( 'hurt_2', 5.7, 0.5, vol );
-	this.rhino.addMarker( 'hurt_3', 6.3, 0.7, vol );
-	this.rhino.addMarker( 'hurt_4', 7.1, 0.6, vol );
-	this.rhino.addMarker( 'death', 7.8, 0.9, vol );
-
-	this.spider = DungeonGame.game.add.audio( 'spider' );
-	this.spider.addMarker( 'cry_1', 0.0, 0.9, vol );
-	this.spider.addMarker( 'cry_2', 1.0, 0.9, vol );
-	this.spider.addMarker( 'cry_3', 2.0, 0.9, vol );
-	this.spider.addMarker( 'cry_4', 3.0, 0.9, vol );
-	this.spider.addMarker( 'hurt_1', 4.0, 0.7, vol );
-	this.spider.addMarker( 'hurt_2', 4.8, 0.7, vol );
-	this.spider.addMarker( 'hurt_3', 5.6, 0.7, vol );
-	this.spider.addMarker( 'death_1', 6.4, 0.8, vol );
-	this.spider.addMarker( 'death_2', 7.3, 0.8, vol );
-
-	this.slime = DungeonGame.game.add.audio( 'slime' );
-	this.slime.addMarker( 'cry_1', 0.0, 1.2, vol );
-	this.slime.addMarker( 'cry_2', 1.3, 1.2, vol );
-	this.slime.addMarker( 'cry_3', 2.6, 1.2, vol );
-	this.slime.addMarker( 'hurt_1', 3.9, 1.2, vol );
-	this.slime.addMarker( 'hurt_2', 5.2, 1.2, vol );
-	this.slime.addMarker( 'hurt_3', 6.5, 1.2, vol );
-	this.slime.addMarker( 'death', 7.8, 1.2, vol );
-
-
-	this.creature = DungeonGame.game.add.audio( 'creature' );
-	this.creature.addMarker( 'cry_1', 0.0, 1.6, vol );
-	this.creature.addMarker( 'cry_2', 1.7, 1.3, vol );
-	this.creature.addMarker( 'cry_3', 3.1, 1.3, vol );
-	this.creature.addMarker( 'cry_4', 4.5, 1.7, vol );
-	this.creature.addMarker( 'hurt_1', 6.3, 1.4, vol );
-	this.creature.addMarker( 'hurt_2', 7.8, 1.4, vol );
-	this.creature.addMarker( 'hurt_3', 9.3, 1.4, vol );
-	this.creature.addMarker( 'death_1', 10.8, 1.1, vol );
-	this.creature.addMarker( 'death_2', 12.0, 1.3, vol );
 };
 
 Player.prototype.setAnimation = function ( newState, newDirection )
@@ -175,15 +123,41 @@ Player.prototype.update = function ()
 			this.sprite.body.center.y + this.sprite.body.velocity.y/60
 		);
 		this.sword.animations.play( 'attack' );
-		//var s = ['cry_1', 'cry_2', 'cry_3', 'hurt_1', 'hurt_2', 'hurt_3', 'death'].choice()
-		//this.rat.play( s );
+
+		this.sword.scale.y *= -1;
+		if ( this.direction == 'right' )
+		{
+			this.sword.angle = 0;
+			this.sword.body.setSize( 16, 28 );
+			this.sword.body.offset.set( 28, 10 );
+		}
+		else if ( this.direction == 'down' )
+		{
+			this.sword.angle = 90;
+			this.sword.body.setSize( 28, 16 );
+			this.sword.body.offset.set( 10, this.sword.scale.y == 1 ? 28 : 4 );
+		}
+		else if ( this.direction == 'left' )
+		{
+			this.sword.angle = 180;
+			this.sword.body.setSize( 16, 28 );
+			this.sword.body.offset.set( 5, 10 );
+		}
+		else if ( this.direction == 'up' )
+		{
+			this.sword.angle = 270;
+			this.sword.body.setSize( 28, 16 );
+			this.sword.body.offset.set( 10, this.sword.scale.y == 1 ? 5 : 27 );
+		}
+
+		var s = ['1', '2', '3', '4'].choice()
+		this.swing.play( s );
 	}
 	if ( this.keys.space.justUp )
 	{
 		//this.sword.kill();
-		//var s = ['cry_1', 'cry_2', 'cry_3', 'hurt_1', 'hurt_2', 'hurt_3', 'death'].choice()
-		//this.rat.play( s );
 	}
+	//this.sword.alpha = 1 - this.sword.animations.currentFrame.index / 5;
 
 	var p = new Phaser.Point( 0, 0 );
 
@@ -247,5 +221,6 @@ Player.prototype.render = function ()
 	if ( DungeonGame.debug )
 	{
 		DungeonGame.game.debug.body( this.sprite );
+		DungeonGame.game.debug.body( this.sword );
 	}
 };
