@@ -41,6 +41,9 @@ DungeonGame.Preload.prototype = {
 		this.load.spritesheet( 'items', 'assets/sprites/items.png', 16, 16 );
 		this.load.spritesheet( 'sword', 'assets/sprites/sword.png', 48, 48 );
 
+		this.load.spritesheet( 'smoke', 'assets/sprites/particles/smoke.png', 9, 9 );
+		this.load.spritesheet( 'sparkle', 'assets/sprites/particles/sparkle.png', 9, 9 );
+
 		this.load.spritesheet( 'map', 'assets/rooms/map.png', ROOM_WIDTH, ROOM_HEIGHT );
 		this.load.spritesheet( 'overworld', 'assets/rooms/overworld.png', ROOM_WIDTH, ROOM_HEIGHT );
 

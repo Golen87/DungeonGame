@@ -183,7 +183,7 @@ World.prototype.render = function ()
 
 World.prototype.collision = function ( player, item )
 {
-	console.log( player.body.position, item.body.position );
+	//console.log( player.body.position, item.body.position );
 };
 
 World.prototype.getCurrentRoom = function ()

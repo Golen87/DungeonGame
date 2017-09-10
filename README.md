@@ -11,7 +11,7 @@ To run locally, go the directory with html in it and run a python server
 Then, point your browser to [localhost:8000](http://localhost:8000)
 
 
-## Brainstorm
+## Todo
 
 Idea
 > A simple zelda game, limit it to:
@@ -19,27 +19,14 @@ Idea
 >> 
 >> Few monsters, and a "boss"
 >> 
->> One attack, stab
+>> One attack, sword
 > Possibly add Inventory management (see Inventory)
 > 
 > Possibly add Fire element (see Fire)
 
-Controls
-> Keyboard only, no mouse, Zelda esque?
->> WASD
->> 
->> Space to use/attack
-> See Inventory
-
 Minimum viable product
-> Ability to move a character around
-> At least two rooms, "progression", goal
-> 
-> Basic sword
->> Attack in 4 directions
-> At least 1 monster
->> Kill or game over
-> GUI displaying health only
+> Kill or game over
+> GUI displaying health
 
 Design goals
 > Teach player how to play without any text
@@ -103,12 +90,6 @@ Fire
 > Light cooking pot, cook food, ahahah. Lets open this can later.
 
 Room design
-> Tile/grid based, easy to create
-> 
-> Text based level editor
->> Possible to do maps in csv
->> 
->> Problem: How to connect two rooms?
 > Puzzle style dungeon, Zelda
 >> Kill all enemies to open door
 >> 
@@ -121,13 +102,6 @@ Room design
 >>> 
 >>> Light stationary torches
 >> Look at Zelda gameplay
-> Size and camera
->> Room size oughta fit inside the screen
->> 
->> Possible for room to be larger in ONE axis, creating pathways, scrolling camera
->> 
->> Transition between rooms
->>> Sliding animation would be amazing. Think about that while implementing anyway
 
 Enemies
 > Slimes, slimes, oh god, I love slimes
@@ -151,8 +125,6 @@ Smooth toggle between cinematic mode and gameplay mode
 > 
 > Fade in black bars, fade out gui
 
-> Sparkles! Like 5 pixels, animations thereof, nyancat?
-
 > Light and butterflies around sword in the stone. Player may be able to kill
 > butterflies and see the light go out and the others flee, an indication that
 > killing might not be the solution. Going through the game without killing
@@ -162,3 +134,14 @@ Smooth toggle between cinematic mode and gameplay mode
 >> Hammer weapon to break certain blocks
 >>
 >> Also certain type of enemies, or at least one
+>>
+>> "Metroidvania" layout?
+
+> NEGATIVE SPACE
+
+> Make enemies look angry?
+
+> Traps?
+>> Spikes from ground
+>>
+>> Arrows from holes

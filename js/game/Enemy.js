@@ -6,7 +6,8 @@ function Enemy()
 
 Enemy.prototype.create = function ( x, y, group )
 {
-	this.speed = 50;
+	this.health = 3;
+	this.speed = 32;
 
 	this.sprite = group.create( x, y, 'enemy', 0 );
 	DungeonGame.game.physics.arcade.enable( this.sprite, Phaser.Physics.ARCADE );
@@ -16,9 +17,9 @@ Enemy.prototype.create = function ( x, y, group )
 
 	this.setupAudio();
 	this.setupAnimation();
+	this.setupParticles();
 
 	this.aiState = 'idle';
-	this.goalPos = new Phaser.Point( this.sprite.body.position.x, this.sprite.body.position.y );
 	this.goalPos = new Phaser.Point( this.sprite.body.position.x, this.sprite.body.position.y );
 
 	this.damageTimer = 0;
@@ -144,6 +145,19 @@ Enemy.prototype.setAnimation = function ( newState, newDirection )
 	}
 };
 
+Enemy.prototype.setupParticles = function ()
+{
+	//this.emitter = DungeonGame.game.add.emitter( 0, 0, 10 );
+	//this.emitter.makeParticles( 'smoke' );
+	//this.emitter.start( false, 1000, 250 );
+	//this.emitter.setRotation(0, 0);
+	//this.emitter.setAlpha(1.0, 1.0, 3000);
+	//this.emitter.setScale(1.0, 1, 1.0, 1, 6000, Phaser.Easing.Quintic.Out);
+	//this.emitter.gravity = -200;
+	//this.sprite.addChild( this.emitter );
+	// start(explode, lifespan, frequency, quantity, forceQuantity)
+};
+
 Enemy.prototype.update = function ()
 {
 	if ( this.state == 'hurt' )
@@ -152,19 +166,27 @@ Enemy.prototype.update = function ()
 	else
 	{
 
-	if ( this.aiState == 'idle' && Math.random() < 0.00 )
+	if ( this.aiState == 'walk' && this.sprite.body.velocity.getMagnitude() == 0 )
+		this.aiState = 'idle';
+
+	if ( this.aiState == 'idle' && Math.random() < 0.01 )
 	{
 		this.aiState = 'walk';
 		var movement = [[1,0], [0,1], [-1,0], [0,-1]].choice()
-		this.goalPos.x += 16 * movement[0];
-		this.goalPos.y += 16 * movement[1];
-		this.sprite.body.velocity.x = movement[0] * this.speed;
-		this.sprite.body.velocity.y = movement[1] * this.speed;
+		this.goalPos.x = this.sprite.body.position.x + 16 * movement[0];
+		this.goalPos.y = this.sprite.body.position.y + 16 * movement[1];
 	}
-	if ( this.aiState == 'walk' && this.sprite.body.position == this.goalPos )
+	if ( this.aiState == 'walk' )
 	{
-		this.aiState = 'idle';
-		this.sprite.body.velocity = 0;
+		this.sprite.body.velocity.x = this.speed * ( this.goalPos.x - this.sprite.body.position.x ).clamp(-1,1);
+		this.sprite.body.velocity.y = this.speed * ( this.goalPos.y - this.sprite.body.position.y ).clamp(-1,1);
+
+		if ( this.aiState == 'walk' && this.sprite.body.position.distance( this.goalPos ) < 0.1 )
+		{
+			this.aiState = 'idle';
+			this.sprite.body.position.copyFrom( this.goalPos );
+			this.sprite.body.velocity.setTo( 0, 0 );
+		}
 	}
 
 	var v = this.sprite.body.velocity;
@@ -200,16 +222,16 @@ Enemy.prototype.damage = function ()
 {
 	if ( this.damageTimer > 0 )
 	{
-		this.setAnimation( 'hurt', this.direction );
-		var s = ['hurt_1', 'hurt_2', 'hurt_3'].choice()
-		// rat, mouse, rhino, spider, slime, creature
-		this.rat.play( s );
+		this.health -= 1;
 
-		var s = ['1', '2', '3'].choice()
-		this.chop.play( s );
-
-		DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.5, this.damageDone, this );
-		this.damageStep();
+		if ( this.health <= 0 )
+		{
+			this.defeat();
+		}
+		else
+		{
+			this.hurt( 1 );
+		}
 	}
 	if ( this.state != 'hurt' )
 	{
@@ -233,4 +255,50 @@ Enemy.prototype.damageStep = function ()
 Enemy.prototype.damageDone = function ()
 {
 	this.setAnimation( 'idle', this.direction );
+};
+
+Enemy.prototype.hurt = function ()
+{
+	this.setAnimation( 'hurt', this.direction );
+	var s = ['hurt_1', 'hurt_2', 'hurt_3'].choice()
+	// rat, mouse, rhino, spider, slime, creature
+	this.rat.play( s );
+
+	// Move please
+	var s = ['1', '2', '3'].choice()
+	this.chop.play( s );
+
+	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.5, this.damageDone, this );
+	this.damageStep();
+};
+
+Enemy.prototype.defeat = function ()
+{
+	var s = ['death'].choice()
+	this.rat.play( s );
+
+	// Move please
+	var s = ['1', '2', '3'].choice()
+	this.chop.play( s );
+
+	this.createParticle();
+
+	this.sprite.kill(); // Somehow reach into enemies list and remove, perhaps queueDestruction
+};
+
+Enemy.prototype.createParticle = function ()
+{
+	var emitter = DungeonGame.game.add.emitter( this.sprite.x, this.sprite.y, 200 );
+	emitter.width = 8;
+	emitter.height = 8;
+	emitter.setXSpeed( -20, 20 );
+	emitter.setYSpeed( -20, 20 );
+	emitter.gravity = -32;
+	emitter.maxRotation = 0;
+	emitter.minRotation = 0;
+	emitter.setAlpha( 0.8, 0.0, 10000 )
+	emitter.particleClass = SmokeParticle;
+	emitter.makeParticles();
+	emitter.start( true, 0, null, 10 );
+	// start(explode, lifespan, frequency, quantity, forceQuantity)
 };

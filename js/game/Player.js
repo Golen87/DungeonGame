@@ -22,6 +22,7 @@ Player.prototype.create = function ( x, y, group )
 	this.sword.exists = false;
 	this.sword.body.setSize( 16, 28, 5, 10 );
 	this.sword.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
+	this.swordTimer = 0;
 
 	//this.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
 
@@ -123,31 +124,28 @@ Player.prototype.update = function ()
 			this.sprite.body.center.y + this.sprite.body.velocity.y/60
 		);
 		this.sword.animations.play( 'attack' );
+		this.swordTimer = 0;
 
 		this.sword.scale.y *= -1;
 		if ( this.direction == 'right' )
 		{
 			this.sword.angle = 0;
-			this.sword.body.setSize( 16, 28 );
-			this.sword.body.offset.set( 28, 10 );
+			this.sword.body.setSize( 16, 28, 28, 10 );
 		}
 		else if ( this.direction == 'down' )
 		{
 			this.sword.angle = 90;
-			this.sword.body.setSize( 28, 16 );
-			this.sword.body.offset.set( 10, this.sword.scale.y == 1 ? 28 : 4 );
+			this.sword.body.setSize( 28, 16, 10, this.sword.scale.y == 1 ? 28 : 4 );
 		}
 		else if ( this.direction == 'left' )
 		{
 			this.sword.angle = 180;
-			this.sword.body.setSize( 16, 28 );
-			this.sword.body.offset.set( 5, 10 );
+			this.sword.body.setSize( 16, 28, 5, 10 );
 		}
 		else if ( this.direction == 'up' )
 		{
 			this.sword.angle = 270;
-			this.sword.body.setSize( 28, 16 );
-			this.sword.body.offset.set( 10, this.sword.scale.y == 1 ? 5 : 27 );
+			this.sword.body.setSize( 28, 16, 10, this.sword.scale.y == 1 ? 5 : 27 );
 		}
 
 		var s = ['1', '2', '3', '4'].choice()
@@ -157,7 +155,9 @@ Player.prototype.update = function ()
 	{
 		//this.sword.kill();
 	}
-	//this.sword.alpha = 1 - this.sword.animations.currentFrame.index / 5;
+	this.sword.alpha = (0.75 - this.swordTimer / 10).clamp( 0, 1 );
+	//console.log(this.sword.animations.currentAnim.frame, this.sword.alpha);
+	this.swordTimer += 1;
 
 	var p = new Phaser.Point( 0, 0 );
 
