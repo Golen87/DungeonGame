@@ -4,7 +4,7 @@ var DungeonGame = DungeonGame || {};
 DungeonGame.Preload = function() {};
 
 DungeonGame.Preload.prototype = {
-	preload: function() {
+	preload: function () {
 		
 		this.game.stage.backgroundColor = '#111111';
 
@@ -74,13 +74,18 @@ DungeonGame.Preload.prototype = {
 		progressBg.anchor.setTo( 0, 0.5 );
 		progressFg.anchor.setTo( 0, 0.5 );
 		this.game.load.setPreloadSprite( progressFg );
-		//this.game.load.onFileComplete.add( this.fileComplete, this );
+		this.game.load.onFileComplete.add( this.fileComplete, this );
 
 	},
-	create: function() {
-		this.state.start( 'MainMenu' );
+	setup: function () {
+		DungeonGame.Audio = new AudioManager();
+		DungeonGame.Particle = new ParticleManager();
 	},
-	//fileComplete: function (progress, cacheKey, success, totalLoaded, totalFiles) {
-	//	this.progress.text = progress+"%";
-	//}
+	create: function () {
+		this.setup();
+
+		this.state.start( 'MainMenu' );
+		//this.state.start( 'Game' );
+	},
+	fileComplete: function ( progress, cacheKey, success, totalLoaded, totalFiles ) {}
 };

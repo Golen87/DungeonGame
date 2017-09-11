@@ -52,8 +52,8 @@ World.prototype.create = function ()
 		{
 			var enemy = new Enemy();
 			enemy.create(
-				this.currentArea[0] * SCREEN_WIDTH + 80 + 16*i - 8,
-				this.currentArea[1] * SCREEN_HEIGHT + 80 + 16*j - 8,
+				this.currentArea[0] * SCREEN_WIDTH + 64 + 32*i - 8,
+				this.currentArea[1] * SCREEN_HEIGHT + 64 + 32*j - 8,
 				this.actors
 			);
 			this.enemies.push( enemy );

@@ -21,10 +21,7 @@ Player.prototype.create = function ( x, y, group )
 	this.sword.anchor.set( 0.5 );
 	this.sword.exists = false;
 	this.sword.body.setSize( 16, 28, 5, 10 );
-	this.sword.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
 	this.swordTimer = 0;
-
-	//this.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
 
 	this.setupAnimation();
 
@@ -74,29 +71,7 @@ Player.prototype.setupAnimation = function ()
 	//this.sword.animations.currentAnim.onComplete.add(function () {	this.sword.kill();}, this);
 	this.sword.animations.currentAnim.killOnComplete = true;
 
-	//this.damageAnimation = false;
-	//PhaserGame.prototype.cloudBurst(this);
-
-	//addMarker(name, start, duration, volume, loop)
-	this.footsteps = DungeonGame.game.add.audio( 'footsteps' );
-	this.footsteps.addMarker( '1', 0.0, 0.3, 0.05 );
-	this.footsteps.addMarker( '2', 0.4, 0.3, 0.05 );
-	this.footsteps.addMarker( '3', 0.8, 0.3, 0.05 );
-	this.footsteps.addMarker( '4', 1.2, 0.3, 0.05 );
 	this.stepCooldown = 0;
-
-	this.swing = DungeonGame.game.add.audio( 'swing' );
-	this.swing.addMarker( '1', 0.0, 0.4, 0.2 );
-	this.swing.addMarker( '2', 0.5, 0.4, 0.2 );
-	this.swing.addMarker( '3', 1.0, 0.4, 0.2 );
-	this.swing.addMarker( '4', 1.5, 0.4, 0.2 );
-
-	var vol = 0.4;
-
-	this.eating = DungeonGame.game.add.audio( 'eating' );
-	this.eating.addMarker( '1', 0.0, 0.95, vol );
-	this.eating.addMarker( '2', 1.0, 0.95, vol );
-	this.eating.addMarker( '3', 2.0, 0.95, vol );
 };
 
 Player.prototype.setAnimation = function ( newState, newDirection )
@@ -148,8 +123,7 @@ Player.prototype.update = function ()
 			this.sword.body.setSize( 28, 16, 10, this.sword.scale.y == 1 ? 5 : 27 );
 		}
 
-		var s = ['1', '2', '3', '4'].choice()
-		this.swing.play( s );
+		DungeonGame.Audio.play( 'swing' );
 	}
 	if ( this.keys.space.justUp )
 	{
@@ -166,8 +140,7 @@ Player.prototype.update = function ()
 
 	if ( this.state == 'walk' && ( frame == 2 || frame == 4 ) && this.stepCooldown <= 0 )
 	{
-		var s = ['1', '2', '3', '4'].choice()
-		this.footsteps.play( s );
+		DungeonGame.Audio.play( 'footsteps' );
 		this.stepCooldown = 10;
 	}
 

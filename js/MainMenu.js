@@ -42,6 +42,9 @@ DungeonGame.MainMenu.prototype = {
 
 		var start = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.SPACEBAR );
 		start.onDown.add( this.startGame, this );
+
+		DungeonGame.Particle.createSmokeTrail( 64, 64 );
+		DungeonGame.Particle.createSmokeTrail( this.game.world.width-64, 64 );
 	},
 	update: function() {
 		//console.log("Update MainMenu");
