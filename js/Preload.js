@@ -23,12 +23,6 @@ DungeonGame.Preload.prototype = {
 
 		// Load game assets
 		
-		//this.load.audio('Adventure', 'https://archive.org/download/OldRunescapeSoundtrack/Adventure.mp3' )
-		//this.load.audio('Al Kharid', 'https://archive.org/download/OldRunescapeSoundtrack/Al Kharid.mp3' )
-		//this.load.audio('Alone', 'https://archive.org/download/OldRunescapeSoundtrack/Alone.mp3' )
-		//this.load.audio('Ambient Jungle', 'https://archive.org/download/OldRunescapeSoundtrack/Ambient Jungle.mp3' )
-		//this.load.audio('Anywhere', 'https://archive.org/download/OldRunescapeSoundtrack/Anywhere.mp3' )
-
 		this.load.bitmapFont( 'Adventurer', 'assets/fonts/Adventurer/font.png', 'assets/fonts/Adventurer/font.fnt' ); // 16
 		this.load.bitmapFont( 'Pixelade', 'assets/fonts/Pixelade/font.png', 'assets/fonts/Pixelade/font.fnt' ); // 13
 		this.load.bitmapFont( 'PixeladeFancy', 'assets/fonts/Pixelade/font_fancy.png', 'assets/fonts/Pixelade/font_fancy.fnt' ); // 13
@@ -40,6 +34,8 @@ DungeonGame.Preload.prototype = {
 		this.load.spritesheet( 'enemy', 'assets/sprites/enemy.png', 16, 16 );
 		this.load.spritesheet( 'items', 'assets/sprites/items.png', 16, 16 );
 		this.load.spritesheet( 'sword', 'assets/sprites/sword.png', 48, 48 );
+
+		this.load.image( 'menu', 'assets/sprites/menu.png' );
 
 		this.load.spritesheet( 'smoke', 'assets/sprites/particles/smoke.png', 9, 9 );
 		this.load.spritesheet( 'sparkle', 'assets/sprites/particles/sparkle.png', 9, 9 );
