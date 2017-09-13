@@ -16,12 +16,20 @@ Player.prototype.create = function ( x, y, group )
 	this.sprite.body.setSize( 10, 8, 3, 5 );
 	//this.sprite.body.setCircle( 6, 2, 4 );
 
-	this.sword = group.create( x, y+2, 'sword', 0 );
+	this.sword = group.create( x, y+2, 'items', randInt(0,15) );//randInt(0,7)
 	DungeonGame.game.physics.arcade.enable( this.sword, Phaser.Physics.ARCADE );
-	this.sword.anchor.set( 0.5 );
+	this.sword.anchor.set( 17/16, 17/16 );
+	this.sword.body.setSize( 0, 0, 0, 0 );
 	this.sword.exists = false;
-	this.sword.body.setSize( 16, 28, 5, 10 );
-	this.swordTimer = 0;
+	this.sword.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
+	this.sword.scale.x *= -1;
+
+	this.swing = group.create( x, y+2, 'sword', 0 );
+	DungeonGame.game.physics.arcade.enable( this.swing, Phaser.Physics.ARCADE );
+	this.swing.anchor.set( 0.5 );
+	this.swing.exists = false;
+	this.swing.body.setSize( 16, 28, 5, 10 );
+	this.swingTimer = 0;
 
 	this.setupAnimation();
 
@@ -47,7 +55,7 @@ Player.prototype.setupAnimation = function ()
 {
 	var len = 6;
 	var idle = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1];
-	var walk = [2, 3, 4, 5];
+	var walk = [3, 4, 5, 2];
 	this.sprite.animations.add( 'idle_right', idle, 8, true );
 	this.sprite.animations.add( 'walk_right', walk, 10, true );
 	idle = idle.map( n => n + len )
@@ -67,9 +75,12 @@ Player.prototype.setupAnimation = function ()
 	this.direction = 'down';
 	this.sprite.animations.play( 'idle_down' );
 
-	this.sword.animations.add( 'attack', [1,1,1,2,3], 60, false );
-	//this.sword.animations.currentAnim.onComplete.add(function () {	this.sword.kill();}, this);
-	this.sword.animations.currentAnim.killOnComplete = true;
+	this.swing.animations.add( 'attack', [1,1,1,2,3], 60, false );
+	this.swing.animations.currentAnim.onComplete.add(function () {
+		this.swing.kill();
+		this.sword.kill();
+	}, this);
+	//this.swing.animations.currentAnim.killOnComplete = true;
 
 	this.stepCooldown = 0;
 };
@@ -94,44 +105,50 @@ Player.prototype.update = function ()
 {
 	if ( this.keys.space.justDown )
 	{
+		this.swing.reset(
+			this.sprite.body.center.x + this.sprite.body.velocity.x/60,
+			this.sprite.body.center.y + this.sprite.body.velocity.y/60
+		);
 		this.sword.reset(
 			this.sprite.body.center.x + this.sprite.body.velocity.x/60,
 			this.sprite.body.center.y + this.sprite.body.velocity.y/60
 		);
-		this.sword.animations.play( 'attack' );
-		this.swordTimer = 0;
+		this.swing.animations.play( 'attack' );
+		this.swingTimer = 0;
 
-		this.sword.scale.y *= -1;
+		this.swing.scale.y *= -1;
+		this.sword.scale.y = -this.swing.scale.y;
 		if ( this.direction == 'right' )
 		{
-			this.sword.angle = 0;
-			this.sword.body.setSize( 16, 28, 28, 10 );
+			this.swing.angle = 0;
+			this.swing.body.setSize( 16, 28, 28, 10 );
 		}
 		else if ( this.direction == 'down' )
 		{
-			this.sword.angle = 90;
-			this.sword.body.setSize( 28, 16, 10, this.sword.scale.y == 1 ? 28 : 4 );
+			this.swing.angle = 90;
+			this.swing.body.setSize( 28, 16, 10, this.swing.scale.y == 1 ? 28 : 4 );
 		}
 		else if ( this.direction == 'left' )
 		{
-			this.sword.angle = 180;
-			this.sword.body.setSize( 16, 28, 5, 10 );
+			this.swing.angle = 180;
+			this.swing.body.setSize( 16, 28, 5, 10 );
 		}
 		else if ( this.direction == 'up' )
 		{
-			this.sword.angle = 270;
-			this.sword.body.setSize( 28, 16, 10, this.sword.scale.y == 1 ? 5 : 27 );
+			this.swing.angle = 270;
+			this.swing.body.setSize( 28, 16, 10, this.swing.scale.y == 1 ? 5 : 27 );
 		}
+		this.sword.angle = this.swing.scale.y == 1 ? this.swing.angle - 90 : this.swing.angle + 90;
 
 		DungeonGame.Audio.play( 'swing' );
 	}
 	if ( this.keys.space.justUp )
 	{
-		//this.sword.kill();
+		//this.swing.kill();
 	}
-	this.sword.alpha = (0.75 - this.swordTimer / 10).clamp( 0, 1 );
-	//console.log(this.sword.animations.currentAnim.frame, this.sword.alpha);
-	this.swordTimer += 1;
+	this.swing.alpha = (0.75 - this.swingTimer / 10).clamp( 0, 1 );
+	//console.log(this.swing.animations.currentAnim.frame, this.swing.alpha);
+	this.swingTimer += 1;
 
 	var p = new Phaser.Point( 0, 0 );
 
@@ -144,7 +161,7 @@ Player.prototype.update = function ()
 		this.stepCooldown = 10;
 	}
 
-	if ( !this.sword.exists )
+	if ( !this.swing.exists )
 	{
 		if ( this.keys.up.isDown || this.keys.w.isDown )
 			p.y -= 1;
@@ -168,6 +185,7 @@ Player.prototype.update = function ()
 	p.setMagnitude( this.speed );
 	this.sprite.body.velocity.x += ( p.x - this.sprite.body.velocity.x ) / 3;
 	this.sprite.body.velocity.y += ( p.y - this.sprite.body.velocity.y ) / 3;
+	this.swing.body.velocity.copyFrom( this.sprite.body.velocity );
 	this.sword.body.velocity.copyFrom( this.sprite.body.velocity );
 
 	if ( p.getMagnitude() > 0 )
@@ -194,6 +212,7 @@ Player.prototype.render = function ()
 	if ( DungeonGame.debug )
 	{
 		DungeonGame.game.debug.body( this.sprite );
+		DungeonGame.game.debug.body( this.swing );
 		DungeonGame.game.debug.body( this.sword );
 	}
 };

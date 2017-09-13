@@ -46,16 +46,16 @@ World.prototype.create = function ()
 		this.actors
 	);
 
-	for ( var i = 0; i < 2; i++ )
+	for ( var i = 0; i < 3; i++ )
 	{
-		for ( var j = 0; j < 2; j++ )
+		for ( var j = 0; j < 3; j++ )
 		{
 			var enemy = new Enemy();
-			enemy.create(
-				this.currentArea[0] * SCREEN_WIDTH + 64 + 32*i - 8,
-				this.currentArea[1] * SCREEN_HEIGHT + 64 + 32*j - 8,
-				this.actors
-			);
+			var x = this.currentArea[0] * SCREEN_WIDTH + 64 + 16*i - 8;
+			var y = this.currentArea[1] * SCREEN_HEIGHT + 64 + 16*j - 8;
+			//var x = randInt( 0,DungeonGame.game.cache.getImage( 'overworld' ).width * 16 );
+			//var y = randInt( 0,DungeonGame.game.cache.getImage( 'overworld' ).height * 16 );
+			enemy.create( x, y, this.actors );
 			this.enemies.push( enemy );
 		}
 	}
@@ -102,7 +102,7 @@ World.prototype.update = function ()
 	for ( var i = 0; i < this.enemies.length; i++ )
 	{
 		DungeonGame.game.physics.arcade.collide( this.enemies[i].sprite, this.getCurrentRoom().physics );
-		DungeonGame.game.physics.arcade.overlap( this.Player.sword, this.enemies[i].sprite, this.enemies[i].damage, null, this.enemies[i] );
+		DungeonGame.game.physics.arcade.overlap( this.Player.swing, this.enemies[i].sprite, this.enemies[i].damage, null, this.enemies[i] );
 		this.enemies[i].update();
 	}
 

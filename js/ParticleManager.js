@@ -6,7 +6,7 @@ function ParticleManager()
 
 ParticleManager.prototype.initSmokeBurst = function ()
 {
-	this.smokeBurst = DungeonGame.game.add.emitter( 0,0, 200 );
+	this.smokeBurst = DungeonGame.game.add.emitter( 0,0, 64 );
 	this.smokeBurst.particleClass = this.WhiteSmokeParticle;
 	this.smokeBurst.width = 8;
 	this.smokeBurst.height = 8;
@@ -22,8 +22,8 @@ ParticleManager.prototype.initSmokeBurst = function ()
 
 ParticleManager.prototype.createSmokeBurst = function ( x, y )
 {
-	//if ( this.smokeBurst == null || this.smokeBurst.game == null )
-	this.initSmokeBurst();
+	if ( this.smokeBurst == null || this.smokeBurst.game == null )
+		this.initSmokeBurst();
 
 	this.smokeBurst.x = x;
 	this.smokeBurst.y = y;
@@ -33,7 +33,7 @@ ParticleManager.prototype.createSmokeBurst = function ( x, y )
 
 ParticleManager.prototype.initSmokeTrail = function ()
 {
-	this.smokeTrail = DungeonGame.game.add.emitter( 0, 0, 100 );
+	this.smokeTrail = DungeonGame.game.add.emitter( 0, 0, 32 );
 	this.smokeTrail.particleClass = this.SmokeParticle;
 	this.smokeTrail.setAlpha( 0.8, 0.0, 10000 )
 	this.smokeTrail.setScale( 1.0, 1, 1.0, 1, 6000, Phaser.Easing.Quintic.Out );

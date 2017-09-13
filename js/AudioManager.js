@@ -62,6 +62,7 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].sound.addMarker( 'hurt_2', 2.25, 0.35, vol );
 	this.sounds[name].sound.addMarker( 'hurt_3', 2.7, 0.35, vol );
 	this.sounds[name].sound.addMarker( 'death_1', 3.15, 0.55, vol );
+	this.sounds[name].sound.allowMultiple = true;
 	this.sounds[name].markers = [];
 	this.sounds[name].markers['cry'] = ['cry_1', 'cry_2', 'cry_3']
 	this.sounds[name].markers['hurt'] = ['hurt_1', 'hurt_2', 'hurt_3']

@@ -35,10 +35,17 @@ DungeonGame.Game.prototype =
 		this.cinemaValue = 0;
 		this.cinemaOn = false;
 
-		this.healthGui = DungeonGame.game.add.sprite( 0, 0, 'menu' );
+		this.healthGui = DungeonGame.game.add.sprite( 0, 0, 'healthHud' );
 		this.healthGui.anchor.setTo( 1.0, 1.0 );
-		this.inventoryGui = DungeonGame.game.add.sprite( 0, 0, 'menu' );
+		this.inventoryGui = DungeonGame.game.add.sprite( 0, 0, 'itemHud' );
 		this.inventoryGui.anchor.setTo( 0.0, 1.0 );
+
+		this.itemSlot1 = DungeonGame.game.add.sprite( 0, 0, 'items', randInt(0,8*9-1) );
+		this.itemSlot1.anchor.setTo( 0.0, 1.0 );
+		this.itemSlot2 = DungeonGame.game.add.sprite( 0, 0, 'items', randInt(0,8*9-1) );
+		this.itemSlot2.anchor.setTo( 0.0, 1.0 );
+		this.itemSlot3 = DungeonGame.game.add.sprite( 0, 0, 'items', randInt(0,8*9-1) );
+		this.itemSlot3.anchor.setTo( 0.0, 1.0 );
 	},
 
 	update: function()
@@ -88,13 +95,23 @@ DungeonGame.Game.prototype =
 			this.cinemaValue += ( 0 - this.cinemaValue ) / 10;
 		}
 
-		this.healthGui.x = this.game.camera.view.x + SCREEN_WIDTH - 2;
-		this.healthGui.y = this.game.camera.view.y + SCREEN_HEIGHT - 2 + 16 * this.cinemaValue;
+		this.healthGui.x = this.game.camera.view.x + SCREEN_WIDTH - 1;
+		this.healthGui.y = this.game.camera.view.y + SCREEN_HEIGHT - 1 + 16 * this.cinemaValue;
 		this.healthGui.alpha = Math.min( 1, 2 - this.cinemaValue );
 
-		this.inventoryGui.x = this.game.camera.view.x + 2;
-		this.inventoryGui.y = this.game.camera.view.y + SCREEN_HEIGHT - 2 + 16 * this.cinemaValue;
+		this.inventoryGui.x = this.game.camera.view.x + 1;
+		this.inventoryGui.y = this.game.camera.view.y + SCREEN_HEIGHT - 1 + 16 * this.cinemaValue;
 		this.inventoryGui.alpha = Math.min( 1, 2 - this.cinemaValue );
+
+		this.itemSlot1.x = this.game.camera.view.x + 13;
+		this.itemSlot1.y = this.game.camera.view.y + SCREEN_HEIGHT - 5 + 16 * this.cinemaValue;
+		this.itemSlot1.alpha = Math.min( 1, 2 - this.cinemaValue );
+		this.itemSlot2.x = this.game.camera.view.x + 13 + 25;
+		this.itemSlot2.y = this.game.camera.view.y + SCREEN_HEIGHT - 5 + 16 * this.cinemaValue;
+		this.itemSlot2.alpha = Math.min( 1, 2 - this.cinemaValue );
+		this.itemSlot3.x = this.game.camera.view.x + 13 + 50;
+		this.itemSlot3.y = this.game.camera.view.y + SCREEN_HEIGHT - 5 + 16 * this.cinemaValue;
+		this.itemSlot3.alpha = Math.min( 1, 2 - this.cinemaValue );
 
 		this.cinematicTop.x = this.game.camera.view.x;
 		this.cinematicTop.y = this.game.camera.view.y - 16 * ( 2 - this.cinemaValue );

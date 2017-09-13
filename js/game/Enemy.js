@@ -137,6 +137,7 @@ Enemy.prototype.damage = function ()
 {
 	if ( this.damageTimer > 0 )
 	{
+		this.damageTimer = 0;
 		this.health -= 1;
 
 		// Move please
@@ -153,7 +154,7 @@ Enemy.prototype.damage = function ()
 	}
 	if ( this.state != 'hurt' )
 	{
-		this.damageTimer = 2;
+		this.damageTimer = 4;
 	}
 };
 
