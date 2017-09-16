@@ -103,6 +103,9 @@ World.prototype.update = function ()
 	{
 		DungeonGame.game.physics.arcade.collide( this.enemies[i].sprite, this.getCurrentRoom().physics );
 		DungeonGame.game.physics.arcade.overlap( this.Player.swing, this.enemies[i].sprite, this.enemies[i].damage, null, this.enemies[i] );
+		DungeonGame.game.physics.arcade.overlap( this.Player.sprite, this.enemies[i].sprite, function(){
+			this.Player.damage( this.enemies[i].getAttackPower(), this.enemies[i].sprite.body.position );
+		}, null, this );
 		this.enemies[i].update();
 	}
 
@@ -132,7 +135,7 @@ World.prototype.update = function ()
 	DungeonGame.game.camera.x = Math.round( this.camPos.x );
 	DungeonGame.game.camera.y = Math.round( this.camPos.y );
 
-	if ( this.Player.gridPos != this.Player.prevGridPos )
+	/*if ( this.Player.gridPos != this.Player.prevGridPos )
 	{
 		for ( var i = 0; i < this.background.children.length; i++ )
 			this.applyLighting( this.background.children[i], false );
@@ -142,7 +145,7 @@ World.prototype.update = function ()
 			this.applyLighting( this.actors.children[i], true );
 		for ( var i = 0; i < this.foreground.children.length; i++ )
 			this.applyLighting( this.foreground.children[i], false );
-	}
+	}*/
 };
 
 World.prototype.applyLighting = function ( sprite, objects )

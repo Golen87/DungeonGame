@@ -150,7 +150,7 @@ Enemy.prototype.damage = function ()
 		}
 		else
 		{
-			this.hurt( 1 );
+			this.hurt();
 		}
 	}
 	if ( this.state != 'hurt' )
@@ -193,4 +193,9 @@ Enemy.prototype.defeat = function ()
 	DungeonGame.Particle.createSmokeBurst( this.sprite.x, this.sprite.y );
 
 	this.sprite.kill(); // Somehow reach into enemies list and remove, perhaps queueDestruction
+};
+
+Enemy.prototype.getAttackPower = function ()
+{
+	return 35;
 };

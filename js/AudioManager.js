@@ -49,6 +49,16 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].sound.addMarker( '3', 2.0, 0.95, vol );
 	this.sounds[name].markers = ['1', '2', '3'];
 
+	var name = 'death';
+	var vol = 0.3;
+	this.sounds[name] = {};
+	this.sounds[name].sound = DungeonGame.game.add.audio( name );
+
+	var name = 'hurt';
+	var vol = 0.4;
+	this.sounds[name] = {};
+	this.sounds[name].sound = DungeonGame.game.add.audio( name );
+
 
 	var vol = 0.4;
 
@@ -161,13 +171,20 @@ AudioManager.prototype.getMarkers = function ( name, marker=null )
 AudioManager.prototype.play = function ( name, marker=null )
 {
 	var markers = this.getMarkers( name, marker );
-	do
+	if ( markers )
 	{
-		var index = markers.choice();
-	}
-	while (
-		this.sounds[name].lastPlayed == index && markers.length > 1 );
+		do
+		{
+			var index = markers.choice();
+		}
+		while (
+			this.sounds[name].lastPlayed == index && markers.length > 1 );
 
-	this.sounds[name].lastPlayed = index;
-	this.sounds[name].sound.play( index );
+		this.sounds[name].lastPlayed = index;
+		this.sounds[name].sound.play( index );
+	}
+	else
+	{
+		this.sounds[name].sound.play();
+	}
 };

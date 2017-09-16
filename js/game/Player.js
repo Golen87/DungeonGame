@@ -6,6 +6,7 @@ function Player ()
 
 Player.prototype.create = function ( x, y, group )
 {
+	this.health = 100;
 	this.speed = 80;
 
 	this.group = DungeonGame.game.add.group();
@@ -30,6 +31,10 @@ Player.prototype.create = function ( x, y, group )
 	this.swing.exists = false;
 	this.swing.body.setSize( 16, 28, 5, 10 );
 	this.swingTimer = 0;
+
+	this.damageState = 'idle';
+	this.damageTimer = 0;
+	this.damageStepActive = false;
 
 	this.setupAnimation();
 
@@ -56,20 +61,28 @@ Player.prototype.setupAnimation = function ()
 	var len = 6;
 	var idle = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1];
 	var walk = [3, 4, 5, 2];
+	var dead = [1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1];
 	this.sprite.animations.add( 'idle_right', idle, 8, true );
 	this.sprite.animations.add( 'walk_right', walk, 10, true );
-	idle = idle.map( n => n + len )
-	walk = walk.map( n => n + len )
+	this.sprite.animations.add( 'dead_right', dead, 8, false );
+	idle = idle.map( n => n + len );
+	walk = walk.map( n => n + len );
+	dead = dead.map( n => n + len );
 	this.sprite.animations.add( 'idle_down', idle, 8, true );
 	this.sprite.animations.add( 'walk_down', walk, 10, true );
-	idle = idle.map( n => n + len )
-	walk = walk.map( n => n + len )
+	this.sprite.animations.add( 'dead_down', dead, 8, false );
+	idle = idle.map( n => n + len );
+	walk = walk.map( n => n + len );
+	dead = dead.map( n => n + len );
 	this.sprite.animations.add( 'idle_left', idle, 8, true );
 	this.sprite.animations.add( 'walk_left', walk, 10, true );
-	idle = idle.map( n => n + len )
-	walk = walk.map( n => n + len )
+	this.sprite.animations.add( 'dead_left', dead, 8, false );
+	idle = idle.map( n => n + len );
+	walk = walk.map( n => n + len );
+	dead = dead.map( n => n + len );
 	this.sprite.animations.add( 'idle_up', idle, 8, true );
 	this.sprite.animations.add( 'walk_up', walk, 10, true );
+	this.sprite.animations.add( 'dead_up', dead, 8, false );
 
 	this.state = 'idle';
 	this.direction = 'down';
@@ -87,6 +100,9 @@ Player.prototype.setupAnimation = function ()
 
 Player.prototype.setAnimation = function ( newState, newDirection )
 {
+	if ( this.state == 'dead' )
+		return;
+
 	var name = null;
 	if ( this.state != newState || this.direction != newDirection )
 	{
@@ -216,4 +232,91 @@ Player.prototype.render = function ()
 		DungeonGame.game.debug.body( this.swing );
 		DungeonGame.game.debug.body( this.sword );
 	}
+};
+
+Player.prototype.damage = function ( power, position )
+{
+	if ( this.damageState == 'idle' )
+	{
+		this.damageTimer = 0;
+		this.health -= power;
+
+		// Move please
+		DungeonGame.Audio.play( 'chop' );
+		var p = new Phaser.Point(
+			this.sprite.body.position.x - position.x,
+			this.sprite.body.position.y - position.y
+		).setMagnitude(400);
+		this.sprite.body.velocity.add( p.x, p.y );
+
+		if ( this.health <= 0 )
+		{
+			this.defeat();
+		}
+		else
+		{
+			this.hurt();
+		}
+	}
+};
+
+Player.prototype.hurt = function ()
+{
+	this.damageState = 'hurt';
+	DungeonGame.Audio.play( 'hurt' );
+
+	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 1.2, this.damageOver, this );
+
+	if ( !this.damageStepActive )
+	{
+		this.damageStepActive = true;
+		this.damageStep();
+	}
+};
+
+Player.prototype.defeat = function ()
+{
+	this.damageState = 'dead';
+	this.setAnimation( 'dead', this.direction );
+	DungeonGame.Audio.play( 'hurt' );
+	DungeonGame.cinematic = true;
+
+	if ( !this.damageStepActive )
+	{
+		this.damageStepActive = true;
+		this.damageStep();
+	}
+
+	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 2.5, this.gameOver, this );
+};
+
+Player.prototype.damageStep = function ()
+{
+	if ( this.damageState == 'hurt' || this.damageState == 'dead' )
+	{
+		this.sprite.alpha = 1.5 - this.sprite.alpha; // Toggles between 1 and 0.5
+		this.sprite.tint = this.sprite.alpha == 1.0 ? 0xff7777 : 0xffffff;
+
+		DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.05, this.damageStep, this );
+	}
+	else
+	{
+		this.damageStepActive = false;
+	}
+};
+
+Player.prototype.damageOver = function ()
+{
+	this.damageState = 'idle';
+	this.sprite.alpha = 1.0;
+	this.sprite.tint = 0xffffff;
+};
+
+Player.prototype.gameOver = function ()
+{
+	DungeonGame.Audio.play( 'death' );
+
+	DungeonGame.Particle.createSmokeBurst( this.sprite.x, this.sprite.y );
+
+	this.sprite.kill(); // Somehow reach into enemies list and remove, perhaps queueDestruction
 };
