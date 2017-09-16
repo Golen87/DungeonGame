@@ -16,9 +16,9 @@ Player.prototype.create = function ( x, y, group )
 	this.sprite.body.setSize( 10, 8, 3, 5 );
 	//this.sprite.body.setCircle( 6, 2, 4 );
 
-	this.sword = group.create( x, y+2, 'items', randInt(0,15) );//randInt(0,7)
+	this.sword = group.create( x, y+2, 'items', [0,1,2,3,4,5,6,7,11,12,13,14,15].choice() );
 	DungeonGame.game.physics.arcade.enable( this.sword, Phaser.Physics.ARCADE );
-	this.sword.anchor.set( 17/16, 17/16 );
+	this.sword.anchor.set( 0.5 );
 	this.sword.body.setSize( 0, 0, 0, 0 );
 	this.sword.exists = false;
 	this.sword.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
@@ -103,15 +103,15 @@ Player.prototype.setAnimation = function ( newState, newDirection )
 
 Player.prototype.update = function ()
 {
-	if ( this.keys.space.justDown )
+	if ( this.keys.space.justDown && !DungeonGame.cinematic )
 	{
 		this.swing.reset(
-			this.sprite.body.center.x + this.sprite.body.velocity.x/60,
-			this.sprite.body.center.y + this.sprite.body.velocity.y/60
+			Math.round(this.sprite.body.center.x + this.sprite.body.velocity.x/60),
+			Math.round(this.sprite.body.center.y + this.sprite.body.velocity.y/60)
 		);
 		this.sword.reset(
-			this.sprite.body.center.x + this.sprite.body.velocity.x/60,
-			this.sprite.body.center.y + this.sprite.body.velocity.y/60
+			Math.round(this.sprite.body.center.x + this.sprite.body.velocity.x/60),
+			Math.round(this.sprite.body.center.y + this.sprite.body.velocity.y/60)
 		);
 		this.swing.animations.play( 'attack' );
 		this.swingTimer = 0;
@@ -139,6 +139,8 @@ Player.prototype.update = function ()
 			this.swing.body.setSize( 28, 16, 10, this.swing.scale.y == 1 ? 5 : 27 );
 		}
 		this.sword.angle = this.swing.scale.y == 1 ? this.swing.angle - 90 : this.swing.angle + 90;
+		this.sword.position.x += Math.round(14*Math.cos((this.sword.angle + this.swing.scale.y * 45) * Math.PI / 180));
+		this.sword.position.y += Math.round(14*Math.sin((this.sword.angle + this.swing.scale.y * 45) * Math.PI / 180));
 
 		DungeonGame.Audio.play( 'swing' );
 	}
@@ -147,7 +149,6 @@ Player.prototype.update = function ()
 		//this.swing.kill();
 	}
 	this.swing.alpha = (0.75 - this.swingTimer / 10).clamp( 0, 1 );
-	//console.log(this.swing.animations.currentAnim.frame, this.swing.alpha);
 	this.swingTimer += 1;
 
 	var p = new Phaser.Point( 0, 0 );
@@ -161,7 +162,7 @@ Player.prototype.update = function ()
 		this.stepCooldown = 10;
 	}
 
-	if ( !this.swing.exists )
+	if ( !this.swing.exists && !DungeonGame.cinematic )
 	{
 		if ( this.keys.up.isDown || this.keys.w.isDown )
 			p.y -= 1;

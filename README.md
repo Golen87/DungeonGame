@@ -120,11 +120,6 @@ Some names I generated
 > 
 > Asteraclya
 
-Smooth toggle between cinematic mode and gameplay mode
-> Freeze player and enemy movement
-> 
-> Fade in black bars, fade out gui
-
 > Light and butterflies around sword in the stone. Player may be able to kill
 > butterflies and see the light go out and the others flee, an indication that
 > killing might not be the solution. Going through the game without killing

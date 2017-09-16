@@ -12,8 +12,8 @@ Enemy.prototype.create = function ( x, y, group )
 	this.sprite = group.create( x, y, 'enemy', 0 );
 	DungeonGame.game.physics.arcade.enable( this.sprite, Phaser.Physics.ARCADE );
 	this.sprite.anchor.set( 0.5 );
-	//this.sprite.body.setSize(10, 8, 3, 5);
-	this.sprite.body.setCircle( 6, 2, 4 );
+	this.sprite.body.setSize(10, 8, 3, 7);
+	//this.sprite.body.setCircle( 6, 2, 4 );
 
 	this.setupAnimation();
 
@@ -84,12 +84,13 @@ Enemy.prototype.update = function ()
 	if ( this.aiState == 'walk' && this.sprite.body.velocity.getMagnitude() == 0 )
 		this.aiState = 'idle';
 
-	if ( this.aiState == 'idle' && Math.random() < 0.01 )
+	if ( this.aiState == 'idle' && Math.random() < 1.0 )
 	{
 		this.aiState = 'walk';
 		var movement = [[1,0], [0,1], [-1,0], [0,-1]].choice()
-		this.goalPos.x = this.sprite.body.position.x + 16 * movement[0];
-		this.goalPos.y = this.sprite.body.position.y + 16 * movement[1];
+		var len = randInt( 1, 4 );
+		this.goalPos.x = this.sprite.body.position.x + len * 16 * movement[0];
+		this.goalPos.y = this.sprite.body.position.y + len * 16 * movement[1];
 	}
 	if ( this.aiState == 'walk' )
 	{
