@@ -78,6 +78,7 @@ DungeonGame.Preload.prototype = {
 	setup: function () {
 		DungeonGame.Audio = new AudioManager();
 		DungeonGame.Particle = new ParticleManager();
+		DungeonGame.Gui = new GuiManager();
 	},
 	create: function () {
 		this.setup();

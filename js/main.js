@@ -16,3 +16,4 @@ DungeonGame.game.state.start( 'Boot' );
 DungeonGame.debug = false;
 DungeonGame.shadow = false;
 DungeonGame.pause = false;
+DungeonGame.cinematic = false;
