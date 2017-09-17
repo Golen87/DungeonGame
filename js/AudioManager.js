@@ -11,8 +11,10 @@ AudioManager.prototype.init = function ()
 {
 	//addMarker(name, start, duration, volume, loop)
 
+	var masterVol = 1.0;
+
 	var name = 'footsteps';
-	var vol = 0.05;
+	var vol = 0.05 * masterVol;
 	this.sounds[name] = {};
 	this.sounds[name].sound = DungeonGame.game.add.audio( name );
 	this.sounds[name].sound.addMarker( '1', 0.0, 0.3, vol );
@@ -22,7 +24,7 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].markers = ['1', '2', '3', '4'];
 
 	var name = 'swing';
-	var vol = 0.2;
+	var vol = 0.2 * masterVol;
 	this.sounds[name] = {};
 	this.sounds[name].sound = DungeonGame.game.add.audio( name );
 	this.sounds[name].sound.addMarker( '1', 0.0, 0.4, vol );
@@ -32,7 +34,7 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].markers = ['1', '2', '3', '4'];
 
 	var name = 'chop';
-	var vol = 0.3;
+	var vol = 0.3 * masterVol;
 	this.sounds[name] = {};
 	this.sounds[name].sound = DungeonGame.game.add.audio( name );
 	this.sounds[name].sound.addMarker( '1', 0.0, 0.2, vol );
@@ -41,7 +43,7 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].markers = ['1', '2', '3'];
 
 	var name = 'eating';
-	var vol = 0.4;
+	var vol = 0.4 * masterVol;
 	this.sounds[name] = {};
 	this.sounds[name].sound = DungeonGame.game.add.audio( name );
 	this.sounds[name].sound.addMarker( '1', 0.0, 0.95, vol );
@@ -50,17 +52,19 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].markers = ['1', '2', '3'];
 
 	var name = 'death';
-	var vol = 0.3;
+	var vol = 0.3 * masterVol;
 	this.sounds[name] = {};
 	this.sounds[name].sound = DungeonGame.game.add.audio( name );
+	this.sounds[name].sound.volume = vol;
 
 	var name = 'hurt';
-	var vol = 0.4;
+	var vol = 0.4 * masterVol;
 	this.sounds[name] = {};
 	this.sounds[name].sound = DungeonGame.game.add.audio( name );
+	this.sounds[name].sound.volume = vol;
 
 
-	var vol = 0.4;
+	var vol = 0.4 * masterVol;
 
 	var name = 'rat';
 	this.sounds[name] = {};
