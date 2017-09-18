@@ -11,6 +11,8 @@ function RoomManager ()
 	this.physicsMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
 	this.fgMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
 	this.bgMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
+	this.decoMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
+	this.enemyMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
 	this.makeSpriteMap();
 
 	this.activeMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
@@ -92,6 +94,16 @@ RoomManager.prototype.addPhysics = function ( x, y )
 	this.physicsMap[y][x] = true;
 };
 
+RoomManager.prototype.addDeco = function ( x, y, name )
+{
+	this.decoMap[y][x] = name;
+};
+
+RoomManager.prototype.addEnemy = function ( x, y, name )
+{
+	this.enemyMap[y][x] = name;
+};
+
 
 RoomManager.prototype.isWithin = function ( x, y )
 {
@@ -125,7 +137,19 @@ RoomManager.prototype.isWall = function ( x, y, allowVoid=false )
 RoomManager.prototype.isFloor = function ( x, y )
 {
 	var TYPE = this.getTileType( x, y );
-	return ( TYPE == TYPE_FLOOR );
+	return ( TYPE == TYPE_FLOOR || TYPE == TYPE_DECO || TYPE == TYPE_ENEMY );
+};
+
+RoomManager.prototype.isDeco = function ( x, y )
+{
+	var TYPE = this.getTileType( x, y );
+	return ( TYPE == TYPE_DECO );
+};
+
+RoomManager.prototype.isEnemy = function ( x, y )
+{
+	var TYPE = this.getTileType( x, y );
+	return ( TYPE == TYPE_ENEMY );
 };
 
 
@@ -150,16 +174,16 @@ RoomManager.prototype.makeSpriteMap = function ()
 
 					if ( this.isFloor( x-1, y ) || ( this.isWall( x-1, y+1 ) ) )
 					{
-						this.addBackground( x, y, DECO_EDGESHADE_LEFT );
+						this.addBackground( x, y, FG_EDGESHADE_LEFT );
 					}
 					if ( this.isFloor( x+1, y ) || ( this.isWall( x+1, y+1 ) ) )
 					{
-						this.addBackground( x, y, DECO_EDGESHADE_RIGHT );
+						this.addBackground( x, y, FG_EDGESHADE_RIGHT );
 					}
 
 					if ( this.isFloor( x, y-1 ) )
 					{
-						this.addForeground( x, y, DECO_TOP_N );
+						this.addForeground( x, y, FG_TOP_N );
 					}
 				}
 				else
@@ -170,55 +194,55 @@ RoomManager.prototype.makeSpriteMap = function ()
 					// Edges
 					if ( this.isFloor( x-1, y ) || this.isFloor( x-1, y+1 ) )
 					{
-						this.addForeground( x, y, DECO_TOP_W );
+						this.addForeground( x, y, FG_TOP_W );
 					}
 					if ( this.isFloor( x+1, y ) || this.isFloor( x+1, y+1 ) )
 					{
-						this.addForeground( x, y, DECO_TOP_E );
+						this.addForeground( x, y, FG_TOP_E );
 					}
 					if ( this.isFloor( x, y-1 ) )
 					{
-						this.addForeground( x, y, DECO_TOP_N );
+						this.addForeground( x, y, FG_TOP_N );
 					}
 					if ( this.isFloor( x, y+2 ) )
 					{
-						this.addForeground( x, y, DECO_TOP_S );
+						this.addForeground( x, y, FG_TOP_S );
 					}
 
 					// Floor corners
 					if ( ( this.isFloor( x-1, y+1 ) || this.isFloor( x-1, y ) ) && this.isFloor( x, y+2 ) )
 					{
-						this.addForeground( x, y, DECO_INV_TOP_SW );
+						this.addForeground( x, y, FG_INV_TOP_SW );
 					}
 					if ( ( this.isFloor( x+1, y+1 ) || this.isFloor( x+1, y ) ) && this.isFloor( x, y+2 ) )
 					{
-						this.addForeground( x, y, DECO_INV_TOP_SE );
+						this.addForeground( x, y, FG_INV_TOP_SE );
 					}
 					if ( ( this.isFloor( x-1, y ) || this.isFloor( x-1, y+1 ) ) && this.isFloor( x, y-1 ) )
 					{
-						this.addForeground( x, y, DECO_INV_TOP_NW );
+						this.addForeground( x, y, FG_INV_TOP_NW );
 					}
 					if ( ( this.isFloor( x+1, y ) || this.isFloor( x+1, y+1 ) ) && this.isFloor( x, y-1 ) )
 					{
-						this.addForeground( x, y, DECO_INV_TOP_NE );
+						this.addForeground( x, y, FG_INV_TOP_NE );
 					}
 
 					// Void corners
 					if ( this.isWall( x-1, y, true ) && this.isWall( x, y-1, true ) && this.isWall( x-1, y+1, true ) && this.isFloor( x-1, y-1 ) )
 					{
-						this.addForeground( x, y, DECO_TOP_NW );
+						this.addForeground( x, y, FG_TOP_NW );
 					}
 					if ( this.isWall( x+1, y, true ) && this.isWall( x, y-1, true ) && this.isWall( x+1, y+1, true ) && this.isFloor( x+1, y-1 ) )
 					{
-						this.addForeground( x, y, DECO_TOP_NE );
+						this.addForeground( x, y, FG_TOP_NE );
 					}
 					if ( this.isWall( x-1, y+1, true ) && this.isWall( x, y+2, true ) && this.isFloor( x-1, y+2 ) && this.isWall( x-1, y, true ) )
 					{
-						this.addForeground( x, y, DECO_TOP_SW );
+						this.addForeground( x, y, FG_TOP_SW );
 					}
 					if ( this.isWall( x+1, y+1, true ) && this.isWall( x, y+2, true ) && this.isFloor( x+1, y+2 ) && this.isWall( x+1, y, true ) )
 					{
-						this.addForeground( x, y, DECO_TOP_SE );
+						this.addForeground( x, y, FG_TOP_SE );
 					}
 				}
 
@@ -268,8 +292,17 @@ RoomManager.prototype.makeSpriteMap = function ()
 				this.addBackground( x, y, TILE_FLOOR['spos'] );
 				if ( this.isWall( x, y-1 ) )
 				{
-					this.addBackground( x, y, DECO_FLOORSHADE );
+					this.addBackground( x, y, FG_FLOORSHADE );
 				}
+			}
+
+			if ( this.isDeco( x, y ) )
+			{
+				this.addDeco( x, y, this.getTileName( x, y ) );
+			}
+			if ( this.isEnemy( x, y ) )
+			{
+				this.addEnemy( x, y, this.getTileName( x, y ) );
 			}
 		}
 	}
@@ -300,11 +333,14 @@ RoomManager.prototype.isInView = function ( x, y )
 	);
 };
 
-RoomManager.prototype.clearOutOfView = function ()
+RoomManager.prototype.clearOutOfView = function ( clearPhysics=false )
 {
-	for ( var i = 0; i < this.physics.children.length; i++ )
+	if ( clearPhysics )
 	{
-		this.physics.children[i].kill();
+		for ( var i = 0; i < this.physics.children.length; i++ )
+		{
+			this.physics.children[i].kill();
+		}
 	}
 	for ( var i = 0; i < this.background.children.length; i++ )
 	{
@@ -333,40 +369,36 @@ RoomManager.prototype.loadRoom = function ( room_x, room_y )
 	var offset_x = room_x * ROOM_WIDTH;
 	var offset_y = room_y * ROOM_HEIGHT;
 
-	this.clearOutOfView();
+	this.clearOutOfView( true );
 
 	for ( var y = offset_y; y < offset_y + ROOM_HEIGHT; y++ )
 	{
 		for ( var x = offset_x; x < offset_x + ROOM_WIDTH; x++ )
 		{
-			if ( this.isWithin( x, y ) )
+			if ( this.physicsMap[y][x])
 			{
-				if ( this.physicsMap[y][x])
+				if ( !( this.isWithin( x, y-1 ) && this.physicsMap[y-1][x] && y != offset_y ) )
 				{
-					if ( !( this.isWithin( x, y-1 ) && this.physicsMap[y-1][x] && y != offset_y ) )
+					var s = this.physics.getFirstDead();
+					if ( s )
 					{
-						var s = this.physics.getFirstDead();
-						if ( s )
-						{
-							s.reset( 16*x, 16*y );
-							s.body.setSize( 16, 16 );
-							s.renderable = false;
-							s.body.immovable = true;
-							s.body.moves = false;
+						s.reset( 16*x, 16*y );
+						s.body.setSize( 16, 16 );
+						s.renderable = false;
+						s.body.immovable = true;
+						s.body.moves = false;
 
-							var i = 1;
-							while ( y+i < offset_y + ROOM_HEIGHT && this.isWithin( x, y+i ) && this.physicsMap[y+i][x] ) {
-								s.body.setSize( 16, 16*(i+1) );
-								i += 1;
-							}
-						}
-						else
-						{
-							console.error( "Out of Physics resources!" );
+						var i = 1;
+						while ( y+i < offset_y + ROOM_HEIGHT && this.isWithin( x, y+i ) && this.physicsMap[y+i][x] ) {
+							s.body.setSize( 16, 16*(i+1) );
+							i += 1;
 						}
 					}
+					else
+					{
+						console.error( "Out of Physics resources!" );
+					}
 				}
-
 			}
 		}
 	}

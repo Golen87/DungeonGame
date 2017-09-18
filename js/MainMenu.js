@@ -4,7 +4,7 @@ DungeonGame.MainMenu = function() {};
 
 DungeonGame.MainMenu.prototype = {
 	create: function() {
-		this.game.stage.backgroundColor = '#111111';
+		DungeonGame.game.stage.backgroundColor = '#111111';
 
 
 		this.obj = [];

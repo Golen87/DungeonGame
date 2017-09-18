@@ -29,19 +29,8 @@ World.prototype.create = function ()
 		this.actors
 	);
 
-	for ( var i = 0; i < 3; i++ )
-	{
-		for ( var j = 0; j < 3; j++ )
-		{
-			var enemy = new Enemy();
-			var x = this.currentArea[0] * SCREEN_WIDTH + 64 + 16*i - 8;
-			var y = this.currentArea[1] * SCREEN_HEIGHT + 64 + 16*j - 8;
-			//var x = randInt( 0,DungeonGame.game.cache.getImage( 'overworld' ).width * 16 );
-			//var y = randInt( 0,DungeonGame.game.cache.getImage( 'overworld' ).height * 16 );
-			enemy.create( x, y, this.actors );
-			this.enemies.push( enemy );
-		}
-	}
+	this.enemyManager = new EnemyManager( this.actors, this.roomManager.enemyMap, this.roomManager.physicsMap );
+	this.enemyManager.loadRoom( this.currentArea[0], this.currentArea[1] );
 
 	for ( var i = 0; i < 2; i++ )
 	{
@@ -79,14 +68,16 @@ World.prototype.update = function ()
 
 	this.Player.update();
 
-	for ( var i = 0; i < this.enemies.length; i++ )
+	this.enemyManager.update();
+
+	for ( var i = 0; i < this.enemyManager.enemies.length; i++ )
 	{
-		DungeonGame.game.physics.arcade.collide( this.enemies[i].sprite, this.roomManager.physics );
-		DungeonGame.game.physics.arcade.overlap( this.Player.swing, this.enemies[i].sprite, this.enemies[i].damage, null, this.enemies[i] );
-		DungeonGame.game.physics.arcade.overlap( this.Player.sprite, this.enemies[i].sprite, function(){
-			this.Player.damage( this.enemies[i].getAttackPower(), this.enemies[i].sprite.body.position );
+		var enemy = this.enemyManager.enemies[i];
+		DungeonGame.game.physics.arcade.collide( enemy.sprite, this.roomManager.physics );
+		DungeonGame.game.physics.arcade.overlap( this.Player.swing, enemy.sprite, enemy.damage, null, enemy );
+		DungeonGame.game.physics.arcade.overlap( this.Player.sprite, enemy.sprite, function(){
+			this.Player.damage( enemy.getAttackPower(), enemy.sprite.body.position );
 		}, null, this );
-		this.enemies[i].update();
 	}
 
 	for ( var i = 0; i < this.items.length; i++ )
@@ -112,6 +103,15 @@ World.prototype.update = function ()
 
 	this.camPos.x += ( this.camGoal.x - this.camPos.x ) / 4;
 	this.camPos.y += ( this.camGoal.y - this.camPos.y ) / 4;
+
+	var d = this.camPos.distance( this.camGoal );
+	if ( d < 1 && d != 0 )
+	{
+		this.camPos.x = this.camGoal.x
+		this.camPos.y = this.camGoal.y
+		this.roomManager.clearOutOfView();
+		this.enemyManager.clearOutOfView();
+	}
 	//this.camPos.x += ( this.camGoal.x - this.camPos.x ).clamp(-2,2);
 	//this.camPos.y += ( this.camGoal.y - this.camPos.y ).clamp(-2,2);
 	DungeonGame.game.camera.x = Math.round( this.camPos.x + 0*(Math.random()-0.5) );
@@ -143,17 +143,20 @@ World.prototype.applyLighting = function ( sprite, objects )
 World.prototype.render = function ()
 {
 	this.roomManager.render();
+	this.enemyManager.render();
 
 	this.Player.render();
 
 	for ( var i = 0; i < this.enemies.length; i++ )
 	{
-		this.enemies[i].render();
+		if ( this.enemies[i].sprite.exists )
+			this.enemies[i].render();
 	}
 
 	for ( var i = 0; i < this.items.length; i++ )
 	{
-		this.items[i].render();
+		if ( this.items[i].sprite.exists )
+			this.items[i].render();
 	}
 
 	if ( DungeonGame.debug )
@@ -168,12 +171,17 @@ World.prototype.render = function ()
 		var count = 0;
 		for ( var i = 0; i < this.roomManager.foreground.children.length; i++ )
 			if ( this.roomManager.foreground.children[i].exists ) count += 1;
-		DungeonGame.game.debug.text( ' fg: {0}'.format( count ), 0, 40 );
+		DungeonGame.game.debug.text( 'fgr: {0}'.format( count ), 0, 40 );
 
 		var count = 0;
 		for ( var i = 0; i < this.roomManager.background.children.length; i++ )
 			if ( this.roomManager.background.children[i].exists ) count += 1;
-		DungeonGame.game.debug.text( ' bg: {0}'.format( count ), 0, 55 );
+		DungeonGame.game.debug.text( 'bgr: {0}'.format( count ), 0, 55 );
+
+		var count = 0;
+		for ( var i = 0; i < this.enemyManager.enemies.length; i++ )
+			if ( this.enemyManager.enemies[i].sprite.exists ) count += 1;
+		DungeonGame.game.debug.text( 'enm: {0}'.format( count ), 0, 70 );
 	}
 };
 
@@ -203,6 +211,7 @@ World.prototype.shiftRoom = function ( dx, dy )
 		this.currentArea[1] = y;
 
 		this.roomManager.loadRoom( x, y );
+		this.enemyManager.loadRoom( x, y );
 
 		this.camGoal.x = x * SCREEN_WIDTH;
 		this.camGoal.y = y * SCREEN_HEIGHT;

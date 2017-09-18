@@ -1,19 +1,24 @@
 
 // Constructor
-function Enemy()
+function Enemy( sprite )
 {
+	this.sprite = sprite;
+	//this.sprite.anchor.set( 0.5 );
+
+	this.spawn = new Phaser.Point();
 };
 
-Enemy.prototype.create = function ( x, y, group )
+Enemy.prototype.create = function ( x, y, deathCallback )
 {
-	this.health = 3;
-	this.speed = 32;
-
-	this.sprite = group.create( x, y, 'enemy', 0 );
-	DungeonGame.game.physics.arcade.enable( this.sprite, Phaser.Physics.ARCADE );
-	this.sprite.anchor.set( 0.5 );
-	this.sprite.body.setSize(10, 8, 3, 7);
+	this.spawn.setTo( x, y );
+	this.sprite.reset( x*16, y*16 );
+	this.sprite.body.setSize( 10, 8, 3, 7 );
 	//this.sprite.body.setCircle( 6, 2, 4 );
+
+	this.deathCallback = deathCallback;
+
+	this.health = 3;
+	this.speed = 24;
 
 	this.setupAnimation();
 
@@ -190,12 +195,14 @@ Enemy.prototype.defeat = function ()
 {
 	DungeonGame.Audio.play( this.sound, 'death' );
 
-	DungeonGame.Particle.createSmokeBurst( this.sprite.x, this.sprite.y );
+	DungeonGame.Particle.createSmokeBurst( this.sprite.x+8, this.sprite.y+8 );
 
 	this.sprite.kill(); // Somehow reach into enemies list and remove, perhaps queueDestruction
+
+	this.deathCallback( this.spawn.x, this.spawn.y );
 };
 
 Enemy.prototype.getAttackPower = function ()
 {
-	return 35;
+	return 20;
 };
