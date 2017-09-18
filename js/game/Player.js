@@ -228,9 +228,12 @@ Player.prototype.render = function ()
 {
 	if ( DungeonGame.debug )
 	{
-		DungeonGame.game.debug.body( this.sprite );
-		DungeonGame.game.debug.body( this.swing );
-		DungeonGame.game.debug.body( this.sword );
+		if ( this.sprite.exists )
+			DungeonGame.game.debug.body( this.sprite );
+		if ( this.swing.exists )
+			DungeonGame.game.debug.body( this.swing );
+		if ( this.sword.exists )
+			DungeonGame.game.debug.body( this.sword );
 	}
 };
 
