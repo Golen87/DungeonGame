@@ -14,7 +14,7 @@ Player.prototype.create = function ( x, y, group )
 	this.sprite = group.create( x, y, 'player', 0 );
 	DungeonGame.game.physics.arcade.enable( this.sprite, Phaser.Physics.ARCADE );
 	this.sprite.anchor.set( 0.5 );
-	this.sprite.body.setSize( 10, 8, 3, 5 );
+	this.sprite.body.setSize( 10, 8, 3+8, 5+8 );
 	//this.sprite.body.setCircle( 6, 2, 4 );
 
 	this.sword = group.create( x, y+2, 'items', [0,1,2,3,4,5,6,7,11,12,13,14,15].choice() );
@@ -248,6 +248,8 @@ Player.prototype.damage = function ( power, position )
 			this.sprite.body.position.y - position.y
 		).setMagnitude(400);
 		this.sprite.body.velocity.add( p.x, p.y );
+		this.sword.body.velocity.add( p.x, p.y );
+		this.swing.body.velocity.add( p.x, p.y );
 
 		if ( this.health <= 0 )
 		{
