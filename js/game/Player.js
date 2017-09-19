@@ -9,7 +9,8 @@ Player.prototype.create = function ( x, y, group )
 	this.health = 100;
 	this.speed = 80;
 
-	this.group = DungeonGame.game.add.group();
+	this.wings = group.create( x, y, 'wings', 0 );
+	this.wings.anchor.set( 0.5 );
 
 	this.sprite = group.create( x, y, 'player', 0 );
 	DungeonGame.game.physics.arcade.enable( this.sprite, Phaser.Physics.ARCADE );
@@ -94,6 +95,9 @@ Player.prototype.setupAnimation = function ()
 		this.sword.kill();
 	}, this);
 	//this.swing.animations.currentAnim.killOnComplete = true;
+
+	this.wings.animations.add( 'fly', [0,1], 8, true );
+	this.wings.animations.play( 'fly' );
 
 	this.stepCooldown = 0;
 };
@@ -204,6 +208,13 @@ Player.prototype.update = function ()
 	p.setMagnitude( this.speed );
 	this.sprite.body.velocity.x += ( p.x - this.sprite.body.velocity.x ) / 3;
 	this.sprite.body.velocity.y += ( p.y - this.sprite.body.velocity.y ) / 3;
+
+	this.wings.scale.x = 1;
+	if ( this.direction == 'right' || this.direction == 'down' )
+		this.wings.scale.x = -1;
+	this.wings.position.x = Math.round( this.sprite.position.x + this.sprite.body.velocity.x/60 );
+	this.wings.position.y = Math.round( this.sprite.position.y + this.sprite.body.velocity.y/60 );
+
 	this.swing.body.velocity.copyFrom( this.sprite.body.velocity );
 	this.sword.body.velocity.copyFrom( this.sprite.body.velocity );
 
