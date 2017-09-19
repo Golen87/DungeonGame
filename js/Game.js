@@ -10,12 +10,10 @@ DungeonGame.Game.prototype =
 {
 	create: function()
 	{
-		//  This group will hold the main player + all the tree sprites to depth sort against
-		this.World.create();
-		DungeonGame.Gui.create();
-
-		this.stage.backgroundColor = '#1c1117';
 		this.stage.backgroundColor = '#403020';
+
+		DungeonGame.Gui.create();
+		this.World.create();
 
 		this.debugToggle = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.Q );
 		this.shadowToggle = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.F );

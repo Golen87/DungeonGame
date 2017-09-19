@@ -8,8 +8,9 @@ GuiManager.prototype.create = function ()
 {
 	DungeonGame.game.camera.flash(0x111111, 1000);
 
-	this.cinDist = 24;
+	this.guiGroup = DungeonGame.game.add.group();
 
+	this.cinDist = 24;
 	this.cinematicTop = DungeonGame.game.add.graphics( 0, 0 );
 	this.cinematicTop.beginFill( 0x000000, 1.0 );
 	this.cinematicTop.drawRect( 0, 0, SCREEN_WIDTH, this.cinDist );
@@ -20,16 +21,16 @@ GuiManager.prototype.create = function ()
 	this.cinematicBottom.endFill();
 	this.cinemaValue = 0;
 
-	this.healthGui = DungeonGame.game.add.sprite( 0, 0, 'healthHud' );
+	this.healthGui = this.guiGroup.create( 0, 0, 'healthHud' );
 	this.healthGui.anchor.setTo( 1.0, 1.0 );
-	this.inventoryGui = DungeonGame.game.add.sprite( 0, 0, 'itemHud' );
+	this.inventoryGui = this.guiGroup.create( 0, 0, 'itemHud' );
 	this.inventoryGui.anchor.setTo( 0.0, 1.0 );
 
-	this.itemSlot1 = DungeonGame.game.add.sprite( 0, 0, 'items', randInt(0,8*9-1) );
+	this.itemSlot1 = this.guiGroup.create( 0, 0, 'items', randInt(0,8*9-1) );
 	this.itemSlot1.anchor.setTo( 0.0, 1.0 );
-	this.itemSlot2 = DungeonGame.game.add.sprite( 0, 0, 'items', randInt(0,8*9-1) );
+	this.itemSlot2 = this.guiGroup.create( 0, 0, 'items', randInt(0,8*9-1) );
 	this.itemSlot2.anchor.setTo( 0.0, 1.0 );
-	this.itemSlot3 = DungeonGame.game.add.sprite( 0, 0, 'items', randInt(0,8*9-1) );
+	this.itemSlot3 = this.guiGroup.create( 0, 0, 'items', randInt(0,8*9-1) );
 	this.itemSlot3.anchor.setTo( 0.0, 1.0 );
 };
 
@@ -77,7 +78,7 @@ GuiManager.prototype.showPauseMenu = function ()
 	this.darkBg.beginFill( 0x000000, 0.5 );
 	this.darkBg.drawRect( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
 	this.darkBg.endFill();
-	this.menu = DungeonGame.game.add.sprite( c.x+16, c.y+16, 'menu' );
+	this.menu = this.guiGroup.create( c.x+16, c.y+16, 'menu' );
 	this.choiseLabel = DungeonGame.game.add.bitmapText( c.x+SCREEN_WIDTH/2, c.y+16, 'Adventurer', 'Paused', 16 );
 	this.choiseLabel.anchor.setTo( 0.5, 0.5 );
 };

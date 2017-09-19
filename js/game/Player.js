@@ -15,10 +15,15 @@ Player.prototype.create = function ( x, y, group )
 	this.sprite = group.create( x, y, 'player', 0 );
 	DungeonGame.game.physics.arcade.enable( this.sprite, Phaser.Physics.ARCADE );
 	this.sprite.anchor.set( 0.5 );
-	this.sprite.body.setSize( 10, 8, 3+8, 5+12 );
+	this.sprite.body.setSize( 10, 10, 3+8, 5+8 );
 	//this.sprite.body.setCircle( 6, 2, 4 );
 
-	this.sword = group.create( x, y+2, 'items', [0,1,2,3,4,5,6,7,11,12,13,14,15].choice() );
+	var weapon = [0,1,2,3,4,5,6,7,11,12,13,14,15].choice();
+	DungeonGame.Gui.itemSlot1.frame = weapon;
+	DungeonGame.Gui.itemSlot2.visible = false;
+	DungeonGame.Gui.itemSlot3.visible = false;
+
+	this.sword = group.create( x, y+2, 'items', weapon );
 	DungeonGame.game.physics.arcade.enable( this.sword, Phaser.Physics.ARCADE );
 	this.sword.anchor.set( 0.5 );
 	this.sword.body.setSize( 0, 0, 0, 0 );
@@ -213,7 +218,7 @@ Player.prototype.update = function ()
 	if ( this.direction == 'right' || this.direction == 'down' )
 		this.wings.scale.x = -1;
 	this.wings.position.x = Math.round( this.sprite.position.x + this.sprite.body.velocity.x/60 );
-	this.wings.position.y = Math.round( this.sprite.position.y + this.sprite.body.velocity.y/60 );
+	this.wings.position.y = Math.round( this.sprite.position.y + this.sprite.body.velocity.y/60 ) - 1;
 
 	this.swing.body.velocity.copyFrom( this.sprite.body.velocity );
 	this.sword.body.velocity.copyFrom( this.sprite.body.velocity );
@@ -314,6 +319,7 @@ Player.prototype.damageStep = function ()
 	if ( this.damageState == 'hurt' || this.damageState == 'dead' )
 	{
 		this.sprite.alpha = 1.5 - this.sprite.alpha; // Toggles between 1 and 0.5
+		this.wings.alpha = this.sprite.alpha - 0.5;
 		this.sprite.tint = this.sprite.alpha == 1.0 ? 0xff7777 : 0xffffff;
 
 		DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.05, this.damageStep, this );
@@ -328,6 +334,7 @@ Player.prototype.damageOver = function ()
 {
 	this.damageState = 'idle';
 	this.sprite.alpha = 1.0;
+	this.wings.alpha = 1.0;
 	this.sprite.tint = 0xffffff;
 };
 
@@ -337,5 +344,6 @@ Player.prototype.gameOver = function ()
 
 	DungeonGame.Particle.createSmokeBurst( this.sprite.x, this.sprite.y );
 
-	this.sprite.kill(); // Somehow reach into enemies list and remove, perhaps queueDestruction
+	this.sprite.kill();
+	this.wings.kill();
 };

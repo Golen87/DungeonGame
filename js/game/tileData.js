@@ -55,7 +55,7 @@ var PIXEL_TABLE = {
 
 	'100,0,255': TILE_RUBBLE, // Stairs
 	'255,100,0': TILE_FLOOR, // Bridge
-	'255,255,0': TILE_FLOOR, // Entrance
+	'255,255,0': OBJ_BOX, // Entrance
 
 	'200,200,200': TILE_FLOOR, // Gray floor
 	'0,255,255': TILE_SPIRAL, // Grave

@@ -24,9 +24,10 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].markers = ['1', '2', '3', '4'];
 
 	var name = 'swing';
-	var vol = 0.2 * masterVol;
+	var vol = 0.15 * masterVol;
 	this.sounds[name] = {};
 	this.sounds[name].sound = DungeonGame.game.add.audio( name );
+	this.sounds[name].sound.allowMultiple = true;
 	this.sounds[name].sound.addMarker( '1', 0.0, 0.4, vol );
 	this.sounds[name].sound.addMarker( '2', 0.5, 0.4, vol );
 	this.sounds[name].sound.addMarker( '3', 1.0, 0.4, vol );
@@ -59,6 +60,12 @@ AudioManager.prototype.init = function ()
 
 	var name = 'hurt';
 	var vol = 0.4 * masterVol;
+	this.sounds[name] = {};
+	this.sounds[name].sound = DungeonGame.game.add.audio( name );
+	this.sounds[name].sound.volume = vol;
+
+	var name = 'break';
+	var vol = 0.5 * masterVol;
 	this.sounds[name] = {};
 	this.sounds[name].sound = DungeonGame.game.add.audio( name );
 	this.sounds[name].sound.volume = vol;

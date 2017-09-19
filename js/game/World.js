@@ -11,6 +11,9 @@ World.prototype.create = function ()
 	this.ground = DungeonGame.game.add.group();
 	this.entities = DungeonGame.game.add.group();
 
+	this.groundEmitter = this.ground.create( 0, 0, 'dungeon', 0 );
+	DungeonGame.Particle.initRubbleBurst( this.groundEmitter );
+
 	this.items = [];
 
 	this.worldWidth = DungeonGame.game.cache.getImage( 'overworld' ).width / ROOM_WIDTH;
@@ -61,6 +64,7 @@ World.prototype.create = function ()
 	DungeonGame.game.world.bringToTop( this.ground );
 	DungeonGame.game.world.bringToTop( this.entities );
 	DungeonGame.game.world.bringToTop( this.roomManager.foreground );
+	DungeonGame.game.world.bringToTop( DungeonGame.Gui.guiGroup );
 };
 
 World.prototype.update = function ()
