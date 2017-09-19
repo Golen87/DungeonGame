@@ -33,7 +33,7 @@ DungeonGame.Preload.prototype = {
 		this.load.spritesheet( 'player', 'assets/sprites/player.png', 32, 32 );
 		this.load.spritesheet( 'enemy', 'assets/sprites/enemy.png', 16, 16 );
 		this.load.spritesheet( 'items', 'assets/sprites/items.png', 16, 16 );
-		this.load.spritesheet( 'sword', 'assets/sprites/sword.png', 48, 48 );
+		this.load.spritesheet( 'swing', 'assets/sprites/swing.png', 48, 48 );
 
 		this.load.image( 'menu', 'assets/sprites/menu.png' );
 		this.load.image( 'healthHud', 'assets/sprites/health-hud.png' );

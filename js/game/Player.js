@@ -14,7 +14,7 @@ Player.prototype.create = function ( x, y, group )
 	this.sprite = group.create( x, y, 'player', 0 );
 	DungeonGame.game.physics.arcade.enable( this.sprite, Phaser.Physics.ARCADE );
 	this.sprite.anchor.set( 0.5 );
-	this.sprite.body.setSize( 10, 8, 3+8, 5+8 );
+	this.sprite.body.setSize( 10, 8, 3+8, 5+12 );
 	//this.sprite.body.setCircle( 6, 2, 4 );
 
 	this.sword = group.create( x, y+2, 'items', [0,1,2,3,4,5,6,7,11,12,13,14,15].choice() );
@@ -25,7 +25,7 @@ Player.prototype.create = function ( x, y, group )
 	this.sword.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
 	this.sword.scale.x *= -1;
 
-	this.swing = group.create( x, y+2, 'sword', 0 );
+	this.swing = group.create( x, y+2, 'swing', 0 );
 	DungeonGame.game.physics.arcade.enable( this.swing, Phaser.Physics.ARCADE );
 	this.swing.anchor.set( 0.5 );
 	this.swing.exists = false;
@@ -58,31 +58,31 @@ Player.prototype.create = function ( x, y, group )
 
 Player.prototype.setupAnimation = function ()
 {
-	var len = 6;
-	var idle = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1];
-	var walk = [3, 4, 5, 2];
-	var dead = [1, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1];
+	var len = 3;
+	var idle = [0];
+	var walk = [1];
+	var hurt = [2];
 	this.sprite.animations.add( 'idle_right', idle, 8, true );
 	this.sprite.animations.add( 'walk_right', walk, 10, true );
-	this.sprite.animations.add( 'dead_right', dead, 8, false );
+	this.sprite.animations.add( 'hurt_right', hurt, 8, false );
 	idle = idle.map( n => n + len );
 	walk = walk.map( n => n + len );
-	dead = dead.map( n => n + len );
+	hurt = hurt.map( n => n + len );
 	this.sprite.animations.add( 'idle_down', idle, 8, true );
 	this.sprite.animations.add( 'walk_down', walk, 10, true );
-	this.sprite.animations.add( 'dead_down', dead, 8, false );
+	this.sprite.animations.add( 'hurt_down', hurt, 8, false );
 	idle = idle.map( n => n + len );
 	walk = walk.map( n => n + len );
-	dead = dead.map( n => n + len );
+	hurt = hurt.map( n => n + len );
 	this.sprite.animations.add( 'idle_left', idle, 8, true );
 	this.sprite.animations.add( 'walk_left', walk, 10, true );
-	this.sprite.animations.add( 'dead_left', dead, 8, false );
+	this.sprite.animations.add( 'hurt_left', hurt, 8, false );
 	idle = idle.map( n => n + len );
 	walk = walk.map( n => n + len );
-	dead = dead.map( n => n + len );
+	hurt = hurt.map( n => n + len );
 	this.sprite.animations.add( 'idle_up', idle, 8, true );
 	this.sprite.animations.add( 'walk_up', walk, 10, true );
-	this.sprite.animations.add( 'dead_up', dead, 8, false );
+	this.sprite.animations.add( 'hurt_up', hurt, 8, false );
 
 	this.state = 'idle';
 	this.direction = 'down';
@@ -100,8 +100,10 @@ Player.prototype.setupAnimation = function ()
 
 Player.prototype.setAnimation = function ( newState, newDirection )
 {
-	if ( this.state == 'dead' )
+	if ( this.damageState == 'dead' )
 		return;
+	if ( this.damageState == 'hurt' )
+		newState = 'hurt';
 
 	var name = null;
 	if ( this.state != newState || this.direction != newDirection )
@@ -172,11 +174,11 @@ Player.prototype.update = function ()
 	var frame = this.sprite.animations.currentFrame.index % 6;
 	this.stepCooldown -= 1;
 
-	if ( this.state == 'walk' && ( frame == 2 || frame == 4 ) && this.stepCooldown <= 0 )
-	{
-		DungeonGame.Audio.play( 'footsteps' );
-		this.stepCooldown = 10;
-	}
+	//if ( this.state == 'walk' && ( frame == 2 || frame == 4 ) && this.stepCooldown <= 0 )
+	//{
+	//	DungeonGame.Audio.play( 'footsteps' );
+	//	this.stepCooldown = 10;
+	//}
 
 	if ( !this.swing.exists && !DungeonGame.cinematic )
 	{
@@ -269,6 +271,7 @@ Player.prototype.hurt = function ()
 {
 	this.damageState = 'hurt';
 	DungeonGame.Audio.play( 'hurt' );
+	this.setAnimation( 'hurt', this.direction );
 
 	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 1.2, this.damageOver, this );
 
@@ -281,8 +284,8 @@ Player.prototype.hurt = function ()
 
 Player.prototype.defeat = function ()
 {
+	this.setAnimation( 'hurt', this.direction );
 	this.damageState = 'dead';
-	this.setAnimation( 'dead', this.direction );
 	DungeonGame.Audio.play( 'hurt' );
 	DungeonGame.cinematic = true;
 
