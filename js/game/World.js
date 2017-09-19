@@ -9,9 +9,8 @@ function World ()
 World.prototype.create = function ()
 {
 	this.ground = DungeonGame.game.add.group();
-	this.actors = DungeonGame.game.add.group();
+	this.entities = DungeonGame.game.add.group();
 
-	this.enemies = [];
 	this.items = [];
 
 	this.worldWidth = DungeonGame.game.cache.getImage( 'overworld' ).width / ROOM_WIDTH;
@@ -26,11 +25,14 @@ World.prototype.create = function ()
 	this.Player.create(
 		this.currentArea[0] * SCREEN_WIDTH + SCREEN_WIDTH/2,
 		this.currentArea[1] * SCREEN_HEIGHT + SCREEN_HEIGHT/2,
-		this.actors
+		this.entities
 	);
 
-	this.enemyManager = new EnemyManager( this.actors, this.roomManager.enemyMap, this.roomManager.physicsMap );
+	this.enemyManager = new EnemyManager( this.entities, this.roomManager.enemyMap, this.roomManager.physicsMap );
 	this.enemyManager.loadRoom( this.currentArea[0], this.currentArea[1] );
+
+	this.entityManager = new EntityManager( this.entities, this.roomManager.entityMap );
+	this.entityManager.loadRoom( this.currentArea[0], this.currentArea[1] );
 
 	for ( var i = 0; i < 2; i++ )
 	{
@@ -57,27 +59,40 @@ World.prototype.create = function ()
 
 	DungeonGame.game.world.bringToTop( this.roomManager.background );
 	DungeonGame.game.world.bringToTop( this.ground );
-	DungeonGame.game.world.bringToTop( this.actors );
+	DungeonGame.game.world.bringToTop( this.entities );
 	DungeonGame.game.world.bringToTop( this.roomManager.foreground );
 };
 
 World.prototype.update = function ()
 {
-	DungeonGame.game.physics.arcade.collide( this.Player.sprite, this.roomManager.physics );
-	//DungeonGame.game.physics.arcade.overlap( this.Player.sprite, this.Room.physics, this.collision, null, this );
-
 	this.Player.update();
 
 	this.enemyManager.update();
+	this.entityManager.update();
+
 
 	for ( var i = 0; i < this.enemyManager.enemies.length; i++ )
 	{
 		var enemy = this.enemyManager.enemies[i];
-		DungeonGame.game.physics.arcade.collide( enemy.sprite, this.roomManager.physics );
-		DungeonGame.game.physics.arcade.overlap( this.Player.swing, enemy.sprite, enemy.damage, null, enemy );
-		DungeonGame.game.physics.arcade.overlap( this.Player.sprite, enemy.sprite, function(){
-			this.Player.damage( enemy.getAttackPower(), enemy.sprite.body.position );
-		}, null, this );
+		if ( enemy && enemy.sprite.exists )
+		{
+			DungeonGame.game.physics.arcade.overlap( this.Player.swing, enemy.sprite, enemy.damage, null, enemy );
+			DungeonGame.game.physics.arcade.overlap( this.Player.sprite, enemy.sprite, function(){
+				this.Player.damage( enemy.getAttackPower(), enemy.sprite.body.position );
+			}, null, this );
+		}
+	}
+
+	for ( var i = 0; i < this.entityManager.entities.length; i++ )
+	{
+		var entity = this.entityManager.entities[i];
+		if ( entity && entity.sprite.exists )
+		{
+			DungeonGame.game.physics.arcade.overlap( this.Player.swing, entity.sprite, entity.damage, null, entity );
+			DungeonGame.game.physics.arcade.overlap( this.Player.sprite, entity.sprite, function(){
+				//this.Player.damage( entity.getAttackPower(), entity.sprite.body.position );
+			}, null, this );
+		}
 	}
 
 	for ( var i = 0; i < this.items.length; i++ )
@@ -85,7 +100,20 @@ World.prototype.update = function ()
 		DungeonGame.game.physics.arcade.overlap( this.Player.sprite, this.items[i].sprite, this.collision, null, this );
 	}
 
-	this.actors.sort( 'y', Phaser.Group.SORT_ASCENDING );
+
+	DungeonGame.game.physics.arcade.collide( this.Player.sprite, this.roomManager.physics );
+	DungeonGame.game.physics.arcade.collide( this.Player.sprite, this.entityManager.sprites );
+
+	DungeonGame.game.physics.arcade.collide( this.enemyManager.sprites, this.roomManager.physics );
+	DungeonGame.game.physics.arcade.collide( this.enemyManager.sprites, this.entityManager.sprites );
+
+	DungeonGame.game.physics.arcade.collide( this.entityManager.sprites, this.entityManager.sprites );
+	DungeonGame.game.physics.arcade.collide( this.entityManager.sprites, this.roomManager.physics );
+
+	//DungeonGame.game.physics.arcade.overlap( this.Player.sprite, this.Room.physics, this.collision, null, this );
+
+
+	this.entities.sort( 'y', Phaser.Group.SORT_ASCENDING );
 	//this.foreground.sort( 'y', Phaser.Group.SORT_ASCENDING );
 
 	if ( this.Player.sprite.position.x > this.camGoal.x + SCREEN_WIDTH - this.nextRoomOffset ) {
@@ -111,6 +139,7 @@ World.prototype.update = function ()
 		this.camPos.y = this.camGoal.y
 		this.roomManager.clearOutOfView();
 		this.enemyManager.clearOutOfView();
+		this.entityManager.clearOutOfView();
 	}
 	//this.camPos.x += ( this.camGoal.x - this.camPos.x ).clamp(-2,2);
 	//this.camPos.y += ( this.camGoal.y - this.camPos.y ).clamp(-2,2);
@@ -123,20 +152,20 @@ World.prototype.update = function ()
 			this.applyLighting( this.roomManager.background.children[i], false );
 		for ( var i = 0; i < this.ground.children.length; i++ )
 			this.applyLighting( this.ground.children[i], true );
-		for ( var i = 0; i < this.actors.children.length; i++ )
-			this.applyLighting( this.actors.children[i], true );
+		for ( var i = 0; i < this.entities.children.length; i++ )
+			this.applyLighting( this.entities.children[i], true );
 		for ( var i = 0; i < this.roomManager.foreground.children.length; i++ )
 			this.applyLighting( this.roomManager.foreground.children[i], false );
 	}*/
 };
 
-World.prototype.applyLighting = function ( sprite, objects )
+World.prototype.applyLighting = function ( sprite, entities )
 {
 	var dist = this.Player.gridPos.distance( sprite.position );
 	var minDist = DungeonGame.shadow ? 32 : 128;
 	var maxDist = DungeonGame.shadow ? 80 : 960;
 	var fac = ( (maxDist - dist) / (maxDist - minDist) ).clamp( 0, 1 );
-	var maxLight = DungeonGame.shadow ? (objects ? 0xaa : 0x55) : 0xff;
+	var maxLight = DungeonGame.shadow ? (entities ? 0xaa : 0x55) : 0xff;
 	sprite.tint = (maxLight*fac << 0) + (maxLight*fac << 8) + (maxLight*fac << 16);
 };
 
@@ -144,14 +173,9 @@ World.prototype.render = function ()
 {
 	this.roomManager.render();
 	this.enemyManager.render();
+	this.entityManager.render();
 
 	this.Player.render();
-
-	for ( var i = 0; i < this.enemies.length; i++ )
-	{
-		if ( this.enemies[i].sprite.exists )
-			this.enemies[i].render();
-	}
 
 	for ( var i = 0; i < this.items.length; i++ )
 	{
@@ -179,9 +203,14 @@ World.prototype.render = function ()
 		DungeonGame.game.debug.text( 'bgr: {0}'.format( count ), 0, 55 );
 
 		var count = 0;
-		for ( var i = 0; i < this.enemyManager.enemies.length; i++ )
-			if ( this.enemyManager.enemies[i].sprite.exists ) count += 1;
+		for ( var i = 0; i < this.enemyManager.sprites.length; i++ )
+			if ( this.enemyManager.sprites[i].exists ) count += 1;
 		DungeonGame.game.debug.text( 'enm: {0}'.format( count ), 0, 70 );
+
+		var count = 0;
+		for ( var i = 0; i < this.entityManager.sprites.length; i++ )
+			if ( this.entityManager.sprites[i].exists ) count += 1;
+		DungeonGame.game.debug.text( 'obj: {0}'.format( count ), 0, 85 );
 	}
 };
 
@@ -212,6 +241,7 @@ World.prototype.shiftRoom = function ( dx, dy )
 
 		this.roomManager.loadRoom( x, y );
 		this.enemyManager.loadRoom( x, y );
+		this.entityManager.loadRoom( x, y );
 
 		this.camGoal.x = x * SCREEN_WIDTH;
 		this.camGoal.y = y * SCREEN_HEIGHT;

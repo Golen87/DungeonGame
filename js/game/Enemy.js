@@ -197,7 +197,7 @@ Enemy.prototype.defeat = function ()
 
 	DungeonGame.Particle.createSmokeBurst( this.sprite.x+8, this.sprite.y+8 );
 
-	this.sprite.kill(); // Somehow reach into enemies list and remove, perhaps queueDestruction
+	this.sprite.kill();
 
 	this.deathCallback( this.spawn.x, this.spawn.y );
 };

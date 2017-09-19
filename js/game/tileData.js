@@ -2,7 +2,7 @@ var TYPE_NONE = 'NONE';
 var TYPE_WALL = 'WALL';
 var TYPE_FLOOR = 'FLOOR';
 
-var TYPE_DECO = 'OBJECT';
+var TYPE_OBJECT = 'OBJECT';
 var TYPE_ENEMY = 'ENEMY';
 
 
@@ -31,9 +31,9 @@ var TILE_RUBBLE = {
 	'type': TYPE_FLOOR
 };
 
-var DECO_BOX = {
+var OBJ_BOX = {
 	'name': 'box',
-	'type': TYPE_DECO
+	'type': TYPE_OBJECT
 };
 
 var ENEMY = {
@@ -61,7 +61,7 @@ var PIXEL_TABLE = {
 	'0,255,255': TILE_SPIRAL, // Grave
 	'0,0,100': TILE_WALL, // Gray walls
 
-	'255,195,0': DECO_BOX,
+	'255,195,0': OBJ_BOX,
 }
 
 var TILES = [
@@ -71,7 +71,7 @@ var TILES = [
 	TILE_FLOOR,
 	TILE_RUBBLE,
 
-	DECO_BOX,
+	OBJ_BOX,
 	ENEMY,
 ];
 

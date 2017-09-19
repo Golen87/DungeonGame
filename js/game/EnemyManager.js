@@ -6,16 +6,13 @@ function EnemyManager ( group, enemyMap, physicsMap )
 	this.physicsMap = physicsMap;
 	this.activeMap = [...Array( physicsMap.length ).keys()].map( i => Array( physicsMap[0].length ) );
 
+	this.sprites = Array( 32 );
 	this.enemies = Array( 32 );
 
-	for ( var i = 0; i < this.enemies.length; i++ )
+	for ( var i = 0; i < this.sprites.length; i++ )
 	{
-		var sprite = group.create( 0, 0, 'enemy', 0, false );
-		DungeonGame.game.physics.arcade.enable( sprite, Phaser.Physics.ARCADE );
-		var enemy = new Enemy( sprite );
-		this.enemies[i] = enemy;
-
-		//enemy.create( x, y, this.actors );
+		this.sprites[i] = group.create( 0, 0, 'enemy', 0, false );
+		DungeonGame.game.physics.arcade.enable( this.sprites[i], Phaser.Physics.ARCADE );
 	}
 }
 
@@ -23,21 +20,22 @@ EnemyManager.prototype.update = function ()
 {
 	for ( var i = 0; i < this.enemies.length; i++ )
 	{
-		this.enemies[i].update();
+		if ( this.enemies[i] && this.enemies[i].sprite.exists )
+		{
+			this.enemies[i].update();
+		}
 	}
 }
 
 
 EnemyManager.prototype.render = function ()
 {
-	if ( DungeonGame.debug )
+	for ( var i = 0; i < this.enemies.length; i++ )
 	{
-		this.enemies.forEach( function ( member ) {
-			if ( member.sprite.exists )
-			{
-				DungeonGame.game.debug.body( member.sprite );
-			}
-		}, this );
+		if ( this.enemies[i] && this.enemies[i].sprite.exists )
+		{
+			this.enemies[i].update();
+		}
 	}
 };
 
@@ -58,7 +56,7 @@ EnemyManager.prototype.clearOutOfView = function ()
 	for ( var i = 0; i < this.enemies.length; i++ )
 	{
 		var enemy = this.enemies[i];
-		if ( enemy.sprite.alive && !this.isInView( enemy.sprite.position.x, enemy.sprite.position.y ) )
+		if ( enemy && enemy.sprite.exists && !this.isInView( enemy.sprite.position.x, enemy.sprite.position.y ) )
 		{
 			this.activeMap[enemy.spawn.y][enemy.spawn.x] = null;
 			enemy.sprite.kill();
@@ -68,14 +66,14 @@ EnemyManager.prototype.clearOutOfView = function ()
 
 EnemyManager.prototype.getFirstDead = function ()
 {
-	for ( var i = 0; i < this.enemies.length; i++ )
+	for ( var i = 0; i < this.sprites.length; i++ )
 	{
-		var enemy = this.enemies[i];
-		if ( !enemy.sprite.alive )
+		if ( !this.sprites[i].exists )
 		{
-			return enemy;
+			return i;
 		}
 	}
+	return -1;
 };
 
 EnemyManager.prototype.loadRoom = function ( room_x, room_y )
@@ -91,11 +89,13 @@ EnemyManager.prototype.loadRoom = function ( room_x, room_y )
 		{
 			if ( !this.activeMap[y][x] && this.enemyMap[y][x])
 			{
-				var enemy = this.getFirstDead();
-				if ( enemy )
+				var index = this.getFirstDead();
+				if ( index != -1 )
 				{
 					this.activeMap[y][x] = true;
-					enemy.create( x, y, this.enemyDeath.bind(this) );
+
+					this.enemies[index] = new Enemy( this.sprites[index] );
+					this.enemies[index].create( x, y, this.enemyDeath.bind(this) );
 				}
 				else
 				{

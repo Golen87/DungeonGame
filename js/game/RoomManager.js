@@ -11,7 +11,7 @@ function RoomManager ()
 	this.physicsMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
 	this.fgMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
 	this.bgMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
-	this.decoMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
+	this.entityMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
 	this.enemyMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
 	this.makeSpriteMap();
 
@@ -94,9 +94,9 @@ RoomManager.prototype.addPhysics = function ( x, y )
 	this.physicsMap[y][x] = true;
 };
 
-RoomManager.prototype.addDeco = function ( x, y, name )
+RoomManager.prototype.addEntity = function ( x, y, name )
 {
-	this.decoMap[y][x] = name;
+	this.entityMap[y][x] = name;
 };
 
 RoomManager.prototype.addEnemy = function ( x, y, name )
@@ -137,13 +137,13 @@ RoomManager.prototype.isWall = function ( x, y, allowVoid=false )
 RoomManager.prototype.isFloor = function ( x, y )
 {
 	var TYPE = this.getTileType( x, y );
-	return ( TYPE == TYPE_FLOOR || TYPE == TYPE_DECO || TYPE == TYPE_ENEMY );
+	return ( TYPE == TYPE_FLOOR || TYPE == TYPE_OBJECT || TYPE == TYPE_ENEMY );
 };
 
-RoomManager.prototype.isDeco = function ( x, y )
+RoomManager.prototype.isEntity = function ( x, y )
 {
 	var TYPE = this.getTileType( x, y );
-	return ( TYPE == TYPE_DECO );
+	return ( TYPE == TYPE_OBJECT );
 };
 
 RoomManager.prototype.isEnemy = function ( x, y )
@@ -296,9 +296,9 @@ RoomManager.prototype.makeSpriteMap = function ()
 				}
 			}
 
-			if ( this.isDeco( x, y ) )
+			if ( this.isEntity( x, y ) )
 			{
-				this.addDeco( x, y, this.getTileName( x, y ) );
+				this.addEntity( x, y, this.getTileName( x, y ) );
 			}
 			if ( this.isEnemy( x, y ) )
 			{
