@@ -93,7 +93,11 @@ EntityManager.prototype.loadRoom = function ( room_x, room_y )
 				{
 					this.activeMap[y][x] = true;
 
-					this.entities[index] = new Box( this.sprites[index] );
+					if ( this.entityMap[y][x] == 'box' )
+						this.entities[index] = new Box( this.sprites[index] );
+					else if ( this.entityMap[y][x] == 'switch' )
+						this.entities[index] = new Switch( this.sprites[index] );
+
 					this.entities[index].create( x, y, this.entityDeath.bind(this) );
 				}
 				else

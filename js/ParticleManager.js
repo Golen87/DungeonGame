@@ -127,7 +127,8 @@ ParticleManager.prototype.RubbleParticle = (function ()
 		if ( Math.random() < 0.5 ) this.scale.y *= -1;
 		//this.animations.getAnimation( 'evaporate' ).frame = Math.floor( Math.random() * this.animations.getAnimation( 'evaporate' ).frameTotal );
 
-		var r = 1 * randFloat( 0.27, 0.55 );
+		//var r = 1 * randFloat( 0.27, 0.55 );
+		var r = 1 * randFloat( 0.35, 0.55 );
 		var g = r * randFloat( 0.69, 0.73 );
 		var b = r * randFloat( 0.40, 0.52 );
 		this.tint = (b*0xff << 0) + (g*0xff << 8) + (r*0xff << 16);
@@ -176,7 +177,7 @@ ParticleManager.prototype.createRubbleBurst = function ( x, y )
 	this.rubbleBurst.x = x;
 	this.rubbleBurst.y = y;
 	// start(explode, lifespan, frequency, quantity, forceQuantity)
-	this.rubbleBurst.start( true, 0, 4000, 8 );
+	this.rubbleBurst.start( true, 0, 4000, 16 );
 };
 
 

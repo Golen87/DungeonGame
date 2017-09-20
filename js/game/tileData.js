@@ -36,6 +36,11 @@ var OBJ_BOX = {
 	'type': TYPE_OBJECT
 };
 
+var OBJ_SWITCH = {
+	'name': 'switch',
+	'type': TYPE_OBJECT
+};
+
 var ENEMY = {
 	'name': 'enemy',
 	'type': TYPE_ENEMY
@@ -56,12 +61,11 @@ var PIXEL_TABLE = {
 	'100,0,255': TILE_RUBBLE, // Stairs
 	'255,100,0': TILE_FLOOR, // Bridge
 	'255,255,0': OBJ_BOX, // Entrance
+	'200,255,0': OBJ_SWITCH,
 
 	'200,200,200': TILE_FLOOR, // Gray floor
 	'0,255,255': TILE_SPIRAL, // Grave
 	'0,0,100': TILE_WALL, // Gray walls
-
-	'255,195,0': OBJ_BOX,
 }
 
 var TILES = [
@@ -72,6 +76,7 @@ var TILES = [
 	TILE_RUBBLE,
 
 	OBJ_BOX,
+	OBJ_SWITCH,
 	ENEMY,
 ];
 

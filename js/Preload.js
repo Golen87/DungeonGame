@@ -56,6 +56,7 @@ DungeonGame.Preload.prototype = {
 		this.load.audio( 'hurt', 'assets/sounds/hurt.ogg' );
 		this.load.audio( 'death', 'assets/sounds/death.ogg' );
 		this.load.audio( 'break', 'assets/sounds/break.ogg' );
+		this.load.audio( 'crystal', 'assets/sounds/crystal.ogg' );
 
 		this.load.audio( 'rat', 'assets/sounds/monsters/rat.ogg' );
 		this.load.audio( 'mouse', 'assets/sounds/monsters/mouse.ogg' );

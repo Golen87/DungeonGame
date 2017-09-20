@@ -3,7 +3,7 @@
 function Entity( sprite )
 {
 	this.sprite = sprite;
-	this.sprite.anchor.set( 0.0, 0.5 );
+	this.sprite.anchor.set( 0.5, 0.5 );
 	this.sprite.body.immovable = true;
 	this.sprite.body.moves = false;
 
@@ -13,7 +13,7 @@ function Entity( sprite )
 Entity.prototype.create = function ( x, y, deathCallback )
 {
 	this.spawn.setTo( x, y );
-	this.sprite.reset( x*16, y*16 );
+	this.sprite.reset( x*16 + 8, y*16 );
 	this.sprite.body.setSize( 16, 16, 0, 16 );
 	//this.sprite.body.setCircle( 6, 2, 4 );
 

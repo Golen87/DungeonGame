@@ -15,10 +15,12 @@ GuiManager.prototype.create = function ()
 	this.cinematicTop.beginFill( 0x000000, 1.0 );
 	this.cinematicTop.drawRect( 0, 0, SCREEN_WIDTH, this.cinDist );
 	this.cinematicTop.endFill();
+	this.guiGroup.add( this.cinematicTop );
 	this.cinematicBottom = DungeonGame.game.add.graphics( 0, 0 );
 	this.cinematicBottom.beginFill( 0x000000, 1.0 );
 	this.cinematicBottom.drawRect( 0, SCREEN_HEIGHT - this.cinDist, SCREEN_WIDTH, this.cinDist );
 	this.cinematicBottom.endFill();
+	this.guiGroup.add( this.cinematicBottom );
 	this.cinemaValue = 0;
 
 	this.healthGui = this.guiGroup.create( 0, 0, 'healthHud' );

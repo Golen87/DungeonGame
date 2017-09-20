@@ -65,10 +65,21 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].sound.volume = vol;
 
 	var name = 'break';
-	var vol = 0.5 * masterVol;
+	var vol = 0.4 * masterVol;
 	this.sounds[name] = {};
 	this.sounds[name].sound = DungeonGame.game.add.audio( name );
 	this.sounds[name].sound.volume = vol;
+
+	var name = 'crystal';
+	var vol = 0.4 * masterVol;
+	this.sounds[name] = {};
+	this.sounds[name].sound = DungeonGame.game.add.audio( name );
+	this.sounds[name].sound.allowMultiple = true;
+	this.sounds[name].sound.addMarker( 'on', 0.0, 0.9, vol );
+	this.sounds[name].sound.addMarker( 'off', 1.0, 1.0, vol );
+	this.sounds[name].markers = [];
+	this.sounds[name].markers['on'] = ['on']
+	this.sounds[name].markers['off'] = ['off']
 
 
 	var vol = 0.4 * masterVol;
