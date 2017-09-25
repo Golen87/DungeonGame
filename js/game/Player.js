@@ -11,14 +11,16 @@ Player.prototype.create = function ( x, y, group )
 
 	this.wings = group.create( x, y, 'wings', 0 );
 	this.wings.anchor.set( 0.5 );
+	this.wings.visible = false;
 
 	this.sprite = group.create( x, y, 'player', 0 );
 	DungeonGame.game.physics.arcade.enable( this.sprite, Phaser.Physics.ARCADE );
 	this.sprite.anchor.set( 0.5 );
-	this.sprite.body.setSize( 10, 10, 3+8, 5+8 );
+	//this.sprite.body.setSize( 10, 10, 3+8, 5+8 );
+	this.sprite.body.setSize( 10, 8, 3, 5 );
 	//this.sprite.body.setCircle( 6, 2, 4 );
 
-	var weapon = [0,1,2,3,4,5,6,7,11,12,13,14,15].choice();
+	var weapon = [1,3,4,5,6,14,15].choice();
 	DungeonGame.Gui.itemSlot1.frame = weapon;
 	DungeonGame.Gui.itemSlot2.visible = false;
 	DungeonGame.Gui.itemSlot3.visible = false;
@@ -64,10 +66,10 @@ Player.prototype.create = function ( x, y, group )
 
 Player.prototype.setupAnimation = function ()
 {
-	var len = 3;
-	var idle = [0];
-	var walk = [1];
-	var hurt = [2];
+	var len = 6;
+	var idle = [0,0,0,0,0,0,0,0,0,0,0,0,0,1];
+	var walk = [3,4,5,2];
+	var hurt = [1];
 	this.sprite.animations.add( 'idle_right', idle, 8, true );
 	this.sprite.animations.add( 'walk_right', walk, 10, true );
 	this.sprite.animations.add( 'hurt_right', hurt, 8, false );
@@ -183,11 +185,11 @@ Player.prototype.update = function ()
 	var frame = this.sprite.animations.currentFrame.index % 6;
 	this.stepCooldown -= 1;
 
-	//if ( this.state == 'walk' && ( frame == 2 || frame == 4 ) && this.stepCooldown <= 0 )
-	//{
-	//	DungeonGame.Audio.play( 'footsteps' );
-	//	this.stepCooldown = 10;
-	//}
+	if ( this.state == 'walk' && ( frame == 2 || frame == 4 ) && this.stepCooldown <= 0 )
+	{
+		DungeonGame.Audio.play( 'footsteps' );
+		this.stepCooldown = 10;
+	}
 
 	if ( !this.swing.exists && !DungeonGame.cinematic )
 	{
@@ -265,8 +267,8 @@ Player.prototype.damage = function ( power, position )
 		// Move please
 		DungeonGame.Audio.play( 'chop' );
 		var p = new Phaser.Point(
-			this.sprite.body.position.x - position.x,
-			this.sprite.body.position.y - position.y
+			this.sprite.body.center.x - position.x,
+			this.sprite.body.center.y - position.y
 		).setMagnitude(400);
 		this.sprite.body.velocity.add( p.x, p.y );
 		this.sword.body.velocity.add( p.x, p.y );
@@ -289,7 +291,8 @@ Player.prototype.hurt = function ()
 	DungeonGame.Audio.play( 'hurt' );
 	this.setAnimation( 'hurt', this.direction );
 
-	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 1.2, this.damageOver, this );
+	// 1.2
+	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.5, this.damageOver, this );
 
 	if ( !this.damageStepActive )
 	{

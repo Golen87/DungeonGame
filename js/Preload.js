@@ -30,10 +30,12 @@ DungeonGame.Preload.prototype = {
 		this.load.bitmapFont( 'Fraktur', 'assets/fonts/Fraktur/font.png', 'assets/fonts/Fraktur/font.fnt' ); // 16
 
 		this.load.spritesheet( 'dungeon', 'assets/sprites/dungeon.png', 16, 16 );
+		this.load.spritesheet( 'decoration', 'assets/sprites/decoration.png', 16, 32 );
+
 		this.load.spritesheet( 'entities', 'assets/sprites/entities.png', 16, 32 );
 		this.load.spritesheet( 'items', 'assets/sprites/items.png', 16, 16 );
 		this.load.spritesheet( 'enemy', 'assets/sprites/enemy.png', 16, 16 );
-		this.load.spritesheet( 'player', 'assets/sprites/player.png', 32, 32 );
+		this.load.spritesheet( 'player', 'assets/sprites/player.png', 16, 16 );
 		this.load.spritesheet( 'wings', 'assets/sprites/wings.png', 32, 32 );
 		this.load.spritesheet( 'swing', 'assets/sprites/swing.png', 48, 48 );
 
@@ -44,6 +46,7 @@ DungeonGame.Preload.prototype = {
 		this.load.spritesheet( 'smoke', 'assets/sprites/particles/smoke.png', 9, 9 );
 		this.load.spritesheet( 'sparkle', 'assets/sprites/particles/sparkle.png', 9, 9 );
 		this.load.spritesheet( 'rubble', 'assets/sprites/particles/rubble.png', 5, 5 );
+		this.load.spritesheet( 'fire', 'assets/sprites/particles/fire.png', 8, 12 );
 
 		this.load.spritesheet( 'map', 'assets/rooms/map.png', ROOM_WIDTH, ROOM_HEIGHT );
 		this.load.spritesheet( 'overworld', 'assets/rooms/overworld.png', ROOM_WIDTH, ROOM_HEIGHT );
@@ -55,8 +58,10 @@ DungeonGame.Preload.prototype = {
 		this.load.audio( 'chop', 'assets/sounds/chop.ogg' );
 		this.load.audio( 'hurt', 'assets/sounds/hurt.ogg' );
 		this.load.audio( 'death', 'assets/sounds/death.ogg' );
+
 		this.load.audio( 'break', 'assets/sounds/break.ogg' );
 		this.load.audio( 'crystal', 'assets/sounds/crystal.ogg' );
+		this.load.audio( 'spikes', 'assets/sounds/spikes.ogg' );
 
 		this.load.audio( 'rat', 'assets/sounds/monsters/rat.ogg' );
 		this.load.audio( 'mouse', 'assets/sounds/monsters/mouse.ogg' );

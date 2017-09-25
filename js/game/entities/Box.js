@@ -1,8 +1,8 @@
 
 // Constructor
-function Box( sprite )
+function Box( sprite, bgSprite )
 {
-	Entity.call( this, sprite );
+	Entity.call( this, sprite, bgSprite );
 	this.sprite.frame = 0;
 	this.sprite.scale.x = [-1,1].choice();
 

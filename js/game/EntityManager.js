@@ -1,17 +1,22 @@
 
 // Constructor
-function EntityManager ( group, entityMap )
+function EntityManager ( group, bgGroup, entityMap )
 {
 	this.entityMap = entityMap;
 	this.activeMap = [...Array( entityMap.length ).keys()].map( i => Array( entityMap[0].length ) );
 
 	this.entities = Array( 32 );
 	this.sprites = Array( 32 );
+	this.bgSprites = Array( 32 );
 
 	for ( var i = 0; i < this.sprites.length; i++ )
 	{
 		this.sprites[i] = group.create( 0, 0, 'entities', 0, false );
 		DungeonGame.game.physics.arcade.enable( this.sprites[i], Phaser.Physics.ARCADE );
+	}
+	for ( var i = 0; i < this.bgSprites.length; i++ )
+	{
+		this.bgSprites[i] = bgGroup.create( 0, 0, 'entities', 0, false );
 	}
 }
 
@@ -94,9 +99,11 @@ EntityManager.prototype.loadRoom = function ( room_x, room_y )
 					this.activeMap[y][x] = true;
 
 					if ( this.entityMap[y][x] == 'box' )
-						this.entities[index] = new Box( this.sprites[index] );
+						this.entities[index] = new Box( this.sprites[index], this.bgSprites[index] );
 					else if ( this.entityMap[y][x] == 'switch' )
-						this.entities[index] = new Switch( this.sprites[index] );
+						this.entities[index] = new Switch( this.sprites[index], this.bgSprites[index], this.trigger.bind(this) );
+					else if ( this.entityMap[y][x] == 'spikes' )
+						this.entities[index] = new Spikes( this.sprites[index], this.bgSprites[index] );
 
 					this.entities[index].create( x, y, this.entityDeath.bind(this) );
 				}
@@ -108,6 +115,20 @@ EntityManager.prototype.loadRoom = function ( room_x, room_y )
 		}
 	}
 
+};
+
+EntityManager.prototype.trigger = function ( trigger )
+{
+	for ( var i = 0; i < this.entities.length; i++ )
+	{
+		if ( this.entities[i] && this.entities[i].sprite.exists )
+		{
+			if ( Spikes.prototype.isPrototypeOf( this.entities[i] ) )
+			{
+				this.entities[i].prepareToggle( !trigger.active );
+			}
+		}
+	}
 };
 
 EntityManager.prototype.entityDeath = function ( x, y )

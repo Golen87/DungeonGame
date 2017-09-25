@@ -1,11 +1,16 @@
 
 // Constructor
-function Entity( sprite )
+function Entity( sprite, bgSprite )
 {
 	this.sprite = sprite;
 	this.sprite.anchor.set( 0.5, 0.5 );
+	this.sprite.visible = true;
+	this.sprite.alpha = 1.0;
 	this.sprite.body.immovable = true;
 	this.sprite.body.moves = false;
+
+	this.bgSprite = bgSprite;
+	this.bgSprite.anchor.set( 0.5, 0.5 );
 
 	this.spawn = new Phaser.Point();
 };
@@ -36,6 +41,11 @@ Entity.prototype.render = function ()
 	}
 };
 
+
+Entity.prototype.overlap = function ( other )
+{
+	DungeonGame.game.physics.arcade.collide( other.sprite, this.sprite );
+};
 
 Entity.prototype.damage = function ()
 {

@@ -177,7 +177,7 @@ ParticleManager.prototype.createRubbleBurst = function ( x, y )
 	this.rubbleBurst.x = x;
 	this.rubbleBurst.y = y;
 	// start(explode, lifespan, frequency, quantity, forceQuantity)
-	this.rubbleBurst.start( true, 0, 4000, 16 );
+	this.rubbleBurst.start( true, 0, 4000, 8 );
 };
 
 

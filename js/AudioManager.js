@@ -71,7 +71,7 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].sound.volume = vol;
 
 	var name = 'crystal';
-	var vol = 0.4 * masterVol;
+	var vol = 0.3 * masterVol;
 	this.sounds[name] = {};
 	this.sounds[name].sound = DungeonGame.game.add.audio( name );
 	this.sounds[name].sound.allowMultiple = true;
@@ -80,6 +80,15 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].markers = [];
 	this.sounds[name].markers['on'] = ['on']
 	this.sounds[name].markers['off'] = ['off']
+
+	var name = 'spikes';
+	var vol = 0.2 * masterVol;
+	this.sounds[name] = {};
+	this.sounds[name].sound = DungeonGame.game.add.audio( name );
+	this.sounds[name].sound.addMarker( '1', 0.0, 0.2, vol );
+	this.sounds[name].sound.addMarker( '2', 0.3, 0.2, vol );
+	this.sounds[name].sound.addMarker( '3', 0.6, 0.2, vol );
+	this.sounds[name].markers = ['1', '2', '3'];
 
 
 	var vol = 0.4 * masterVol;

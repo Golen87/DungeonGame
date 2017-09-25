@@ -1,6 +1,6 @@
 
 // Constructor
-function RoomManager ()
+function RoomManager ( decoGroup )
 {
 	this.width = DungeonGame.game.cache.getImage( 'overworld' ).width;
 	this.height = DungeonGame.game.cache.getImage( 'overworld' ).height;
@@ -13,6 +13,7 @@ function RoomManager ()
 	this.bgMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
 	this.entityMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
 	this.enemyMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
+	this.decoMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
 	this.makeSpriteMap();
 
 	this.activeMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
@@ -23,6 +24,13 @@ function RoomManager ()
 	this.foreground.createMultiple( 4*ROOM_WIDTH*ROOM_HEIGHT, 'dungeon', 0, false );
 	this.physics = DungeonGame.game.add.group();
 	this.physics.createMultiple( ROOM_WIDTH*ROOM_HEIGHT, 'dungeon', 0, false );
+
+	this.decorations = Array( 32 );
+	for ( var i = 0; i < this.decorations.length; i++ )
+	{
+		this.decorations[i] = decoGroup.create( 0, 0, 'decoration', 0, false );
+		this.decorations[i].anchor.set( 0.0, 0.0 );
+	}
 	
 	for ( var i = 0; i < this.physics.children.length; i++ )
 	{
@@ -104,6 +112,15 @@ RoomManager.prototype.addEnemy = function ( x, y, name )
 	this.enemyMap[y][x] = name;
 };
 
+RoomManager.prototype.addDecoration = function ( x, y, spos )
+{
+	var index = Phaser.ArrayUtils.getRandomItem( spos );
+
+	if ( this.decoMap[y][x] == null )
+		this.decoMap[y][x] = [];
+	this.decoMap[y][x].push( index );
+};
+
 
 RoomManager.prototype.isWithin = function ( x, y )
 {
@@ -164,9 +181,21 @@ RoomManager.prototype.makeSpriteMap = function ()
 			{
 				this.addPhysics( x, y );
 
-				if ( this.isFloor( x, y+1 ) )
+				if ( this.getTileName( x, y ) == DECO_PILLAR['name'] )
 				{
-					this.addBackground( x, y, TILE_WALL['spos'] );
+					if ( this.isWall( x, y-1, true ) )
+						this.addBackground( x, y, TILE_WALL['spos'] );
+					else if ( this.isFloor( x, y-1, true ) )
+						this.addBackground( x, y, TILE_FLOOR['spos'] );
+					this.addDecoration( x, y, DECO_PILLAR['spos'] );
+					this.addForeground( x, y-1, [4,0] );
+				}
+				else if ( this.isFloor( x, y+1 ) )
+				{
+					if ( this.getTileName( x, y ) == TILE_WALL['name'] )
+					{
+						this.addBackground( x, y, TILE_WALL['spos'] );
+					}
 					if ( this.getTileName( x, y ) == TILE_SPIRAL['name'] )
 					{
 						this.addBackground( x, y, TILE_SPIRAL['spos'] );
@@ -183,7 +212,14 @@ RoomManager.prototype.makeSpriteMap = function ()
 
 					if ( this.isFloor( x, y-1 ) )
 					{
-						this.addForeground( x, y, FG_TOP_N );
+						//this.addForeground( x, y, FG_TOP_N );
+
+						if ( this.isWall( x, y-1, true ) )
+							this.addBackground( x, y, TILE_WALL['spos'] );
+						else if ( this.isFloor( x, y-1, true ) )
+							this.addBackground( x, y, TILE_FLOOR['spos'] );
+						this.addDecoration( x, y, DECO_PILLAR['spos'] );
+						this.addForeground( x, y-1, [4,0] );
 					}
 				}
 				else
@@ -360,8 +396,29 @@ RoomManager.prototype.clearOutOfView = function ( clearPhysics=false )
 			this.activeMap[s.position.y/16][s.position.x/16] = null;
 		}
 	}
+	for ( var i = 0; i < this.decorations.length; i++ )
+	{
+		var s = this.decorations[i];
+		if ( s.alive && !this.isInView( s.position.x, s.position.y ) )
+		{
+			s.kill();
+			this.activeMap[s.position.y/16][s.position.x/16] = null;
+		}
+	}
 	//console.time('someFunction');
 	//console.timeEnd('someFunction');
+};
+
+RoomManager.prototype.getFirstDeadDeco = function ()
+{
+	for ( var i = 0; i < this.decorations.length; i++ )
+	{
+		if ( !this.decorations[i].exists )
+		{
+			return i;
+		}
+	}
+	return -1;
 };
 
 RoomManager.prototype.loadRoom = function ( room_x, room_y )
@@ -442,6 +499,24 @@ RoomManager.prototype.loadRoom = function ( room_x, room_y )
 						else
 						{
 							console.error( "Out of Foreground resources!" );
+						}
+					}
+				}
+
+				if ( this.decoMap[y][x] )
+				{
+					for ( var i = 0; i < this.decoMap[y][x].length; i++ )
+					{
+						var index = this.getFirstDeadDeco();
+						if ( index != -1 )
+						{
+							this.activeMap[y][x] = true;
+							this.decorations[index].frame = this.decoMap[y][x][i];
+							this.decorations[index].reset( 16*x, 16*y );
+						}
+						else
+						{
+							console.error( "Out of Decoration resources!" );
 						}
 					}
 				}

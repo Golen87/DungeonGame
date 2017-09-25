@@ -8,9 +8,13 @@ DungeonGame.MainMenu.prototype = {
 
 
 		this.obj = [];
-		for ( var i = 0; i < 16; i++ )
+		for ( var j = 0; j < 2; j++ )
 		{
-			this.obj.push( this.add.sprite( 16*i, 104, 'items', randInt(0,8*9-1) ) );
+			for ( var i = 5; i < 10-j; i++ )
+			{
+			
+				this.obj.push( this.add.sprite( 16*i + 8*j, 96+16*j, 'items', randInt(0,8*9-1) ) );
+			}
 		}
 
 		var text = this.add.bitmapText( SCREEN_WIDTH/2, 48, 'Adventurer', 'DungeonGame', 16 );
@@ -29,6 +33,11 @@ DungeonGame.MainMenu.prototype = {
 
 		var start = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.SPACEBAR );
 		start.onDown.add( this.startGame, this );
+
+		//this.fire = DungeonGame.game.add.sprite( 32, 32, 'fire', 0 );
+		//this.fire.anchor.set( 0.5 );
+		//this.fire.animations.add( 'burn', [0,1,2,3,4,5,6,7], 10, true );
+		//this.fire.animations.play( 'burn' );
 
 		DungeonGame.Particle.createSmokeTrail( 48, 64 );
 		DungeonGame.Particle.createSmokeTrail( SCREEN_WIDTH-48, 64 );

@@ -77,11 +77,12 @@ GuiManager.prototype.showPauseMenu = function ()
 {
 	var c = DungeonGame.game.camera.view;
 	this.darkBg = DungeonGame.game.add.graphics( c.x, c.y );
-	this.darkBg.beginFill( 0x000000, 0.5 );
+	this.darkBg.beginFill( 0x000000, 0.75 );
 	this.darkBg.drawRect( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
 	this.darkBg.endFill();
-	this.menu = this.guiGroup.create( c.x+16, c.y+16, 'menu' );
-	this.choiseLabel = DungeonGame.game.add.bitmapText( c.x+SCREEN_WIDTH/2, c.y+16, 'Adventurer', 'Paused', 16 );
+	this.menu = DungeonGame.game.add.sprite( c.x+SCREEN_WIDTH/2, c.y+SCREEN_HEIGHT/2 + 8, 'items', randInt(0,8*9-1) );
+	this.menu.anchor.set( 0.5 );
+	this.choiseLabel = DungeonGame.game.add.bitmapText( c.x+SCREEN_WIDTH/2, c.y+SCREEN_HEIGHT/2 - 8, 'Adventurer', 'Paused', 16 );
 	this.choiseLabel.anchor.setTo( 0.5, 0.5 );
 };
 
