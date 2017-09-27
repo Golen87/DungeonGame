@@ -23,7 +23,6 @@ Player.prototype.create = function ( x, y, group )
 	var weapon = [1,3,4,5,6,14,15].choice();
 	DungeonGame.Gui.itemSlot1.frame = weapon;
 	DungeonGame.Gui.itemSlot2.visible = false;
-	DungeonGame.Gui.itemSlot3.visible = false;
 
 	this.sword = group.create( x, y+2, 'items', weapon );
 	DungeonGame.game.physics.arcade.enable( this.sword, Phaser.Physics.ARCADE );
@@ -59,6 +58,7 @@ Player.prototype.create = function ( x, y, group )
 
 	this.keys.space = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.SPACEBAR );
 	this.keys.shift = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.SHIFT );
+	this.keys.h = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.H );
 
 	this.gridPos = new Phaser.Point( x, y );
 	this.prevGridPos = new Phaser.Point( x, y );
@@ -242,6 +242,12 @@ Player.prototype.update = function ()
 	this.prevGridPos.copyFrom( this.gridPos );
 	this.gridPos.x = Math.round( ( this.sprite.position.x - 8 ) / 16 ) * 16;
 	this.gridPos.y = Math.round( ( this.sprite.position.y - 8 ) / 16 ) * 16;
+
+	if ( this.keys.h.justDown )
+	{
+		this.health = Math.min( this.health + 15, 100 );
+		DungeonGame.Gui.setHealth( this.health / 100, 0.0 );
+	}
 };
 
 Player.prototype.render = function ()
@@ -262,7 +268,8 @@ Player.prototype.damage = function ( power, position )
 	if ( this.damageState == 'idle' )
 	{
 		this.damageTimer = 0;
-		this.health -= power;
+		this.health = Math.max( this.health - power, 0 );
+		DungeonGame.Gui.setHealth( this.health / 100, 0.0 );
 
 		// Move please
 		DungeonGame.Audio.play( 'chop' );
