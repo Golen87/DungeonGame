@@ -117,6 +117,23 @@ EntityManager.prototype.loadRoom = function ( room_x, room_y )
 
 };
 
+EntityManager.prototype.checkPhysicsAt = function ( x, y )
+{
+	for ( var i = 0; i < this.entities.length; i++ )
+	{
+		if ( this.entities[i] && this.entities[i].sprite.exists )
+		{
+			var p = this.entities[i].getGridPos();
+			if ( p.x == x && p.y == y )
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+};
+
+
 EntityManager.prototype.trigger = function ( trigger )
 {
 	for ( var i = 0; i < this.entities.length; i++ )

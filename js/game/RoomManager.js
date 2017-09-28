@@ -222,7 +222,8 @@ RoomManager.prototype.makeSpriteMap = function ()
 						this.addForeground( x, y-1, [4,0] );
 					}
 				}
-				else
+
+				if ( !this.isFloor( x, y+1 ) )
 				{
 					// Out of bounds background
 					this.addForeground( x, y, TILE_NONE['spos'] );
@@ -432,7 +433,7 @@ RoomManager.prototype.loadRoom = function ( room_x, room_y )
 	{
 		for ( var x = offset_x; x < offset_x + ROOM_WIDTH; x++ )
 		{
-			if ( this.physicsMap[y][x])
+			if ( this.physicsMap[y][x] )
 			{
 				if ( !( this.isWithin( x, y-1 ) && this.physicsMap[y-1][x] && y != offset_y ) )
 				{

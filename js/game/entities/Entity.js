@@ -67,3 +67,12 @@ Entity.prototype.damage = function ()
 Entity.prototype.hurt = function ()
 {
 };
+
+
+Entity.prototype.getGridPos = function ()
+{
+	return {
+		"x": Math.floor(this.sprite.x / 16),
+		"y": Math.floor(this.sprite.y / 16)
+	};
+};

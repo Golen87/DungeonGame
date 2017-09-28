@@ -65,6 +65,8 @@ World.prototype.create = function ()
 	DungeonGame.game.world.bringToTop( this.entities );
 	DungeonGame.game.world.bringToTop( this.roomManager.foreground );
 	DungeonGame.game.world.bringToTop( DungeonGame.Gui.guiGroup );
+
+	DungeonGame.checkPhysicsAt = World.prototype.checkPhysicsAt.bind( this );
 };
 
 World.prototype.update = function ()
@@ -254,4 +256,25 @@ World.prototype.shiftRoom = function ( dx, dy )
 		this.Player.sprite.position.x += dx;
 		this.Player.sprite.position.y += dy;
 	}
+};
+
+
+World.prototype.checkPhysicsAt = function ( x, y )
+{
+	if ( this.roomManager.isWithin( x, y ) )
+	{
+		if ( this.roomManager.physicsMap[y][x] )
+		{
+			return true;
+		}
+		else if ( this.entityManager.checkPhysicsAt( x, y ) )
+		{
+			return true;
+		}
+	}
+	else
+	{
+		console.error( "Position out of bounds: ({0}, {1})".format(x, y) );
+	}
+	return false;
 };
