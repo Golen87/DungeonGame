@@ -134,7 +134,7 @@ Enemy.prototype.render = function ()
 {
 	if ( DungeonGame.debug )
 	{
-		DungeonGame.game.debug.body( this.sprite );
+		DungeonGame.game.debug.body( this.sprite, RED );
 	}
 };
 

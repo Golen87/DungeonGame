@@ -54,3 +54,7 @@ function extend(base, sub) {
     value: sub 
   });
 }
+
+var RED = 'rgba(255,0,0,0.4)';
+var GREEN = 'rgba(0,255,0,0.4)';
+var BLUE = 'rgba(0,0,255,0.4)';

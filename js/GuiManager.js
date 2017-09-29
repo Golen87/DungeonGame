@@ -101,19 +101,28 @@ GuiManager.prototype.update = function ()
 GuiManager.prototype.showPauseMenu = function ()
 {
 	var c = DungeonGame.game.camera.view;
+
 	this.darkBg = DungeonGame.game.add.graphics( c.x, c.y );
 	this.darkBg.beginFill( 0x000000, 0.75 );
 	this.darkBg.drawRect( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
 	this.darkBg.endFill();
+
 	this.menu = DungeonGame.game.add.sprite( c.x+SCREEN_WIDTH/2, c.y+SCREEN_HEIGHT/2 + 8, 'items', randInt(0,8*9-1) );
 	this.menu.anchor.set( 0.5 );
 	this.choiseLabel = DungeonGame.game.add.bitmapText( c.x+SCREEN_WIDTH/2, c.y+SCREEN_HEIGHT/2 - 8, 'Adventurer', 'Paused', 16 );
 	this.choiseLabel.anchor.setTo( 0.5, 0.5 );
+
+	this.darkFg = DungeonGame.game.add.graphics( c.x, c.y );
+	this.darkFg.beginFill( 0x000000, 0.2 );
+	for (var i=0; i<SCREEN_HEIGHT/2; i++)
+		this.darkFg.drawRect( 0, i*2, SCREEN_WIDTH, 1 );
+	this.darkFg.endFill();
 };
 
 GuiManager.prototype.hidePauseMenu = function ()
 {
 	this.darkBg.clear();
+	this.darkFg.clear();
 	this.menu.kill();
 	this.choiseLabel.kill();
 };

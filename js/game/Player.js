@@ -150,22 +150,22 @@ Player.prototype.update = function ()
 		if ( this.direction == 'right' )
 		{
 			this.swing.angle = 0;
-			this.swing.body.setSize( 16, 28, 28, 10 );
+			this.swing.body.setSize( 15, 28, 28, 10 );
 		}
 		else if ( this.direction == 'down' )
 		{
 			this.swing.angle = 90;
-			this.swing.body.setSize( 28, 16, 10, this.swing.scale.y == 1 ? 28 : 4 );
+			this.swing.body.setSize( 28, 15, 10, this.swing.scale.y == 1 ? 28 : 4 );
 		}
 		else if ( this.direction == 'left' )
 		{
 			this.swing.angle = 180;
-			this.swing.body.setSize( 16, 28, 5, 10 );
+			this.swing.body.setSize( 15, 28, 5, 10 );
 		}
 		else if ( this.direction == 'up' )
 		{
 			this.swing.angle = 270;
-			this.swing.body.setSize( 28, 16, 10, this.swing.scale.y == 1 ? 5 : 27 );
+			this.swing.body.setSize( 28, 15, 10, this.swing.scale.y == 1 ? 5 : 27 );
 		}
 		this.sword.angle = this.swing.scale.y == 1 ? this.swing.angle - 90 : this.swing.angle + 90;
 		this.sword.position.x += Math.round(14*Math.cos((this.sword.angle + this.swing.scale.y * 45) * Math.PI / 180));
@@ -257,9 +257,9 @@ Player.prototype.render = function ()
 		if ( this.sprite.exists )
 			DungeonGame.game.debug.body( this.sprite );
 		if ( this.swing.exists )
-			DungeonGame.game.debug.body( this.swing );
+			DungeonGame.game.debug.body( this.swing, RED );
 		if ( this.sword.exists )
-			DungeonGame.game.debug.body( this.sword );
+			DungeonGame.game.debug.body( this.sword, RED );
 	}
 };
 

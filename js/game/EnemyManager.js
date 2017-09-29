@@ -34,7 +34,7 @@ EnemyManager.prototype.render = function ()
 	{
 		if ( this.enemies[i] && this.enemies[i].sprite.exists )
 		{
-			this.enemies[i].update();
+			this.enemies[i].render();
 		}
 	}
 };
