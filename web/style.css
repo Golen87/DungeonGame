@@ -4,6 +4,7 @@ body {
 	margin: auto;
 	padding: 1em;
 	text-align: center;
+	overflow: hidden;
 }
 
 canvas {
@@ -24,7 +25,7 @@ canvas {
 	transform-origin: 50% 0;
 }
 
-@media (min-width: 512px) and (min-height: 352px) {
+@media (min-width: 512px) and (min-height: 416px) {
 	canvas {
 		zoom: 2;
 		-moz-transform: scale(2);
@@ -32,7 +33,7 @@ canvas {
 	}
 }
 
-@media (min-width: 768px) and (min-height: 528px) {
+@media (min-width: 768px) and (min-height: 624px) {
 	canvas {
 		zoom: 3;
 		-moz-transform: scale(3);
@@ -40,7 +41,7 @@ canvas {
 	}
 }
 
-@media (min-width: 1024px) and (min-height: 704px) {
+@media (min-width: 1024px) and (min-height: 832px) {
 	canvas {
 		zoom: 4;
 		-moz-transform: scale(4);

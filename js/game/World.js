@@ -16,13 +16,14 @@ World.prototype.create = function ()
 
 	this.items = [];
 
-	this.worldWidth = DungeonGame.game.cache.getImage( 'overworld' ).width / ROOM_WIDTH;
-	this.worldHeight = DungeonGame.game.cache.getImage( 'overworld' ).height / ROOM_HEIGHT;
+	this.worldWidth = DungeonGame.game.cache.getImage( 'floorMap' ).width / ROOM_WIDTH;
+	this.worldHeight = DungeonGame.game.cache.getImage( 'floorMap' ).height / ROOM_HEIGHT;
 	DungeonGame.game.world.setBounds( 0, 0, this.worldWidth * SCREEN_WIDTH, this.worldHeight * SCREEN_HEIGHT );
 
 	this.roomManager = new RoomManager( this.entities );
 	this.nextRoomOffset = 8;
-	this.currentArea = [7,7];
+	//this.currentArea = [7,7];
+	this.currentArea = [1,1];
 	this.roomManager.loadRoom( this.currentArea[0], this.currentArea[1] );
 
 	this.Player.create(

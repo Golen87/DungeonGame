@@ -1,7 +1,7 @@
 var DungeonGame = DungeonGame || {};
 
 var ROOM_WIDTH = 16;
-var ROOM_HEIGHT = 11;
+var ROOM_HEIGHT = 13;
 var SCREEN_WIDTH = ROOM_WIDTH * 16;
 var SCREEN_HEIGHT = ROOM_HEIGHT * 16;
 DungeonGame.game = new Phaser.Game( SCREEN_WIDTH, SCREEN_HEIGHT, Phaser.CANVAS, 'DungeonGame', null, false, false );

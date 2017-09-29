@@ -2,11 +2,16 @@
 // Constructor
 function RoomManager ( decoGroup )
 {
-	this.width = DungeonGame.game.cache.getImage( 'overworld' ).width;
-	this.height = DungeonGame.game.cache.getImage( 'overworld' ).height;
+	this.worldName = 'floorMap';
+	// floorMap, wallMap, entityMap
+
+	this.width = DungeonGame.game.cache.getImage( this.worldName ).width;
+	this.height = DungeonGame.game.cache.getImage( this.worldName ).height;
 
 	this.tileMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
-	this.makePixelMap();
+	this.makePixelMap( 'floorMap' );
+	this.makePixelMap( 'wallMap' );
+	this.makePixelMap( 'entityMap' );
 
 	this.physicsMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
 	this.fgMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
@@ -39,10 +44,10 @@ function RoomManager ( decoGroup )
 }
 
 
-RoomManager.prototype.makePixelMap = function ()
+RoomManager.prototype.makePixelMap = function ( worldFile )
 {
 	var bmd = DungeonGame.game.make.bitmapData( this.width, this.height );
-	bmd.draw( DungeonGame.game.cache.getImage( 'overworld' ), 0, 0 );
+	bmd.draw( DungeonGame.game.cache.getImage( worldFile ), 0, 0 );
 	bmd.update();
 
 	for ( var y = 0; y < this.height; y++ )
@@ -58,8 +63,8 @@ RoomManager.prototype.makePixelMap = function ()
 
 			if ( a == 0 )
 			{
-				var index = TILES.map(function(e) { return e.name; }).indexOf( TILE_NONE );
-				this.tileMap[y][x] = index;
+				//var index = TILES.map(function(e) { return e.name; }).indexOf( TILE_NONE );
+				//this.tileMap[y][x] = index;
 			}
 			else if ( key in PIXEL_TABLE )
 			{
@@ -286,6 +291,12 @@ RoomManager.prototype.makeSpriteMap = function ()
 				// For floor without wall? Like bottomless pit
 				//var spos = Phaser.ArrayUtils.getRandomItem( [[8,0], [7,1], [8,1]] );
 				//this.addForeground( x, y, spos[0], spos[1] );
+			}
+			// Add indent
+			else if ( this.isFloor( x, y ) && this.getTileName( x, y ) == 'indent' )
+			{
+				this.addBackground( x, y, TILE_FLOOR['spos'] );
+				this.addBackground( x, y, FLOOR_INDENT['spos'] );
 			}
 			// Add rubble
 			else if ( this.isFloor( x, y ) && this.getTileName( x, y ) == 'rubble' )

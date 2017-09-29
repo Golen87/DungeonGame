@@ -19,21 +19,96 @@ Spikes.prototype.create = function ( x, y, deathCallback )
 	this.sprite.scale.x 	= 1 - 2*odd;
 	this.bgSprite.scale.x	= 1 - 2*odd;
 
-	this.active = true;
-	this.timer = 0;
-	this.toggle( this.active, false );
+	this.active = false;
+	this.animationTimer = 0;
+	this.prepareTimer = 0;
+	this.setState( this.active, false );
+
+	this.manual = false;
+	this.prepareDuration = 60;
+	this.autoDuration = 100;
+	this.autoTimer = this.autoDuration;
 };
 
 Spikes.prototype.update = function ()
 {
 	Entity.prototype.update.call( this );
 
-	this.timer -= 1;
-	if ( this.timer == 0 )
+	if ( !this.manual )
+	{
+		this.autoTimer -= 1;
+		if ( this.autoTimer < 0 )
+		{
+			this.autoTimer = this.autoDuration;
+			this.prepare( !this.active );
+		}
+	}
+
+	this.animationTimer -= 1;
+	if ( this.animationTimer == 0 )
+	{
+		this.setState( this.active, true );
+	}
+
+	this.prepareTimer -= 1;
+	if ( this.prepareTimer == 0 )
 	{
 		this.toggle( !this.active );
 	}
 };
+
+Spikes.prototype.setState = function ( state, sound=true )
+{
+	this.active = state;
+
+	if ( state )
+	{
+		this.sprite.alpha = 1.0;
+		this.sprite.frame = 9;
+
+		if ( sound )
+			DungeonGame.Audio.play( 'spikes' );
+	}
+	else
+	{
+		this.sprite.alpha = 0.0;
+	}
+};
+
+Spikes.prototype.toggle = function ( state )
+{
+	this.active = state;
+
+	if ( state )
+	{
+		this.sprite.frame = 10;
+		this.sprite.alpha = 1.0;
+		this.animationTimer = 4;
+	}
+	else
+	{
+		this.sprite.frame = 8;
+		this.sprite.alpha = 1.0;
+		this.animationTimer = 16;
+	}
+};
+
+Spikes.prototype.prepare = function ( state )
+{
+	if ( state )
+	{
+		this.sprite.alpha = 1.0;
+		this.sprite.frame = 7;
+
+		this.prepareTimer = this.prepareDuration;
+		this.autoTimer += this.prepareDuration;
+	}
+	else
+	{
+		this.toggle( state );
+	}
+}
+
 
 Spikes.prototype.damage = function () {};
 
@@ -47,41 +122,10 @@ Spikes.prototype.overlap = function ( other )
 	}
 };
 
-Spikes.prototype.toggle = function ( state, sound=true )
+Spikes.prototype.hasPhysics = function ()
 {
-	this.active = state;
-	this.timerRunning = false;
-
-	if ( state )
-	{
-		this.sprite.alpha = 1.0;
-		this.sprite.frame = 7;
-		if ( sound )
-			DungeonGame.Audio.play( 'spikes' );
-	}
-	else
-	{
-		this.sprite.alpha = 0.0;
-	}
+	return this.active;
 };
-
-Spikes.prototype.prepareToggle = function ( state )
-{
-	if ( state )
-	{
-		this.sprite.alpha = 1.0;
-		this.sprite.frame = 8;
-
-		this.timer = 90;
-	}
-	else
-	{
-		this.active = false;
-		this.sprite.alpha = 0.0;
-
-		this.timer = 0;
-	}
-}
 
 
 extend( Entity, Spikes );

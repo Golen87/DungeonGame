@@ -47,8 +47,11 @@ DungeonGame.Preload.prototype = {
 		this.load.spritesheet( 'rubble', 'assets/sprites/particles/rubble.png', 5, 5 );
 		this.load.spritesheet( 'fire', 'assets/sprites/particles/fire.png', 8, 12 );
 
-		this.load.spritesheet( 'map', 'assets/rooms/map.png', ROOM_WIDTH, ROOM_HEIGHT );
-		this.load.spritesheet( 'overworld', 'assets/rooms/overworld.png', ROOM_WIDTH, ROOM_HEIGHT );
+		//this.load.image( 'map', 'assets/rooms/map.png' );
+		//this.load.image( 'overworld', 'assets/rooms/overworld.png' );
+		this.load.image( 'floorMap', 'assets/rooms/floorMap.png' );
+		this.load.image( 'wallMap', 'assets/rooms/wallMap.png' );
+		this.load.image( 'entityMap', 'assets/rooms/entityMap.png' );
 
 
 		this.load.audio( 'footsteps', 'assets/sounds/footsteps.ogg' );

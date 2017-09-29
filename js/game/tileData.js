@@ -31,23 +31,43 @@ var DECO_PILLAR = {
 	'type': TYPE_WALL,
 	'spos': [0],
 };
-var TILE_RUBBLE = {
+
+var FLOOR_RUBBLE = {
 	'name': 'rubble',
 	'type': TYPE_FLOOR
+};
+var FLOOR_INDENT = {
+	'name': 'indent',
+	'type': TYPE_FLOOR,
+	'spos': [4,2]
 };
 
 var OBJ_BOX = {
 	'name': 'box',
 	'type': TYPE_OBJECT
 };
-
+var OBJ_BLOCK = {
+	'name': 'block',
+	'type': TYPE_OBJECT
+};
 var OBJ_SWITCH = {
 	'name': 'switch',
 	'type': TYPE_OBJECT
 };
-
+var OBJ_DOOR = {
+	'name': 'door',
+	'type': TYPE_OBJECT
+};
+var OBJ_CHEST = {
+	'name': 'chest',
+	'type': TYPE_OBJECT
+};
 var OBJ_SPIKES = {
 	'name': 'spikes',
+	'type': TYPE_OBJECT
+};
+var OBJ_PRESSUREPLATE = {
+	'name': 'pressureplate',
 	'type': TYPE_OBJECT
 };
 
@@ -58,27 +78,23 @@ var ENEMY = {
 
 
 var PIXEL_TABLE = {
-	'0,0,0': TILE_WALL,
-	'100,0,100': TILE_SPIRAL,
 	'255,255,255': TILE_FLOOR,
-	'60,0,0': DECO_PILLAR,
+	'255,255,128': FLOOR_RUBBLE,
+	'255,128,128': FLOOR_INDENT,
 
-	'100,0,0': TILE_WALL, // Rock
-	'0,100,0': TILE_SPIRAL, // Tree
-	'0,0,255': TILE_RUBBLE, // Water
-	//'0,0,255': OBJ_SPIKES, // Water
+	'0,0,0': TILE_WALL,
+	'50,50,50': TILE_SPIRAL,
+	'128,128,128': DECO_PILLAR,
 
-	'255,0,0': ENEMY, // Soldiers
+	'255,0,0': ENEMY,
 
-	'100,0,255': TILE_RUBBLE, // Stairs
-	'255,100,0': TILE_FLOOR, // Bridge
-	'255,255,0': OBJ_BOX, // Entrance
-	'200,255,0': OBJ_SWITCH,
-	'255,192,0': OBJ_SPIKES,
-
-	'200,200,200': TILE_FLOOR, // Gray floor
-	'0,255,255': TILE_SPIRAL, // Grave
-	'0,0,100': TILE_WALL, // Gray walls
+	'255,0,255': OBJ_SPIKES,
+	'0,0,255': OBJ_DOOR,
+	'0,255,255': OBJ_SWITCH,
+	'0,128,255': OBJ_PRESSUREPLATE,
+	'0,255,0': OBJ_CHEST,
+	'255,255,0': OBJ_BOX,
+	'128,128,0': OBJ_BLOCK,
 }
 
 var TILES = [
@@ -87,12 +103,19 @@ var TILES = [
 	TILE_SPIRAL,
 	TILE_FLOOR,
 	DECO_PILLAR,
-	TILE_RUBBLE,
 
-	OBJ_BOX,
-	OBJ_SWITCH,
-	OBJ_SPIKES,
+	FLOOR_RUBBLE,
+	FLOOR_INDENT,
+
 	ENEMY,
+
+	OBJ_SPIKES,
+	OBJ_DOOR,
+	OBJ_SWITCH,
+	OBJ_PRESSUREPLATE,
+	OBJ_CHEST,
+	OBJ_BOX,
+	OBJ_BLOCK,
 ];
 
 

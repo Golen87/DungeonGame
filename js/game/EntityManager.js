@@ -5,9 +5,9 @@ function EntityManager ( group, bgGroup, entityMap )
 	this.entityMap = entityMap;
 	this.activeMap = [...Array( entityMap.length ).keys()].map( i => Array( entityMap[0].length ) );
 
-	this.entities = Array( 32 );
-	this.sprites = Array( 32 );
-	this.bgSprites = Array( 32 );
+	this.entities = Array( 64 );
+	this.sprites = Array( 64 );
+	this.bgSprites = Array( 64 );
 
 	for ( var i = 0; i < this.sprites.length; i++ )
 	{
@@ -97,15 +97,31 @@ EntityManager.prototype.loadRoom = function ( room_x, room_y )
 				if ( index != -1 )
 				{
 					this.activeMap[y][x] = true;
+					this.entities[index] = null;
 
-					if ( this.entityMap[y][x] == 'box' )
-						this.entities[index] = new Box( this.sprites[index], this.bgSprites[index] );
+					if ( this.entityMap[y][x] == 'spikes' )
+						this.entities[index] = new Spikes( this.sprites[index], this.bgSprites[index] );
+					else if ( this.entityMap[y][x] == 'door' )
+						this.entities[index] = new Door( this.sprites[index], this.bgSprites[index], this.trigger.bind(this) );
 					else if ( this.entityMap[y][x] == 'switch' )
 						this.entities[index] = new Switch( this.sprites[index], this.bgSprites[index], this.trigger.bind(this) );
-					else if ( this.entityMap[y][x] == 'spikes' )
-						this.entities[index] = new Spikes( this.sprites[index], this.bgSprites[index] );
+					else if ( this.entityMap[y][x] == 'pressureplate' )
+						this.entities[index] = new PressurePlate( this.sprites[index], this.bgSprites[index] );
+					else if ( this.entityMap[y][x] == 'chest' )
+						this.entities[index] = new Chest( this.sprites[index], this.bgSprites[index], this.trigger.bind(this) );
+					else if ( this.entityMap[y][x] == 'box' )
+						this.entities[index] = new Box( this.sprites[index], this.bgSprites[index] );
+					else if ( this.entityMap[y][x] == 'block' )
+						this.entities[index] = new Block( this.sprites[index], this.bgSprites[index] );
 
-					this.entities[index].create( x, y, this.entityDeath.bind(this) );
+					if ( this.entities[index] )
+					{
+						this.entities[index].create( x, y, this.entityDeath.bind(this) );
+					}
+					else
+					{
+						console.error( "Entity not defined." );
+					}
 				}
 				else
 				{
@@ -126,7 +142,7 @@ EntityManager.prototype.checkPhysicsAt = function ( x, y )
 			var p = this.entities[i].getGridPos();
 			if ( p.x == x && p.y == y )
 			{
-				return true;
+				return this.entities[i].hasPhysics();
 			}
 		}
 	}
@@ -142,7 +158,7 @@ EntityManager.prototype.trigger = function ( trigger )
 		{
 			if ( Spikes.prototype.isPrototypeOf( this.entities[i] ) )
 			{
-				this.entities[i].prepareToggle( !trigger.active );
+				this.entities[i].toggle( !trigger.active );
 			}
 		}
 	}

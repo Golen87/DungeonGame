@@ -76,3 +76,8 @@ Entity.prototype.getGridPos = function ()
 		"y": Math.floor(this.sprite.y / 16)
 	};
 };
+
+Entity.prototype.hasPhysics = function ()
+{
+	return true;
+};
