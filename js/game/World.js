@@ -68,6 +68,9 @@ World.prototype.create = function ()
 	DungeonGame.game.world.bringToTop( DungeonGame.Gui.guiGroup );
 
 	DungeonGame.checkPhysicsAt = World.prototype.checkPhysicsAt.bind( this );
+	DungeonGame.cameraShake = World.prototype.cameraShake.bind( this );
+	this.shake = 0;
+	this.prevShakeDir = [0,0];
 };
 
 World.prototype.update = function ()
@@ -151,8 +154,26 @@ World.prototype.update = function ()
 	}
 	//this.camPos.x += ( this.camGoal.x - this.camPos.x ).clamp(-2,2);
 	//this.camPos.y += ( this.camGoal.y - this.camPos.y ).clamp(-2,2);
-	DungeonGame.game.camera.x = Math.round( this.camPos.x + 0*(Math.random()-0.5) );
-	DungeonGame.game.camera.y = Math.round( this.camPos.y + 0*(Math.random()-0.5) );
+
+	DungeonGame.game.camera.x = Math.round( this.camPos.x );
+	DungeonGame.game.camera.y = Math.round( this.camPos.y );
+
+	if ( this.shake > 0 )
+	{
+		do
+		{
+			var dir = Math.random() * 2 * Math.PI;
+			var sx = Math.round( Math.sin(dir) * Math.ceil( this.shake/4 ) );
+			var sy = Math.round( Math.cos(dir) * Math.ceil( this.shake/4 ) );
+		}
+		while ( this.prevShakeDir[0] == sx && this.prevShakeDir[1] == sy )
+		this.prevShakeDir = [sx, sy];
+
+		DungeonGame.game.camera.x += sx;
+		DungeonGame.game.camera.y += sy;
+
+		this.shake -= 1;
+	}
 
 	/*if ( this.Player.gridPos != this.Player.prevGridPos )
 	{
@@ -278,4 +299,9 @@ World.prototype.checkPhysicsAt = function ( x, y )
 		console.error( "Position out of bounds: ({0}, {1})".format(x, y) );
 	}
 	return false;
+};
+
+World.prototype.cameraShake = function ( value )
+{
+	this.shake = Math.max( Math.round(value), this.shake );
 };

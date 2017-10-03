@@ -135,6 +135,7 @@ Box.prototype.hurt = function ()
 Box.prototype.defeat = function ()
 {
 	DungeonGame.Audio.play( 'break' );
+	DungeonGame.cameraShake( 8 );
 
 	DungeonGame.Particle.createRubbleBurst( this.sprite.x, this.sprite.y );
 

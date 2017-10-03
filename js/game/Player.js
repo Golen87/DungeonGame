@@ -273,6 +273,9 @@ Player.prototype.damage = function ( power, position )
 
 		// Move please
 		DungeonGame.Audio.play( 'chop' );
+		DungeonGame.cameraShake( power / 5 );
+
+		// Knockback
 		var p = new Phaser.Point(
 			this.sprite.body.center.x - position.x,
 			this.sprite.body.center.y - position.y
@@ -313,6 +316,7 @@ Player.prototype.defeat = function ()
 	this.setAnimation( 'hurt', this.direction );
 	this.damageState = 'dead';
 	DungeonGame.Audio.play( 'hurt' );
+	DungeonGame.cameraShake( 16 );
 	DungeonGame.cinematic = true;
 
 	if ( !this.damageStepActive )
@@ -321,6 +325,12 @@ Player.prototype.defeat = function ()
 		this.damageStep();
 	}
 
+	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 1.0, function() {
+		DungeonGame.cameraShake( 8 );
+	}, this );
+	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 2.0, function() {
+		DungeonGame.cameraShake( 4 );
+	}, this );
 	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 2.5, this.gameOver, this );
 };
 

@@ -148,6 +148,7 @@ Enemy.prototype.damage = function ()
 
 		// Move please
 		DungeonGame.Audio.play( 'chop' );
+		DungeonGame.cameraShake( 2 );
 
 		if ( this.health <= 0 )
 		{
@@ -194,6 +195,7 @@ Enemy.prototype.hurt = function ()
 Enemy.prototype.defeat = function ()
 {
 	DungeonGame.Audio.play( this.sound, 'death' );
+	DungeonGame.cameraShake( 8 );
 
 	DungeonGame.Particle.createSmokeBurst( this.sprite.x+8, this.sprite.y+8 );
 
