@@ -46,10 +46,16 @@ GuiManager.prototype.create = function ()
 	this.invGui = this.guiGroup.create( 0, 0, 'itemHud' );
 	this.invGui.anchor.setTo( 1.0, 1.0 );
 
-	this.itemSlot1 = this.guiGroup.create( 0, 0, 'items', randInt(0,8*9-1) );
-	this.itemSlot1.anchor.setTo( 1.0, 1.0 );
-	this.itemSlot2 = this.guiGroup.create( 0, 0, 'items', randInt(0,8*9-1) );
-	this.itemSlot2.anchor.setTo( 1.0, 1.0 );
+	this.invSize = 2;
+	this.itemSlot = Array( this.invSize );
+	for ( var i = 0; i < this.invSize; i++ )
+	{
+		this.itemSlot[i] = this.guiGroup.create( 0, 0, 'items', randInt(0,8*9-1) );
+		this.itemSlot[i].anchor.setTo( 1.0, 1.0 );
+
+		this.itemSlot[i].label = DungeonGame.game.add.bitmapText( 0, 0, 'TinyUnicode', ' ', 16, this.guiGroup );
+		this.itemSlot[i].label.anchor.setTo( 0.0, 1.0 );
+	}
 };
 
 GuiManager.prototype.update = function ()
@@ -83,12 +89,17 @@ GuiManager.prototype.update = function ()
 	this.invGui.y = DungeonGame.game.camera.view.y + SCREEN_HEIGHT - 1 + this.cinDist * this.cinemaValue;
 	this.invGui.alpha = Math.min( 1, 2 - this.cinemaValue );
 
-	this.itemSlot1.x = DungeonGame.game.camera.view.x + SCREEN_WIDTH - 13 - 25;
-	this.itemSlot1.y = DungeonGame.game.camera.view.y + SCREEN_HEIGHT - 5 + this.cinDist * this.cinemaValue;
-	this.itemSlot1.alpha = Math.min( 1, 2 - this.cinemaValue );
-	this.itemSlot2.x = DungeonGame.game.camera.view.x + SCREEN_WIDTH - 13;
-	this.itemSlot2.y = DungeonGame.game.camera.view.y + SCREEN_HEIGHT - 5 + this.cinDist * this.cinemaValue;
-	this.itemSlot2.alpha = Math.min( 1, 2 - this.cinemaValue );
+	for ( var i = 0; i < this.invSize; i++ )
+	{
+		this.itemSlot[i].x = DungeonGame.game.camera.view.x + SCREEN_WIDTH - 13 - 25 * ( this.invSize - i - 1 );
+		this.itemSlot[i].y = DungeonGame.game.camera.view.y + SCREEN_HEIGHT - 5 + this.cinDist * this.cinemaValue;
+		this.itemSlot[i].alpha = Math.min( 1, 2 - this.cinemaValue );
+
+		//this.itemSlot[i].label.text = Math.round(DungeonGame.game.time.totalElapsedSeconds()).toString();
+		this.itemSlot[i].label.x = DungeonGame.game.camera.view.x + SCREEN_WIDTH - 29 - 25 * ( this.invSize - i - 1 );
+		this.itemSlot[i].label.y = DungeonGame.game.camera.view.y + SCREEN_HEIGHT - 3 + this.cinDist * this.cinemaValue;
+		this.itemSlot[i].label.alpha = Math.min( 1, 2 - this.cinemaValue );
+	}
 
 	this.cinematicTop.x = DungeonGame.game.camera.view.x;
 	this.cinematicTop.y = DungeonGame.game.camera.view.y - this.cinDist * ( 2 - this.cinemaValue );

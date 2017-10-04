@@ -17,12 +17,12 @@ Player.prototype.create = function ( x, y, group )
 	DungeonGame.game.physics.arcade.enable( this.sprite, Phaser.Physics.ARCADE );
 	this.sprite.anchor.set( 0.5 );
 	//this.sprite.body.setSize( 10, 10, 3+8, 5+8 );
-	this.sprite.body.setSize( 10, 8, 3, 5 );
+	this.sprite.body.setSize( 10, 8, 3, 6 );
 	//this.sprite.body.setCircle( 6, 2, 4 );
 
+	this.items = [];
 	var weapon = [1,3,4,5,6,14,15].choice();
-	DungeonGame.Gui.itemSlot1.frame = weapon;
-	DungeonGame.Gui.itemSlot2.visible = false;
+	this.giveItem( weapon );
 
 	this.sword = group.create( x, y+2, 'items', weapon );
 	DungeonGame.game.physics.arcade.enable( this.sword, Phaser.Physics.ARCADE );
@@ -366,4 +366,38 @@ Player.prototype.gameOver = function ()
 
 	this.sprite.kill();
 	this.wings.kill();
+};
+
+
+Player.prototype.giveItem = function ( itemIndex )
+{
+	this.items.push( itemIndex );
+	this.updateItemGui();
+};
+
+Player.prototype.takeItem = function ( itemIndex )
+{
+	this.items.splice( this.items.indexOf( itemIndex ), 1 );
+	this.updateItemGui();
+};
+
+Player.prototype.hasItem = function ( itemIndex )
+{
+	return this.items.indexOf( itemIndex ) != -1;
+};
+
+Player.prototype.updateItemGui = function ()
+{
+	for ( var i = 0; i < DungeonGame.Gui.invSize; i++ )
+	{
+		DungeonGame.Gui.itemSlot[i].visible = false;
+
+		if ( this.items.length > i )
+		{
+			DungeonGame.Gui.itemSlot[i].visible = true;
+			DungeonGame.Gui.itemSlot[i].frame = this.items[i];
+			var count = this.items.count( this.items[i] );
+			DungeonGame.Gui.itemSlot[i].label.text = count > 1 ? count.toString() : " ";
+		}
+	}
 };
