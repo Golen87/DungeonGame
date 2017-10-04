@@ -5,6 +5,9 @@ function Chest( sprite, bgSprite, trigger )
 	Entity.call( this, sprite, bgSprite );
 	this.trigger = trigger;
 
+	this.sprite.loadTexture( 'entities32', 0 );
+	this.sprite.frame = 0;
+
 	this.sprite.body.immovable = true;
 	this.sprite.body.moves = false;
 
@@ -14,8 +17,6 @@ function Chest( sprite, bgSprite, trigger )
 Chest.prototype.create = function ( x, y, deathCallback )
 {
 	Entity.prototype.create.call( this, x, y, deathCallback );
-
-	this.sprite.frame = 16;
 
 	this.bgSprite.reset( x*16 + 8, y*16 );
 	this.bgSprite.frame = 3;

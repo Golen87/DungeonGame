@@ -1,9 +1,10 @@
 
-
 // Constructor
 function Block( sprite, bgSprite )
 {
 	Entity.call( this, sprite, bgSprite );
+
+	this.sprite.loadTexture( 'entities16', 0 );
 	this.sprite.frame = 11;
 	this.sprite.scale.x = [-1,1].choice();
 

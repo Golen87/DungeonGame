@@ -3,6 +3,8 @@
 function Box( sprite, bgSprite )
 {
 	Entity.call( this, sprite, bgSprite );
+
+	this.sprite.loadTexture( 'entities16', 0 );
 	this.sprite.frame = 0;
 	this.sprite.scale.x = [-1,1].choice();
 
@@ -91,7 +93,7 @@ Box.prototype.overlap = function ( other )
 
 	this.isPushingBuffer = 4;
 
-	if ( Math.abs(x) > Math.abs(y) && Math.abs(y) < 12 && Math.abs(vy) < 2 )
+	if ( Math.abs(x) > Math.abs(y) && Math.abs(y) < 8 && Math.abs(vy) < 2 )
 	{
 		if ( x > 0 )
 		{
@@ -102,7 +104,7 @@ Box.prototype.overlap = function ( other )
 			setDir.call( this, -1, 0 );
 		}
 	}
-	else if ( Math.abs(y) > Math.abs(x) && Math.abs(x) < 12 && Math.abs(vx) < 2 )
+	else if ( Math.abs(y) > Math.abs(x) && Math.abs(x) < 8 && Math.abs(vx) < 2 )
 	{
 		if ( y > 0 )
 		{
