@@ -36,6 +36,7 @@ World.prototype.create = function ()
 	this.enemyManager.loadRoom( this.currentArea[0], this.currentArea[1] );
 
 	this.entityManager = new EntityManager( this.entities, this.ground, this.roomManager.entityMap );
+	this.entityManager.onOpen = World.prototype.onOpen.bind( this );
 	this.entityManager.loadRoom( this.currentArea[0], this.currentArea[1] );
 
 	//for ( var i = 0; i < 2; i++ )
@@ -280,6 +281,23 @@ World.prototype.shiftRoom = function ( dx, dy )
 	}
 };
 
+
+World.prototype.onOpen = function ( entity )
+{
+	if ( Chest.prototype.isPrototypeOf( entity ) )
+	{
+		this.Player.giveItem( 69 ); // 68-69 Key
+	}
+
+	if ( Door.prototype.isPrototypeOf( entity ) )
+	{
+		if ( this.Player.hasItem( 69 ) )
+		{
+			this.Player.takeItem( 69 ); // 68-69 Key
+			entity.open();
+		}
+	}
+};
 
 World.prototype.checkPhysicsAt = function ( x, y )
 {

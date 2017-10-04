@@ -1,49 +1,62 @@
 
 // Constructor
-function PressurePlate( sprite, bgSprite )
+function PressurePlate( onTrigger )
 {
-	Entity.call( this, sprite, bgSprite );
-
-	this.sprite.body.immovable = true;
-	this.sprite.body.moves = false;
-	this.sprite.alpha = 0.0;
-};
-
-PressurePlate.prototype.create = function ( x, y, deathCallback )
-{
-	Entity.prototype.create.call( this, x, y, deathCallback );
-
-	this.bgSprite.reset( x*16 + 8, y*16 );
+	Entity.call( this );
+	this.onTrigger = onTrigger;
 
 	this.active = false;
-	this.trigger( false );
+	this.prevActive = false;
 	this.timer = 0;
+};
+
+PressurePlate.prototype.create = function ()
+{
+	Entity.prototype.create.call( this );
+
+	this.sprite.alpha = 0.0;
+
+	this.bgSprite.reset( this.spawn.x*16 + 8, this.spawn.y*16 );
+	this.bgSprite.frame = 12;
+
+	this.toggle( false );
 };
 
 PressurePlate.prototype.update = function ()
 {
 	Entity.prototype.update.call( this );
 
+	var p = this.getGridPos();
+	if ( DungeonGame.checkPhysicsAt( p.x, p.y ) )
+	{
+		this.toggle( true );
+	}
+
 	this.timer -= 1;
 	if ( this.timer <= 0 && this.active )
 	{
-		this.trigger( false );
+		this.toggle( false );
 	}
 };
 
-PressurePlate.prototype.trigger = function ( state )
+PressurePlate.prototype.toggle = function ( state )
 {
 	this.active = state;
 
+	if ( this.active != this.prevActive )
+	{
+		this.onTrigger( this );
+
+		if ( state )
+			this.bgSprite.frame = 13;
+		else
+			this.bgSprite.frame = 12;
+	}
+
 	if ( state )
-	{
-		this.bgSprite.frame = 13;
 		this.timer = 4;
-	}
-	else
-	{
-		this.bgSprite.frame = 12;
-	}
+
+	this.prevActive = state;
 };
 
 PressurePlate.prototype.damage = function () {};
@@ -55,7 +68,7 @@ PressurePlate.prototype.overlap = function ( other )
 
 	if ( Math.abs(x) < 8 && Math.abs(y) < 6 )
 	{
-		this.trigger( true );
+		this.toggle( true );
 	}
 };
 

@@ -1,50 +1,38 @@
 
 // Constructor
-function Chest( sprite, bgSprite, trigger )
+function Chest( onOpen )
 {
-	Entity.call( this, sprite, bgSprite );
-	this.trigger = trigger;
+	Entity.call( this );
+	this.onOpen = onOpen;
 
-	this.sprite.loadTexture( 'entities32', 0 );
-	this.sprite.frame = 0;
-
-	this.sprite.body.immovable = true;
-	this.sprite.body.moves = false;
-
-	this.active = false;
+	this.isOpen = false;
 };
 
-Chest.prototype.create = function ( x, y, deathCallback )
+Chest.prototype.create = function ()
 {
-	Entity.prototype.create.call( this, x, y, deathCallback );
+	//this.sprite.loadTexture( 'entities32', 0 );
+	this.sprite.frame = 17;
 
-	this.bgSprite.reset( x*16 + 8, y*16 );
-	this.bgSprite.frame = 3;
+	if ( this.data.open )
+	{
+		this.isOpen = true;
+		this.sprite.frame = 16;
+	}
 };
 
-Chest.prototype.update = function ()
+Chest.prototype.destroy = function ()
 {
-	Entity.prototype.update.call( this );
-
-	var h = this.active * ( 3 + Math.sin( DungeonGame.game.time.totalElapsedSeconds() * Math.PI ) );
-	this.sprite.position.y += ( this.spawn.y * 16 - h - this.sprite.position.y ) / 8;
-	this.sprite.body.offset.y += ( 16 + h - this.sprite.body.offset.y ) / 8;
+	this.data.open = this.isOpen;
 };
 
 Chest.prototype.hurt = function ()
 {
-	this.active = !this.active;
-	if ( this.active )
+	if ( !this.isOpen )
 	{
-		this.sprite.frame = 17;
-		DungeonGame.Audio.play( 'crystal', 'on' );
-		this.trigger( this );
-	}
-	else
-	{
+		this.isOpen = true;
 		this.sprite.frame = 16;
-		DungeonGame.Audio.play( 'crystal', 'off' );
-		this.trigger( this );
+		//DungeonGame.Audio.play( 'crystal', 'on' );
+		this.onOpen( this );
 	}
 };
 

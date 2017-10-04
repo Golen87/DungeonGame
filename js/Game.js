@@ -29,7 +29,10 @@ DungeonGame.Game.prototype =
 		DungeonGame.Gui.update();
 
 		if (this.debugToggle.justDown)
+		{
 			DungeonGame.debug = !DungeonGame.debug;
+			DungeonGame.game.debug.reset();
+		}
 
 		if ( this.shadowToggle.justDown )
 			DungeonGame.shadow = !DungeonGame.shadow;

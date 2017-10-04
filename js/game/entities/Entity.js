@@ -1,8 +1,18 @@
 
 // Constructor
-function Entity( sprite, bgSprite )
+function Entity()
+{
+	this.spawn = new Phaser.Point();
+
+	this.hitCooldown = 6;
+	this.hitBuffer = 0;
+};
+
+Entity.prototype.init = function ( sprite, bgSprite, dataRef, x, y )
 {
 	this.sprite = sprite;
+	this.sprite.loadTexture( 'entities16', 0 );
+	this.sprite.frame = 0;
 	this.sprite.anchor.set( 0.5, 0.5 );
 	this.sprite.visible = true;
 	this.sprite.alpha = 1.0;
@@ -11,22 +21,18 @@ function Entity( sprite, bgSprite )
 
 	this.bgSprite = bgSprite;
 	this.bgSprite.anchor.set( 0.5, 0.5 );
+	this.bgSprite.kill();
 
-	this.spawn = new Phaser.Point();
-};
+	this.data = dataRef;
 
-Entity.prototype.create = function ( x, y, deathCallback )
-{
 	this.spawn.setTo( x, y );
 	this.sprite.reset( x*16 + 8, y*16 );
 	this.sprite.body.setSize( 16, 16, 0, 16 );
-	//this.sprite.body.setCircle( 6, 2, 4 );
-
-	this.deathCallback = deathCallback;
-
-	this.hitCooldown = 6;
-	this.hitBuffer = 0;
 };
+
+Entity.prototype.create = function () {};
+
+Entity.prototype.destroy = function () {};
 
 Entity.prototype.update = function ()
 {
@@ -44,7 +50,10 @@ Entity.prototype.render = function ()
 
 Entity.prototype.overlap = function ( other )
 {
-	DungeonGame.game.physics.arcade.collide( other.sprite, this.sprite );
+	if ( this.hasPhysics() )
+	{
+		DungeonGame.game.physics.arcade.collide( other.sprite, this.sprite );
+	}
 };
 
 Entity.prototype.damage = function ()
@@ -55,6 +64,7 @@ Entity.prototype.damage = function ()
 
 		// Move please
 		DungeonGame.Audio.play( 'chop' );
+		//DungeonGame.cameraShake( 1 );
 
 		this.hurt();
 	}

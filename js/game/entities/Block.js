@@ -1,16 +1,8 @@
 
 // Constructor
-function Block( sprite, bgSprite )
+function Block()
 {
-	Entity.call( this, sprite, bgSprite );
-
-	this.sprite.loadTexture( 'entities16', 0 );
-	this.sprite.frame = 11;
-	this.sprite.scale.x = [-1,1].choice();
-
-	this.sprite.body.immovable = true;
-	this.sprite.body.moves = false;
-	this.sprite.body.drag.setTo( 1000, 1000 );
+	Entity.call( this );
 
 	this.health = 3;
 
@@ -19,6 +11,12 @@ function Block( sprite, bgSprite )
 	this.pushDir = [0,0];
 
 	this.moveBuffer = new Phaser.Point( 0, 0 );
+};
+
+Block.prototype.create = function ()
+{
+	this.sprite.frame = 11;
+	this.sprite.scale.x = [-1,1].choice();
 };
 
 

@@ -1,24 +1,26 @@
 
 // Constructor
-function Switch( sprite, bgSprite, trigger )
+function Switch( onTrigger )
 {
-	Entity.call( this, sprite, bgSprite );
-	this.trigger = trigger;
-
-	this.sprite.body.immovable = true;
-	this.sprite.body.moves = false;
+	Entity.call( this );
+	this.onTrigger = onTrigger;
 
 	this.active = false;
 };
 
-Switch.prototype.create = function ( x, y, deathCallback )
+Switch.prototype.create = function ()
 {
-	Entity.prototype.create.call( this, x, y, deathCallback );
-
 	this.sprite.frame = 4;
 
-	this.bgSprite.reset( x*16 + 8, y*16 );
+	this.bgSprite.reset( this.spawn.x*16 + 8, this.spawn.y*16 );
 	this.bgSprite.frame = 3;
+
+	this.toggle( this.data.active, false );
+};
+
+Switch.prototype.destroy = function ()
+{
+	this.data.active = this.active;
 };
 
 Switch.prototype.update = function ()
@@ -30,21 +32,29 @@ Switch.prototype.update = function ()
 	this.sprite.body.offset.y += ( 16 + h - this.sprite.body.offset.y ) / 8;
 };
 
-Switch.prototype.hurt = function ()
+Switch.prototype.toggle = function ( state, audio=true )
 {
-	this.active = !this.active;
-	if ( this.active )
+	this.active = state != null ? state : false;
+
+	this.onTrigger( this );
+
+	if ( state )
 	{
 		this.sprite.frame = 5;
-		DungeonGame.Audio.play( 'crystal', 'on' );
-		this.trigger( this );
+		if ( audio )
+			DungeonGame.Audio.play( 'crystal', 'on' );
 	}
 	else
 	{
 		this.sprite.frame = 4;
-		DungeonGame.Audio.play( 'crystal', 'off' );
-		this.trigger( this );
+		if ( audio )
+			DungeonGame.Audio.play( 'crystal', 'off' );
 	}
+};
+
+Switch.prototype.hurt = function ()
+{
+	this.toggle( !this.active );
 };
 
 extend( Entity, Switch );

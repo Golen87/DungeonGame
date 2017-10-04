@@ -1,33 +1,31 @@
 
 // Constructor
-function Spikes( sprite, bgSprite )
+function Spikes()
 {
-	Entity.call( this, sprite, bgSprite );
+	Entity.call( this );
 
-	this.sprite.body.immovable = true;
-	this.sprite.body.moves = false;
+	this.active = false;
+	this.animationTimer = 0;
+	this.prepareTimer = 0;
+
+	this.manual = false;
+	this.prepareDuration = 60;
+	this.autoDuration = 100;
+	this.autoTimer = this.autoDuration;
 };
 
-Spikes.prototype.create = function ( x, y, deathCallback )
+Spikes.prototype.create = function ()
 {
-	Entity.prototype.create.call( this, x, y, deathCallback );
+	this.sprite.body.setSize( 12, 12, 2, 16+2 );
 
-	this.bgSprite.reset( x*16 + 8, y*16 );
+	this.bgSprite.reset( this.spawn.x*16 + 8, this.spawn.y*16 );
 	this.bgSprite.frame = 6;
 
 	var odd = this.sprite.position.y/16 % 2;
 	this.sprite.scale.x 	= 1 - 2*odd;
 	this.bgSprite.scale.x	= 1 - 2*odd;
 
-	this.active = false;
-	this.animationTimer = 0;
-	this.prepareTimer = 0;
 	this.setState( this.active, false );
-
-	this.manual = false;
-	this.prepareDuration = 60;
-	this.autoDuration = 100;
-	this.autoTimer = this.autoDuration;
 };
 
 Spikes.prototype.update = function ()

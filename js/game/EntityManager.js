@@ -4,6 +4,15 @@ function EntityManager ( group, bgGroup, entityMap )
 {
 	this.entityMap = entityMap;
 	this.activeMap = [...Array( entityMap.length ).keys()].map( i => Array( entityMap[0].length ) );
+	this.dataMap = [...Array( entityMap.length ).keys()].map( i => Array( entityMap[0].length ) );
+
+	for ( var y = 0; y < this.dataMap.length; y++ )
+	{
+		for ( var x = 0; x < this.dataMap[y].length; x++ )
+		{
+			this.dataMap[y][x] = {};
+		}
+	}
 
 	this.entities = Array( 64 );
 	this.sprites = Array( 64 );
@@ -11,12 +20,12 @@ function EntityManager ( group, bgGroup, entityMap )
 
 	for ( var i = 0; i < this.sprites.length; i++ )
 	{
-		this.sprites[i] = group.create( 0, 0, 'entities', 0, false );
+		this.sprites[i] = group.create( 0, 0, 'entities16', 0, false );
 		DungeonGame.game.physics.arcade.enable( this.sprites[i], Phaser.Physics.ARCADE );
 	}
 	for ( var i = 0; i < this.bgSprites.length; i++ )
 	{
-		this.bgSprites[i] = bgGroup.create( 0, 0, 'entities', 0, false );
+		this.bgSprites[i] = bgGroup.create( 0, 0, 'entities16', 0, false );
 	}
 }
 
@@ -63,7 +72,9 @@ EntityManager.prototype.clearOutOfView = function ()
 		if ( entity && entity.sprite.exists && !this.isInView( entity.sprite.position.x, entity.sprite.position.y ) )
 		{
 			this.activeMap[entity.spawn.y][entity.spawn.x] = null;
+			entity.destroy();
 			entity.sprite.kill();
+			entity.bgSprite.kill();
 		}
 	}
 };
@@ -100,23 +111,26 @@ EntityManager.prototype.loadRoom = function ( room_x, room_y )
 					this.entities[index] = null;
 
 					if ( this.entityMap[y][x] == 'spikes' )
-						this.entities[index] = new Spikes( this.sprites[index], this.bgSprites[index] );
+						this.entities[index] = new Spikes();
 					else if ( this.entityMap[y][x] == 'door' )
-						this.entities[index] = new Door( this.sprites[index], this.bgSprites[index], this.trigger.bind(this) );
+						this.entities[index] = new Door( this.onOpen );
 					else if ( this.entityMap[y][x] == 'switch' )
-						this.entities[index] = new Switch( this.sprites[index], this.bgSprites[index], this.trigger.bind(this) );
+						this.entities[index] = new Switch( this.onTrigger.bind(this) );
 					else if ( this.entityMap[y][x] == 'pressureplate' )
-						this.entities[index] = new PressurePlate( this.sprites[index], this.bgSprites[index] );
+						this.entities[index] = new PressurePlate( this.onTrigger.bind(this) );
 					else if ( this.entityMap[y][x] == 'chest' )
-						this.entities[index] = new Chest( this.sprites[index], this.bgSprites[index], this.trigger.bind(this) );
+						this.entities[index] = new Chest( this.onOpen );
 					else if ( this.entityMap[y][x] == 'box' )
-						this.entities[index] = new Box( this.sprites[index], this.bgSprites[index] );
+						this.entities[index] = new Box( this.onDeath.bind(this) );
 					else if ( this.entityMap[y][x] == 'block' )
-						this.entities[index] = new Block( this.sprites[index], this.bgSprites[index] );
+						this.entities[index] = new Block();
 
 					if ( this.entities[index] )
 					{
-						this.entities[index].create( x, y, this.entityDeath.bind(this) );
+						// Set up of Entity
+						this.entities[index].init( this.sprites[index], this.bgSprites[index], this.dataMap[y][x], x, y );
+						// Set up of custom object
+						this.entities[index].create();
 					}
 					else
 					{
@@ -142,7 +156,8 @@ EntityManager.prototype.checkPhysicsAt = function ( x, y )
 			var p = this.entities[i].getGridPos();
 			if ( p.x == x && p.y == y )
 			{
-				return this.entities[i].hasPhysics();
+				if ( this.entities[i].hasPhysics() )
+					return true;
 			}
 		}
 	}
@@ -150,22 +165,39 @@ EntityManager.prototype.checkPhysicsAt = function ( x, y )
 };
 
 
-EntityManager.prototype.trigger = function ( trigger )
+EntityManager.prototype.onTrigger = function ( entity )
 {
-	for ( var i = 0; i < this.entities.length; i++ )
+	if ( Switch.prototype.isPrototypeOf( entity ) )
 	{
-		if ( this.entities[i] && this.entities[i].sprite.exists )
+		for ( var i = 0; i < this.entities.length; i++ )
 		{
-			if ( Spikes.prototype.isPrototypeOf( this.entities[i] ) )
+			if ( this.entities[i] && this.entities[i].sprite.exists )
 			{
-				this.entities[i].toggle( !trigger.active );
+				if ( Spikes.prototype.isPrototypeOf( this.entities[i] ) )
+				{
+					this.entities[i].toggle( !entity.active );
+				}
+			}
+		}
+	}
+
+	if ( PressurePlate.prototype.isPrototypeOf( entity ) )
+	{
+		for ( var i = 0; i < this.entities.length; i++ )
+		{
+			if ( this.entities[i] && this.entities[i].sprite.exists )
+			{
+				if ( Spikes.prototype.isPrototypeOf( this.entities[i] ) )
+				{
+					this.entities[i].toggle( !entity.active );
+				}
 			}
 		}
 	}
 };
 
-EntityManager.prototype.entityDeath = function ( x, y )
+EntityManager.prototype.onDeath = function ( entity )
 {
-	this.activeMap[y][x] = null;
-	this.entityMap[y][x] = null;
+	this.activeMap[entity.spawn.y][entity.spawn.x] = null;
+	this.entityMap[entity.spawn.y][entity.spawn.x] = null;
 };

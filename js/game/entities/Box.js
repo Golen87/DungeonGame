@@ -1,16 +1,9 @@
 
 // Constructor
-function Box( sprite, bgSprite )
+function Box( onDeath )
 {
-	Entity.call( this, sprite, bgSprite );
-
-	this.sprite.loadTexture( 'entities16', 0 );
-	this.sprite.frame = 0;
-	this.sprite.scale.x = [-1,1].choice();
-
-	this.sprite.body.immovable = true;
-	this.sprite.body.moves = false;
-	this.sprite.body.drag.setTo( 1000, 1000 );
+	Entity.call( this );
+	this.onDeath = onDeath;
 
 	this.health = 3;
 
@@ -19,6 +12,12 @@ function Box( sprite, bgSprite )
 	this.pushDir = [0,0];
 
 	this.moveBuffer = new Phaser.Point( 0, 0 );
+};
+
+Box.prototype.create = function ()
+{
+	this.sprite.frame = 0;
+	this.sprite.scale.x = [-1,1].choice();
 };
 
 
@@ -143,7 +142,7 @@ Box.prototype.defeat = function ()
 
 	this.sprite.kill();
 
-	this.deathCallback( this.spawn.x, this.spawn.y );
+	this.onDeath( this );
 };
 
 extend( Entity, Box );
