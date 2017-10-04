@@ -10,7 +10,7 @@ function Spikes()
 
 	this.manual = false;
 	this.prepareDuration = 60;
-	this.autoDuration = 100;
+	this.autoDuration = 130;
 	this.autoTimer = this.autoDuration;
 };
 
@@ -24,6 +24,9 @@ Spikes.prototype.create = function ()
 	var odd = this.sprite.position.y/16 % 2;
 	this.sprite.scale.x 	= 1 - 2*odd;
 	this.bgSprite.scale.x	= 1 - 2*odd;
+
+	this.sprite.position.y -= 4;
+	this.sprite.anchor.set( 0.5, 3/8 );
 
 	this.setState( this.active, false );
 };
@@ -99,7 +102,7 @@ Spikes.prototype.prepare = function ( state )
 		this.sprite.frame = 7;
 
 		this.prepareTimer = this.prepareDuration;
-		this.autoTimer += this.prepareDuration;
+		this.autoTimer += this.prepareDuration / 2;
 	}
 	else
 	{
@@ -123,6 +126,14 @@ Spikes.prototype.overlap = function ( other )
 Spikes.prototype.hasPhysics = function ()
 {
 	return this.active;
+};
+
+Spikes.prototype.getGridPos = function ()
+{
+	return {
+		"x": Math.floor(this.sprite.x / 16),
+		"y": Math.floor((this.sprite.y+4) / 16)
+	};
 };
 
 

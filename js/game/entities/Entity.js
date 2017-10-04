@@ -11,11 +11,13 @@ function Entity()
 Entity.prototype.init = function ( sprite, bgSprite, dataRef, x, y )
 {
 	this.sprite = sprite;
+	this.sprite.owner = this;
 	this.sprite.loadTexture( 'entities16', 0 );
 	this.sprite.frame = 0;
 	this.sprite.anchor.set( 0.5, 0.5 );
 	this.sprite.visible = true;
 	this.sprite.alpha = 1.0;
+	this.sprite.scale.x = 1;
 	this.sprite.body.immovable = true;
 	this.sprite.body.moves = false;
 
@@ -55,6 +57,8 @@ Entity.prototype.overlap = function ( other )
 		DungeonGame.game.physics.arcade.collide( other.sprite, this.sprite );
 	}
 };
+
+Entity.prototype.overlapEntity = function ( other ) {};
 
 Entity.prototype.damage = function ()
 {

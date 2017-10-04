@@ -24,38 +24,22 @@ Block.prototype.update = function ()
 {
 	Entity.prototype.update.call( this );
 
-	if ( this.moveBuffer.getMagnitude() > 0 )
+	if ( this.moveBuffer.x != 0 || this.moveBuffer.y != 0 )
 	{
-		if ( this.moveBuffer.x > 0 )
-		{
-			this.moveBuffer.x -= 1;
-			this.sprite.position.x += 1;
-		}
-		if ( this.moveBuffer.y > 0 )
-		{
-			this.moveBuffer.y -= 1;
-			this.sprite.position.y += 1;
-		}
-		if ( this.moveBuffer.x < 0 )
-		{
-			this.moveBuffer.x += 1;
-			this.sprite.position.x -= 1;
-		}
-		if ( this.moveBuffer.y < 0 )
-		{
-			this.moveBuffer.y += 1;
-			this.sprite.position.y -= 1;
-		}
-	}
+		var speed = 0.5;
+		var mx = this.moveBuffer.x.clamp( -speed, speed );
+		var my = this.moveBuffer.y.clamp( -speed, speed );
 
-	if ( this.isPushingBuffer > 0 )
+		this.moveBuffer.x -= mx;
+		this.sprite.position.x += mx;
+		this.moveBuffer.y -= my;
+		this.sprite.position.y += my;
+	}
+	else if ( this.isPushingBuffer > 0 )
 	{
 		this.pushBuffer += 1;
 		if ( this.pushBuffer > 10 )
 		{
-			//this.sprite.position.x += 16*this.pushDir[0];
-			//this.sprite.position.y += 16*this.pushDir[1];
-
 			var p = this.getGridPos();
 			if ( !DungeonGame.checkPhysicsAt( p.x + this.pushDir[0], p.y + this.pushDir[1] ) )
 			{

@@ -255,7 +255,7 @@ Player.prototype.render = function ()
 	if ( DungeonGame.debug )
 	{
 		if ( this.sprite.exists )
-			DungeonGame.game.debug.body( this.sprite );
+			DungeonGame.game.debug.body( this.sprite, RED );
 		if ( this.swing.exists )
 			DungeonGame.game.debug.body( this.swing, RED );
 		if ( this.sword.exists )

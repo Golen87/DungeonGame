@@ -102,7 +102,10 @@ World.prototype.update = function ()
 			DungeonGame.game.physics.arcade.overlap( this.Player.swing, entity.sprite, entity.damage, null, entity );
 			DungeonGame.game.physics.arcade.overlap( this.Player.sprite, entity.sprite, function(){
 				entity.overlap( this.Player );
-				//this.Player.damage( entity.getAttackPower(), entity.sprite.body.position );
+			}, null, this );
+
+			DungeonGame.game.physics.arcade.overlap( this.entityManager.sprites, entity.sprite, function( other ){
+				entity.overlapEntity( other );
 			}, null, this );
 		}
 	}
@@ -119,7 +122,9 @@ World.prototype.update = function ()
 	DungeonGame.game.physics.arcade.collide( this.enemyManager.sprites, this.roomManager.physics );
 	DungeonGame.game.physics.arcade.collide( this.enemyManager.sprites, this.entityManager.sprites );
 
-	DungeonGame.game.physics.arcade.collide( this.entityManager.sprites, this.entityManager.sprites );
+	//DungeonGame.game.physics.arcade.collide( this.entityManager.sprites, this.entityManager.sprites, function( entityA, entityB ){
+	//	console.log("whoops", entityA, entityB);
+	//}, null, this );
 	DungeonGame.game.physics.arcade.collide( this.entityManager.sprites, this.roomManager.physics );
 
 	//DungeonGame.game.physics.arcade.overlap( this.Player.sprite, this.Room.physics, this.collision, null, this );
