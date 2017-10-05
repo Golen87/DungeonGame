@@ -14,22 +14,15 @@ DungeonGame.Preload.prototype = {
 
 		this.load.setPreloadSprite( this.preloadBar );
 
-		//this.loadingAnimation = this.add.sprite( 0, this.game.world.height, 'loading-animation', 0 );
-		//this.loadingAnimation.anchor.set( 0, 1 );
-		//this.loadingAnimation.scale.set( 4, 4 );
-		//this.loadingAnimation.animations.add( 'loading', [0,1,2,3,4,5], 8, true );
-		//this.loadingAnimation.animations.play( 'loading' );
-		//this.loadingAnimation.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
-
 		// Load game assets
 		
 		this.load.bitmapFont( 'Adventurer', 'assets/fonts/Adventurer/font.png', 'assets/fonts/Adventurer/font.fnt' ); // 16
+		//this.load.bitmapFont( 'AdventurerFancy', 'assets/fonts/Adventurer/font_fancy.png', 'assets/fonts/Adventurer/font_fancy.fnt' ); // 16
 		this.load.bitmapFont( 'Pixelade', 'assets/fonts/Pixelade/font.png', 'assets/fonts/Pixelade/font.fnt' ); // 13
 		this.load.bitmapFont( 'PixeladeFancy', 'assets/fonts/Pixelade/font_fancy.png', 'assets/fonts/Pixelade/font_fancy.fnt' ); // 13
-		//this.load.bitmapFont( 'Love', 'assets/fonts/Love/font.png', 'assets/fonts/Love/font.fnt' ); // 8
 		//this.load.bitmapFont( 'Fraktur', 'assets/fonts/Fraktur/font.png', 'assets/fonts/Fraktur/font.fnt' ); // 16
 		this.load.bitmapFont( 'TinyUnicode', 'assets/fonts/TinyUnicode/font.png', 'assets/fonts/TinyUnicode/font.fnt' ); // 16
-		//this.load.bitmapFont( 'OldWizard', 'assets/fonts/OldWizard/font.png', 'assets/fonts/OldWizard/font.fnt' ); // 16
+		this.load.bitmapFont( 'OldWizard', 'assets/fonts/OldWizard/font.png', 'assets/fonts/OldWizard/font.fnt' ); // 16
 		//this.load.bitmapFont( 'Peepo', 'assets/fonts/Peepo/font.png', 'assets/fonts/Peepo/font.fnt' ); // 9
 		//this.load.bitmapFont( 'Superscript', 'assets/fonts/Superscript/font.png', 'assets/fonts/Superscript/font.fnt' ); // 10
 		//this.load.bitmapFont( '04b24', 'assets/fonts/04b24/font.png', 'assets/fonts/04b24/font.fnt' ); // 8
@@ -41,7 +34,7 @@ DungeonGame.Preload.prototype = {
 		this.load.spritesheet( 'entities32', 'assets/sprites/entities32.png', 32, 32 );
 		this.load.spritesheet( 'items', 'assets/sprites/items.png', 16, 16 );
 		this.load.spritesheet( 'enemy', 'assets/sprites/enemy.png', 16, 16 );
-		this.load.spritesheet( 'player', 'assets/sprites/player.png', 16, 16 );
+		this.load.spritesheet( 'player', 'assets/sprites/player_old.png', 16, 16 );
 		this.load.spritesheet( 'wings', 'assets/sprites/wings.png', 32, 32 );
 		this.load.spritesheet( 'swing', 'assets/sprites/swing.png', 48, 48 );
 

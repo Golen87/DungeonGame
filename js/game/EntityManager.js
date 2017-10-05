@@ -97,6 +97,7 @@ EntityManager.prototype.loadRoom = function ( room_x, room_y )
 	var offset_y = room_y * ROOM_HEIGHT;
 
 	this.clearOutOfView();
+	var newEntities = [];
 
 	for ( var y = offset_y; y < offset_y + ROOM_HEIGHT; y++ )
 	{
@@ -127,10 +128,8 @@ EntityManager.prototype.loadRoom = function ( room_x, room_y )
 
 					if ( this.entities[index] )
 					{
-						// Set up of Entity
 						this.entities[index].init( this.sprites[index], this.bgSprites[index], this.dataMap[y][x], x, y );
-						// Set up of custom object
-						this.entities[index].create();
+						newEntities.push( this.entities[index] );
 					}
 					else
 					{
@@ -145,6 +144,10 @@ EntityManager.prototype.loadRoom = function ( room_x, room_y )
 		}
 	}
 
+	for ( var i = 0; i < newEntities.length; i++ )
+	{
+		newEntities[i].create();
+	}
 };
 
 EntityManager.prototype.checkPhysicsAt = function ( x, y )
@@ -165,7 +168,7 @@ EntityManager.prototype.checkPhysicsAt = function ( x, y )
 };
 
 
-EntityManager.prototype.onTrigger = function ( entity )
+EntityManager.prototype.onTrigger = function ( entity, immediate )
 {
 	if ( Switch.prototype.isPrototypeOf( entity ) )
 	{
@@ -175,7 +178,8 @@ EntityManager.prototype.onTrigger = function ( entity )
 			{
 				if ( Spikes.prototype.isPrototypeOf( this.entities[i] ) )
 				{
-					this.entities[i].toggle( !entity.active );
+					this.entities[i].manual = true;
+					this.entities[i].toggle( !entity.active, immediate );
 				}
 			}
 		}

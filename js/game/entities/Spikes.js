@@ -76,7 +76,7 @@ Spikes.prototype.setState = function ( state, sound=true )
 	}
 };
 
-Spikes.prototype.toggle = function ( state )
+Spikes.prototype.toggle = function ( state, immediate=false )
 {
 	this.active = state;
 
@@ -91,6 +91,12 @@ Spikes.prototype.toggle = function ( state )
 		this.sprite.frame = 8;
 		this.sprite.alpha = 1.0;
 		this.animationTimer = 16;
+	}
+
+	if ( immediate )
+	{
+		this.animationTimer = 0;
+		this.setState( this.active, false );
 	}
 };
 

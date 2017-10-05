@@ -36,7 +36,7 @@ Switch.prototype.toggle = function ( state, audio=true )
 {
 	this.active = state != null ? state : false;
 
-	this.onTrigger( this );
+	this.onTrigger( this, !audio );
 
 	if ( state )
 	{

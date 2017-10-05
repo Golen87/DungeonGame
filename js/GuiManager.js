@@ -71,42 +71,30 @@ GuiManager.prototype.update = function ()
 
 	this.cinematicTop.x = DungeonGame.game.camera.view.x;
 	this.cinematicTop.y = DungeonGame.game.camera.view.y - this.cinDist * ( 2 - this.cinemaValue );
-	this.cinematicTop.alpha = this.cinemaValue;
+	this.cinematicBottom.x = DungeonGame.game.camera.view.x;
+	this.cinematicBottom.y = DungeonGame.game.camera.view.y + this.cinDist * ( 2 - this.cinemaValue );
 
 	this.hpBar.x = DungeonGame.game.camera.view.x + 29;
 	this.hpBar.y = DungeonGame.game.camera.view.y + SCREEN_HEIGHT - 21 + this.cinDist * this.cinemaValue;
-	this.hpBar.alpha = Math.min( 1, 2 - this.cinemaValue );
 	this.staBar.x = DungeonGame.game.camera.view.x + 29;
 	this.staBar.y = DungeonGame.game.camera.view.y + SCREEN_HEIGHT - 11 + this.cinDist * this.cinemaValue;
-	this.staBar.alpha = Math.min( 1, 2 - this.cinemaValue );
 	this.hpGui.x = DungeonGame.game.camera.view.x + 1;
 	this.hpGui.y = DungeonGame.game.camera.view.y + SCREEN_HEIGHT - 1 + this.cinDist * this.cinemaValue;
-	this.hpGui.alpha = Math.min( 1, 2 - this.cinemaValue );
 
 	this.updateHealthBar();
 
 	this.invGui.x = DungeonGame.game.camera.view.x + SCREEN_WIDTH - 1;
 	this.invGui.y = DungeonGame.game.camera.view.y + SCREEN_HEIGHT - 1 + this.cinDist * this.cinemaValue;
-	this.invGui.alpha = Math.min( 1, 2 - this.cinemaValue );
 
 	for ( var i = 0; i < this.invSize; i++ )
 	{
 		this.itemSlot[i].x = DungeonGame.game.camera.view.x + SCREEN_WIDTH - 13 - 25 * ( this.invSize - i - 1 );
 		this.itemSlot[i].y = DungeonGame.game.camera.view.y + SCREEN_HEIGHT - 5 + this.cinDist * this.cinemaValue;
-		this.itemSlot[i].alpha = Math.min( 1, 2 - this.cinemaValue );
 
 		//this.itemSlot[i].label.text = Math.round(DungeonGame.game.time.totalElapsedSeconds()).toString();
 		this.itemSlot[i].label.x = DungeonGame.game.camera.view.x + SCREEN_WIDTH - 29 - 25 * ( this.invSize - i - 1 );
 		this.itemSlot[i].label.y = DungeonGame.game.camera.view.y + SCREEN_HEIGHT - 3 + this.cinDist * this.cinemaValue;
-		this.itemSlot[i].label.alpha = Math.min( 1, 2 - this.cinemaValue );
 	}
-
-	this.cinematicTop.x = DungeonGame.game.camera.view.x;
-	this.cinematicTop.y = DungeonGame.game.camera.view.y - this.cinDist * ( 2 - this.cinemaValue );
-	this.cinematicTop.alpha = this.cinemaValue;
-	this.cinematicBottom.x = DungeonGame.game.camera.view.x;
-	this.cinematicBottom.y = DungeonGame.game.camera.view.y + this.cinDist * ( 2 - this.cinemaValue );
-	this.cinematicBottom.alpha = this.cinemaValue;
 };
 
 GuiManager.prototype.showPauseMenu = function ()
