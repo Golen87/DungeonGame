@@ -14,6 +14,10 @@ DungeonGame.game.state.add( 'Credits', DungeonGame.Credits );
 
 DungeonGame.game.state.start( 'Boot' );
 
+DungeonGame.input = {};
+DungeonGame.inputScale = new Phaser.Point( 0, 0 );
+DungeonGame.inputOffset = new Phaser.Point( 0, 0 );
+
 DungeonGame.debug = false;
 DungeonGame.shadow = false;
 DungeonGame.pause = false;

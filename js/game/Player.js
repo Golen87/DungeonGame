@@ -132,7 +132,7 @@ Player.prototype.setAnimation = function ( newState, newDirection )
 
 Player.prototype.update = function ()
 {
-	if ( this.keys.space.justDown && !DungeonGame.cinematic )
+	if ( ( this.keys.space.justDown || DungeonGame.input.space ) && !DungeonGame.cinematic )
 	{
 		this.swing.reset(
 			Math.round(this.sprite.body.center.x + this.sprite.body.velocity.x/60),
@@ -193,13 +193,13 @@ Player.prototype.update = function ()
 
 	if ( !this.swing.exists && !DungeonGame.cinematic )
 	{
-		if ( this.keys.up.isDown || this.keys.w.isDown )
+		if ( this.keys.up.isDown || this.keys.w.isDown || DungeonGame.input.up )
 			p.y -= 1;
-		if ( this.keys.down.isDown || this.keys.s.isDown )
+		if ( this.keys.down.isDown || this.keys.s.isDown || DungeonGame.input.down )
 			p.y += 1;
-		if ( this.keys.left.isDown || this.keys.a.isDown )
+		if ( this.keys.left.isDown || this.keys.a.isDown || DungeonGame.input.left )
 			p.x -= 1;
-		if ( this.keys.right.isDown || this.keys.d.isDown )
+		if ( this.keys.right.isDown || this.keys.d.isDown || DungeonGame.input.right )
 			p.x += 1;
 
 		if ( this.keys.i.justDown )

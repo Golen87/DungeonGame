@@ -37,7 +37,12 @@ DungeonGame.MainMenu.prototype = {
 		DungeonGame.Particle.createSmokeTrail( 16, 64 );
 		DungeonGame.Particle.createSmokeTrail( SCREEN_WIDTH-16, 64 );
 	},
-	update: function() {},
+	update: function() {
+		if ( DungeonGame.game.input.activePointer.isDown )
+		{
+			this.startGame();
+		}
+	},
 
 	startGame: function() {
 		this.state.start( 'Game' );
