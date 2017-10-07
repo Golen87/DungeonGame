@@ -193,7 +193,8 @@ EntityManager.prototype.onTrigger = function ( entity, immediate )
 			{
 				if ( Spikes.prototype.isPrototypeOf( this.entities[i] ) )
 				{
-					this.entities[i].toggle( !entity.active );
+					this.entities[i].manual = true;
+					this.entities[i].toggle( !entity.active, immediate );
 				}
 			}
 		}

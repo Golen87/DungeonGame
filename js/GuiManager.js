@@ -10,6 +10,9 @@ GuiManager.prototype.create = function ()
 
 	this.guiGroup = DungeonGame.game.add.group();
 
+
+	/* Cinematic mode GUI */
+
 	this.cinDist = 24;
 	this.cinematicTop = DungeonGame.game.add.graphics( 0, 0 );
 	this.cinematicTop.beginFill( 0x000000, 1.0 );
@@ -22,6 +25,9 @@ GuiManager.prototype.create = function ()
 	this.cinematicBottom.endFill();
 	this.guiGroup.add( this.cinematicBottom );
 	this.cinemaValue = 0;
+
+
+	/* Health GUI */
 
 	this.hpPerc = 1.0;
 	this.hpGoal = 1.0;
@@ -43,6 +49,9 @@ GuiManager.prototype.create = function ()
 	this.hpGui = this.guiGroup.create( 0, 0, 'healthHud' );
 	this.hpGui.anchor.setTo( 0.0, 1.0 );
 
+
+	/* Inventory GUI */
+
 	this.invGui = this.guiGroup.create( 0, 0, 'itemHud' );
 	this.invGui.anchor.setTo( 1.0, 1.0 );
 
@@ -56,6 +65,19 @@ GuiManager.prototype.create = function ()
 		this.itemSlot[i].label = DungeonGame.game.add.bitmapText( 0, 0, 'TinyUnicode', ' ', 16, this.guiGroup );
 		this.itemSlot[i].label.anchor.setTo( 0.0, 1.0 );
 	}
+
+
+	/* Chest effects */
+
+	this.chestBeam = this.guiGroup.create( 0, 0, 'sunshine' );
+	this.chestBeam.blendMode = Phaser.blendModes.COLOR_DODGE;
+	this.chestBeam.anchor.set(0.5);
+	this.chestBeam.alpha = 1.0;
+	this.chestBeam.kill();
+
+	this.chestItem = this.guiGroup.create( 0, 0, 'items' );
+	this.chestItem.anchor.set( 0.5 );
+	this.chestItem.kill();
 };
 
 GuiManager.prototype.update = function ()
@@ -95,7 +117,10 @@ GuiManager.prototype.update = function ()
 		this.itemSlot[i].label.x = DungeonGame.game.camera.view.x + SCREEN_WIDTH - 29 - 25 * ( this.invSize - i - 1 );
 		this.itemSlot[i].label.y = DungeonGame.game.camera.view.y + SCREEN_HEIGHT - 3 + this.cinDist * this.cinemaValue;
 	}
+
+	this.chestBeam.angle += 0.5;
 };
+
 
 GuiManager.prototype.showPauseMenu = function ()
 {
@@ -171,4 +196,36 @@ GuiManager.prototype.updateHealthBar = function ()
 		this.staBar.drawRect( 0, 0, Math.floor( 50 * this.staPerc ), 6 );
 		this.staBar.endFill();
 	}
+};
+
+
+GuiManager.prototype.showNewItem = function ( x, y, itemIndex )
+{
+	this.chestBeam.reset( x, y );
+	this.chestBeam.alpha = 0.0;
+	this.chestItem.reset( x, y );
+	this.chestItem.alpha = 0.0;
+	this.chestItem.frame = itemIndex;
+
+	DungeonGame.game.add.tween( this.chestBeam ).to({ alpha: 1.0 }, 400, Phaser.Easing.Linear.In, true );
+	DungeonGame.game.add.tween( this.chestItem ).to({ alpha: 1.0 }, 400, Phaser.Easing.Linear.In, true, 300 );
+
+	DungeonGame.game.add.tween( this.chestBeam ).to({ y: y-16 }, 1500, Phaser.Easing.Exponential.Out, true );
+	DungeonGame.game.add.tween( this.chestItem ).to({ y: y-16 }, 1500, Phaser.Easing.Exponential.Out, true );
+
+	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 2.0, function() {
+		if ( this.chestBeam.alpha == 1.0 )
+		{
+			DungeonGame.game.add.tween( this.chestBeam ).to({ alpha: 0.0 }, 400, Phaser.Easing.Linear.In, true, 300 );
+			DungeonGame.game.add.tween( this.chestItem ).to({ alpha: 0.0 }, 400, Phaser.Easing.Linear.In, true );
+		}
+	}, this );
+
+	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 3.0, function() {
+		if ( this.chestBeam.alpha == 0.0 )
+		{
+			this.chestBeam.kill();
+			this.chestItem.kill();
+		}
+	}, this );
 };

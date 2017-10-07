@@ -54,6 +54,7 @@ Switch.prototype.toggle = function ( state, audio=true )
 
 Switch.prototype.hurt = function ()
 {
+	DungeonGame.Audio.play( 'chop' );
 	this.toggle( !this.active );
 };
 

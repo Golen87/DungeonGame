@@ -90,6 +90,18 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].sound.addMarker( '3', 0.6, 0.2, vol );
 	this.sounds[name].markers = ['1', '2', '3'];
 
+	var name = 'chest';
+	var vol = 0.3 * masterVol;
+	this.sounds[name] = {};
+	this.sounds[name].sound = DungeonGame.game.add.audio( name );
+	this.sounds[name].sound.volume = vol;
+
+	var name = 'open';
+	var vol = 0.3 * masterVol;
+	this.sounds[name] = {};
+	this.sounds[name].sound = DungeonGame.game.add.audio( name );
+	this.sounds[name].sound.volume = vol;
+
 
 	var vol = 0.4 * masterVol;
 

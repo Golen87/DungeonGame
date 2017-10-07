@@ -67,7 +67,7 @@ Entity.prototype.damage = function ()
 		this.hitBuffer = this.hitCooldown;
 
 		// Move please
-		DungeonGame.Audio.play( 'chop' );
+		//DungeonGame.Audio.play( 'chop' );
 		//DungeonGame.cameraShake( 1 );
 
 		this.hurt();

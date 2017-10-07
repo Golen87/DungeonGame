@@ -292,6 +292,7 @@ World.prototype.onOpen = function ( entity )
 	if ( Chest.prototype.isPrototypeOf( entity ) )
 	{
 		this.Player.giveItem( 69 ); // 68-69 Key
+		DungeonGame.Gui.showNewItem( entity.sprite.x, entity.sprite.y, 69 );
 	}
 
 	if ( Door.prototype.isPrototypeOf( entity ) )

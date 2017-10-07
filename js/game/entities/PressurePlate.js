@@ -19,7 +19,7 @@ PressurePlate.prototype.create = function ()
 	this.bgSprite.reset( this.spawn.x*16 + 8, this.spawn.y*16 );
 	this.bgSprite.frame = 12;
 
-	this.toggle( false );
+	this.onTrigger( this, true );
 };
 
 PressurePlate.prototype.update = function ()

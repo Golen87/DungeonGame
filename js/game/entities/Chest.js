@@ -11,12 +11,12 @@ function Chest( onOpen )
 Chest.prototype.create = function ()
 {
 	//this.sprite.loadTexture( 'entities32', 0 );
-	this.sprite.frame = 17;
+	this.sprite.frame = 16;
 
 	if ( this.data.open )
 	{
 		this.isOpen = true;
-		this.sprite.frame = 16;
+		this.sprite.frame = 18;
 	}
 };
 
@@ -30,9 +30,15 @@ Chest.prototype.hurt = function ()
 	if ( !this.isOpen )
 	{
 		this.isOpen = true;
-		this.sprite.frame = 16;
-		//DungeonGame.Audio.play( 'crystal', 'on' );
-		this.onOpen( this );
+		this.sprite.frame = 17;
+		DungeonGame.Audio.play( 'chest' );
+		//DungeonGame.cinematic = true;
+
+		DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.5, function() {
+			this.sprite.frame = 18;
+			DungeonGame.Audio.play( 'open' );
+			this.onOpen( this );
+		}, this );
 	}
 };
 

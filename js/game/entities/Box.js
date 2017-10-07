@@ -119,6 +119,8 @@ Box.prototype.overlapEntity = function ( other )
 
 Box.prototype.hurt = function ()
 {
+	DungeonGame.Audio.play( 'chop' );
+
 	this.health -= 1;
 	if ( this.health == 2 )
 		this.sprite.frame = 1;

@@ -8,12 +8,6 @@ DungeonGame.Preload.prototype = {
 		
 		this.game.stage.backgroundColor = '#111111';
 
-		// Show loading screen
-		this.preloadBar = this.add.sprite( this.game.world.centerX, this.game.world.centerY, 'preloader-bar' );
-		this.preloadBar.anchor.setTo( 0.5 );
-
-		this.load.setPreloadSprite( this.preloadBar );
-
 		// Load game assets
 		
 		this.load.bitmapFont( 'Adventurer', 'assets/fonts/Adventurer/font.png', 'assets/fonts/Adventurer/font.fnt' ); // 16
@@ -35,6 +29,7 @@ DungeonGame.Preload.prototype = {
 		this.load.spritesheet( 'items', 'assets/sprites/items.png', 16, 16 );
 		this.load.spritesheet( 'enemy', 'assets/sprites/enemy.png', 16, 16 );
 		this.load.spritesheet( 'player', 'assets/sprites/player_old.png', 16, 16 );
+		this.load.image( 'sunshine', 'assets/sprites/sunshine.png' );
 		this.load.spritesheet( 'wings', 'assets/sprites/wings.png', 32, 32 );
 		this.load.spritesheet( 'swing', 'assets/sprites/swing.png', 48, 48 );
 
@@ -63,6 +58,8 @@ DungeonGame.Preload.prototype = {
 		this.load.audio( 'break', 'assets/sounds/break.ogg' );
 		this.load.audio( 'crystal', 'assets/sounds/crystal.ogg' );
 		this.load.audio( 'spikes', 'assets/sounds/spikes.ogg' );
+		this.load.audio( 'open', 'assets/sounds/open.ogg' );
+		this.load.audio( 'chest', 'assets/sounds/chest.ogg' );
 
 		this.load.audio( 'rat', 'assets/sounds/monsters/rat.ogg' );
 		this.load.audio( 'mouse', 'assets/sounds/monsters/mouse.ogg' );
