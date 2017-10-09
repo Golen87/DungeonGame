@@ -6,28 +6,28 @@ DungeonGame.Credits.prototype = {
 	create: function() {
 		DungeonGame.game.stage.backgroundColor = '#111111';
 
-		var y = 64;
+		var y = 32;
 		var text = this.add.bitmapText( SCREEN_WIDTH/2, y, 'PixeladeFancy', '- Made by -', 13 );
 		text.anchor.x = 0.5;
 
 		y += 16;
-		var text = this.add.bitmapText( SCREEN_WIDTH/2, y, 'OldWizard', 'Måns Gezelius', 16 );
+		var text = this.add.bitmapText( SCREEN_WIDTH/2, y, 'OldWizard', 'Måns "Golen" Gezelius', 16 );
 		text.anchor.x = 0.5;
 
 		y += 16;
-		var text = this.add.bitmapText( SCREEN_WIDTH/2, y, 'OldWizard', '(Golen)', 16 );
+		y += 16;
+		var text = this.add.bitmapText( SCREEN_WIDTH/2, y, 'PixeladeFancy', '- Monster art -', 13 );
+		text.anchor.x = 0.5;
+		y += 16;
+		var text = this.add.bitmapText( SCREEN_WIDTH/2, y, 'Pixelade', 'Magdalena "Camelopardia" Annell', 13 );
 		text.anchor.x = 0.5;
 
 		y += 16;
 		y += 16;
 		var text = this.add.bitmapText( SCREEN_WIDTH/2, y, 'PixeladeFancy', '- Special thanks -', 13 );
 		text.anchor.x = 0.5;
-
 		y += 16;
 		var text = this.add.bitmapText( SCREEN_WIDTH/2, y, 'Pixelade', 'Jefferson "Justice Watch" Marshall', 13 );
-		text.anchor.x = 0.5;
-		y += 16;
-		var text = this.add.bitmapText( SCREEN_WIDTH/2, y, 'Pixelade', 'Magdalena Annell', 13 );
 		text.anchor.x = 0.5;
 
 		"A Game by Måns Gezelius (Golen)"
