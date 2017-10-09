@@ -26,6 +26,9 @@ DungeonGame.Credits.prototype = {
 		y += 16;
 		var text = this.add.bitmapText( SCREEN_WIDTH/2, y, 'Pixelade', 'Jefferson "Justice Watch" Marshall', 13 );
 		text.anchor.x = 0.5;
+		y += 16;
+		var text = this.add.bitmapText( SCREEN_WIDTH/2, y, 'Pixelade', 'Magdalena Annell', 13 );
+		text.anchor.x = 0.5;
 
 		"A Game by Måns Gezelius (Golen)"
 		"Credits:"

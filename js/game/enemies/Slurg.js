@@ -32,7 +32,7 @@ Slurg.prototype.setupAnimation = function ()
 {
 	var len = 5;
 	var idle = [0];
-	var walk = [0, 1, 2, 3, 3, 3, 3, 3];
+	var walk = [0, 1, 2, 3, 3, 3, 3, 3, 3];
 	var hurt = [4];
 
 	this.sprite.animations.add( 'idle_right', idle, 3, true );
@@ -69,12 +69,12 @@ Slurg.prototype.setAnimation = function ( newState, newDirection )
 		this.state = newState;
 		this.direction = newDirection;
 
-		if ( this.direction == 'right' || this.direction == 'down' )
+		if ( this.direction == 'right' )
 		{
 			this.lightSprite.frame = 0;
 			this.lightOffset.set( -4, -2 );
 		}
-		else if ( this.direction == 'left' || this.direction == 'up' )
+		else if ( this.direction == 'left' )
 		{
 			this.lightSprite.frame = 1;
 			this.lightOffset.set( 4, -2 );
@@ -82,7 +82,7 @@ Slurg.prototype.setAnimation = function ( newState, newDirection )
 		else
 		{
 			this.lightSprite.frame = 2;
-			this.lightOffset.set( 0, -2 );
+			this.lightOffset.set( 0, 0 );
 		}
 
 		if ( this.state == 'hurt' )

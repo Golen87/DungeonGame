@@ -21,7 +21,10 @@ Switch.prototype.create = function ()
 	this.lightSprite.fac = 0;
 	this.lightTween = null;
 
-	this.toggle( this.data.active, false );
+	this.TINT_ON = 0x555555;
+	this.TINT_OFF = 0x000000;
+
+	this.toggle( this.data.active, true );
 };
 
 Switch.prototype.destroy = function ()
@@ -43,27 +46,41 @@ Switch.prototype.update = function ()
 	this.lightSprite.scale.set(this.lightSprite.fac);
 };
 
-Switch.prototype.toggle = function ( state, audio=true )
+Switch.prototype.toggle = function ( state, immediate=false )
 {
 	this.active = state != null ? state : false;
 
-	this.onTrigger( this, !audio );
+	this.onTrigger( this, immediate );
 
 	if ( state )
 	{
 		this.sprite.frame = 5;
-		this.tweenTint( this.lightSprite, 0x000000, 0x666666, 200 );
-		this.lightTween = DungeonGame.game.add.tween( this.lightSprite ).to({ fac: 1.0 }, 600, Phaser.Easing.Elastic.Out, true );
-		if ( audio )
+		if ( !immediate )
+		{
 			DungeonGame.Audio.play( 'crystal', 'on' );
+			this.tweenTint( this.lightSprite, this.TINT_OFF, this.TINT_ON, 200 );
+			this.lightTween = DungeonGame.game.add.tween( this.lightSprite ).to({ fac: 1.0 }, 600, Phaser.Easing.Elastic.Out, true );
+		}
+		else
+		{
+			this.lightSprite.tint = this.TINT_ON;
+			this.lightSprite.fac = 1.0;
+		}
 	}
 	else
 	{
 		this.sprite.frame = 4;
-		this.tweenTint( this.lightSprite, 0x666666, 0x000000, 300 );
-		this.lightTween = DungeonGame.game.add.tween( this.lightSprite ).to({ fac: 0.0 }, 600, Phaser.Easing.Exponential.Out, true );
-		if ( audio )
+		if ( !immediate )
+		{
 			DungeonGame.Audio.play( 'crystal', 'off' );
+			this.tweenTint( this.lightSprite, this.TINT_ON, this.TINT_OFF, 300 );
+			this.lightTween = DungeonGame.game.add.tween( this.lightSprite ).to({ fac: 0.0 }, 600, Phaser.Easing.Exponential.Out, true );
+		}
+		else
+		{
+			this.lightSprite.tint = this.TINT_OFF;
+			this.lightSprite.fac = 0.0;
+		}
 	}
 };
 
@@ -75,22 +92,15 @@ Switch.prototype.hurt = function ()
 
 Switch.prototype.tweenTint = function (obj, startColor, endColor, time)
 {
-	// create an object to tween with our step value at 0
 	var colorBlend = {step: 0};
-	// create the tween on this object and tween its step property to 100
 	var colorTween = DungeonGame.game.add.tween(colorBlend).to({step: 100}, time);
 
-	// run the interpolateColor function every time the tween updates, feeding it the
-	// updated value of our tween each time, and set the result as our tint
 	colorTween.onUpdateCallback(function() {
 		obj.tint = Phaser.Color.interpolateColor(startColor, endColor, 100, colorBlend.step);
 	});
 
-	// set the object to the start color straight away
 	obj.tint = startColor;
-
-	// start the tween
 	colorTween.start();
-}
+};
 
 extend( Entity, Switch );

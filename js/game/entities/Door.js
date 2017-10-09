@@ -28,7 +28,7 @@ Door.prototype.open = function ()
 {
 	this.isOpen = true;
 	this.sprite.frame = 15;
-	DungeonGame.Audio.play( 'crystal', 'on' );
+	DungeonGame.Audio.play( 'open' );
 };
 
 Door.prototype.hurt = function ()
