@@ -1,6 +1,6 @@
 
 // Constructor
-function EntityManager ( group, bgGroup, entityMap )
+function EntityManager ( group, bgGroup, lightGroup, entityMap )
 {
 	this.entityMap = entityMap;
 	this.activeMap = [...Array( entityMap.length ).keys()].map( i => Array( entityMap[0].length ) );
@@ -17,6 +17,7 @@ function EntityManager ( group, bgGroup, entityMap )
 	this.entities = Array( 64 );
 	this.sprites = Array( 64 );
 	this.bgSprites = Array( 64 );
+	this.lightSprites = Array( 64 );
 
 	for ( var i = 0; i < this.sprites.length; i++ )
 	{
@@ -26,6 +27,11 @@ function EntityManager ( group, bgGroup, entityMap )
 	for ( var i = 0; i < this.bgSprites.length; i++ )
 	{
 		this.bgSprites[i] = bgGroup.create( 0, 0, 'entities16', 0, false );
+	}
+	for ( var i = 0; i < this.lightSprites.length; i++ )
+	{
+		this.lightSprites[i] = lightGroup.create( 0, 0, 'entities16', 0, false );
+		this.lightSprites[i].blendMode = Phaser.blendModes.COLOR_DODGE;
 	}
 }
 
@@ -75,6 +81,7 @@ EntityManager.prototype.clearOutOfView = function ()
 			entity.destroy();
 			entity.sprite.kill();
 			entity.bgSprite.kill();
+			entity.lightSprite.kill();
 		}
 	}
 };
@@ -128,7 +135,7 @@ EntityManager.prototype.loadRoom = function ( room_x, room_y )
 
 					if ( this.entities[index] )
 					{
-						this.entities[index].init( this.sprites[index], this.bgSprites[index], this.dataMap[y][x], x, y );
+						this.entities[index].init( this.sprites[index], this.bgSprites[index], this.lightSprites[index], this.dataMap[y][x], x, y );
 						newEntities.push( this.entities[index] );
 					}
 					else
@@ -205,4 +212,8 @@ EntityManager.prototype.onDeath = function ( entity )
 {
 	this.activeMap[entity.spawn.y][entity.spawn.x] = null;
 	this.entityMap[entity.spawn.y][entity.spawn.x] = null;
+
+	entity.sprite.kill();
+	entity.bgSprite.kill();
+	entity.lightSprite.kill();
 };

@@ -2,81 +2,44 @@
 // Constructor
 function Enemy( sprite )
 {
-	this.sprite = sprite;
-	//this.sprite.anchor.set( 0.5 );
-
 	this.spawn = new Phaser.Point();
+
+	this.hitCooldown = 6;
+	this.hitBuffer = 0;
 };
 
-Enemy.prototype.create = function ( x, y, deathCallback )
+Enemy.prototype.init = function ( sprite, bgSprite, lightSprite, dataRef, x, y, onDeath )
 {
+	this.sprite = sprite;
+	this.sprite.owner = this;
+	this.sprite.frame = 0;
+	this.sprite.anchor.set( 0.5, 0.5 );
+	this.sprite.visible = true;
+	this.sprite.alpha = 1.0;
+	this.sprite.scale.x = 1;
+	this.sprite.body.immovable = false;
+	this.sprite.body.moves = true;
+
+	this.bgSprite = bgSprite;
+	this.bgSprite.anchor.set( 0.5, 0.5 );
+	this.bgSprite.kill();
+
+	this.lightSprite = lightSprite;
+	this.lightSprite.anchor.set( 0.5, 0.5 );
+	this.lightSprite.kill();
+
+	this.data = dataRef;
+
 	this.spawn.setTo( x, y );
-	this.sprite.reset( x*16, y*16 );
-	this.sprite.body.setSize( 10, 8, 3, 7 );
-	//this.sprite.body.setCircle( 6, 2, 4 );
+	this.sprite.reset( x*16+8, y*16+8 );
+	this.sprite.body.setSize( 16, 16, 0, 16 );
 
-	this.deathCallback = deathCallback;
-
-	this.health = 3;
-	this.speed = 24;
-
-	this.setupAnimation();
-
-	this.aiState = 'idle';
-	this.goalPos = new Phaser.Point( this.sprite.body.position.x, this.sprite.body.position.y );
-
-	this.sound = 'rat';
-	this.damageTimer = 0;
+	this.onDeath = onDeath;
 };
 
-Enemy.prototype.setupAnimation = function ()
-{
-	var len = 3;
-	var idle = [0, 1];
-	var walk = [0, 1];
-	var hurt = [2];
-	this.sprite.animations.add( 'idle_right', idle, 3, true );
-	this.sprite.animations.add( 'walk_right', walk, 10, true );
-	this.sprite.animations.add( 'hurt_right', hurt, 1, true );
-	idle = idle.map( n => n + len )
-	walk = walk.map( n => n + len )
-	hurt = hurt.map( n => n + len )
-	this.sprite.animations.add( 'idle_down', idle, 3, true );
-	this.sprite.animations.add( 'walk_down', walk, 10, true );
-	this.sprite.animations.add( 'hurt_down', hurt, 1, true );
-	idle = idle.map( n => n + len )
-	walk = walk.map( n => n + len )
-	hurt = hurt.map( n => n + len )
-	this.sprite.animations.add( 'idle_left', idle, 3, true );
-	this.sprite.animations.add( 'walk_left', walk, 10, true );
-	this.sprite.animations.add( 'hurt_left', hurt, 1, true );
-	idle = idle.map( n => n + len )
-	walk = walk.map( n => n + len )
-	hurt = hurt.map( n => n + len )
-	this.sprite.animations.add( 'idle_up', idle, 3, true );
-	this.sprite.animations.add( 'walk_up', walk, 10, true );
-	this.sprite.animations.add( 'hurt_up', hurt, 1, true );
+Enemy.prototype.create = function () {};
 
-	this.state = 'idle';
-	this.direction = 'down';
-	this.sprite.animations.play( 'idle_down' );
-};
-
-Enemy.prototype.setAnimation = function ( newState, newDirection )
-{
-	var name = null;
-	if ( this.state != newState || this.direction != newDirection )
-	{
-		name = '{0}_{1}'.format( newState, newDirection );
-		this.state = newState;
-		this.direction = newDirection;
-	}
-
-	if ( name )
-	{
-		this.sprite.animations.play( name );
-	}
-};
+Enemy.prototype.destroy = function () {};
 
 Enemy.prototype.update = function ()
 {
@@ -89,7 +52,7 @@ Enemy.prototype.update = function ()
 	if ( this.aiState == 'walk' && this.sprite.body.velocity.getMagnitude() == 0 )
 		this.aiState = 'idle';
 
-	if ( this.aiState == 'idle' && Math.random() < 1.0 )
+	if ( this.aiState == 'idle' && Math.random() < 0.02 )
 	{
 		this.aiState = 'walk';
 		var movement = [[1,0], [0,1], [-1,0], [0,-1]].choice()
@@ -125,6 +88,12 @@ Enemy.prototype.update = function ()
 		this.setAnimation( 'idle', this.direction );
 	}
 
+	}
+
+	if ( this.aiState == 'idle' )
+	{
+		if ( Math.random() < 0.01 )
+			DungeonGame.Audio.play( this.sound, 'cry' );
 	}
 
 	this.damageTimer -= 1;
@@ -169,7 +138,8 @@ Enemy.prototype.damageStep = function ()
 {
 	if ( this.state == 'hurt' )
 	{
-		this.sprite.alpha = 1.5 - this.sprite.alpha; // Toggles between 1 and 0.5
+		// Toggles between 1 and 0.5
+		this.sprite.alpha = 1.5 - this.sprite.alpha;
 		DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.05, this.damageStep, this );
 	}
 	else
@@ -197,14 +167,25 @@ Enemy.prototype.defeat = function ()
 	DungeonGame.Audio.play( this.sound, 'death' );
 	DungeonGame.cameraShake( 8 );
 
-	DungeonGame.Particle.createSmokeBurst( this.sprite.x+8, this.sprite.y+8 );
+	DungeonGame.Particle.createSmokeBurst( this.sprite.x, this.sprite.y );
 
-	this.sprite.kill();
-
-	this.deathCallback( this.spawn.x, this.spawn.y );
+	this.onDeath( this );
 };
 
 Enemy.prototype.getAttackPower = function ()
 {
 	return 20;
+};
+
+Enemy.prototype.getGridPos = function ()
+{
+	return {
+		"x": Math.floor(this.sprite.x / 16),
+		"y": Math.floor(this.sprite.y / 16)
+	};
+};
+
+Enemy.prototype.hasPhysics = function ()
+{
+	return true;
 };

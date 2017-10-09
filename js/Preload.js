@@ -21,17 +21,22 @@ DungeonGame.Preload.prototype = {
 		//this.load.bitmapFont( 'Superscript', 'assets/fonts/Superscript/font.png', 'assets/fonts/Superscript/font.fnt' ); // 10
 		//this.load.bitmapFont( '04b24', 'assets/fonts/04b24/font.png', 'assets/fonts/04b24/font.fnt' ); // 8
 
-		this.load.spritesheet( 'dungeon', 'assets/sprites/dungeon.png', 16, 16 );
-		this.load.spritesheet( 'decoration', 'assets/sprites/decoration.png', 16, 32 );
+		this.load.spritesheet( 'dungeon', 'assets/sprites/environment/dungeon.png', 16, 16 );
+		this.load.spritesheet( 'decoration', 'assets/sprites/environment/decoration.png', 16, 32 );
 
-		this.load.spritesheet( 'entities16', 'assets/sprites/entities16.png', 16, 32 );
-		this.load.spritesheet( 'entities32', 'assets/sprites/entities32.png', 32, 32 );
+		this.load.spritesheet( 'entities16', 'assets/sprites/entities/entities16.png', 16, 32 );
+		this.load.spritesheet( 'entities32', 'assets/sprites/entities/entities32.png', 32, 32 );
 		this.load.spritesheet( 'items', 'assets/sprites/items.png', 16, 16 );
-		this.load.spritesheet( 'enemy', 'assets/sprites/enemy.png', 16, 16 );
-		this.load.spritesheet( 'player', 'assets/sprites/player_old.png', 16, 16 );
-		this.load.image( 'sunshine', 'assets/sprites/sunshine.png' );
-		this.load.spritesheet( 'wings', 'assets/sprites/wings.png', 32, 32 );
-		this.load.spritesheet( 'swing', 'assets/sprites/swing.png', 48, 48 );
+
+		this.load.image( 'sunshine', 'assets/sprites/lighting/sunshine.png' );
+		this.load.image( 'glow', 'assets/sprites/lighting/glow.png' );
+		this.load.spritesheet( 'slurgLight', 'assets/sprites/lighting/slurg_light.png', 32, 32 );
+
+		this.load.spritesheet( 'player', 'assets/sprites/player/player_old.png', 16, 16 );
+		this.load.spritesheet( 'swing', 'assets/sprites/player/swing.png', 48, 48 );
+
+		this.load.spritesheet( 'imp', 'assets/sprites/enemies/imp.png', 16, 16 );
+		this.load.spritesheet( 'slurg', 'assets/sprites/enemies/slurg.png', 16, 16 );
 
 		this.load.image( 'healthHud', 'assets/sprites/gui/health-hud.png' );
 		this.load.image( 'itemHud', 'assets/sprites/gui/item-hud.png' );

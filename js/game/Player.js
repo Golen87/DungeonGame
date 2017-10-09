@@ -9,10 +9,6 @@ Player.prototype.create = function ( x, y, group )
 	this.health = 100;
 	this.speed = 80;
 
-	this.wings = group.create( x, y, 'wings', 0 );
-	this.wings.anchor.set( 0.5 );
-	this.wings.visible = false;
-
 	this.sprite = group.create( x, y, 'player', 0 );
 	DungeonGame.game.physics.arcade.enable( this.sprite, Phaser.Physics.ARCADE );
 	this.sprite.anchor.set( 0.5 );
@@ -102,9 +98,6 @@ Player.prototype.setupAnimation = function ()
 		this.sword.kill();
 	}, this);
 	//this.swing.animations.currentAnim.killOnComplete = true;
-
-	this.wings.animations.add( 'fly', [0,1], 8, true );
-	this.wings.animations.play( 'fly' );
 
 	this.stepCooldown = 0;
 };
@@ -215,12 +208,6 @@ Player.prototype.update = function ()
 	p.setMagnitude( this.speed );
 	this.sprite.body.velocity.x += ( p.x - this.sprite.body.velocity.x ) / 3;
 	this.sprite.body.velocity.y += ( p.y - this.sprite.body.velocity.y ) / 3;
-
-	this.wings.scale.x = 1;
-	if ( this.direction == 'right' || this.direction == 'down' )
-		this.wings.scale.x = -1;
-	this.wings.position.x = Math.round( this.sprite.position.x + this.sprite.body.velocity.x/60 );
-	this.wings.position.y = Math.round( this.sprite.position.y + this.sprite.body.velocity.y/60 ) - 1;
 
 	this.swing.body.velocity.copyFrom( this.sprite.body.velocity );
 	this.sword.body.velocity.copyFrom( this.sprite.body.velocity );
@@ -339,7 +326,6 @@ Player.prototype.damageStep = function ()
 	if ( this.damageState == 'hurt' || this.damageState == 'dead' )
 	{
 		this.sprite.alpha = 1.5 - this.sprite.alpha; // Toggles between 1 and 0.5
-		this.wings.alpha = this.sprite.alpha - 0.5;
 		this.sprite.tint = this.sprite.alpha == 1.0 ? 0xff7777 : 0xffffff;
 
 		DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.05, this.damageStep, this );
@@ -354,7 +340,6 @@ Player.prototype.damageOver = function ()
 {
 	this.damageState = 'idle';
 	this.sprite.alpha = 1.0;
-	this.wings.alpha = 1.0;
 	this.sprite.tint = 0xffffff;
 };
 
@@ -365,7 +350,6 @@ Player.prototype.gameOver = function ()
 	DungeonGame.Particle.createSmokeBurst( this.sprite.x, this.sprite.y );
 
 	this.sprite.kill();
-	this.wings.kill();
 };
 
 

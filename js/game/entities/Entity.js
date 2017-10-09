@@ -8,7 +8,7 @@ function Entity()
 	this.hitBuffer = 0;
 };
 
-Entity.prototype.init = function ( sprite, bgSprite, dataRef, x, y )
+Entity.prototype.init = function ( sprite, bgSprite, lightSprite, dataRef, x, y )
 {
 	this.sprite = sprite;
 	this.sprite.owner = this;
@@ -24,6 +24,12 @@ Entity.prototype.init = function ( sprite, bgSprite, dataRef, x, y )
 	this.bgSprite = bgSprite;
 	this.bgSprite.anchor.set( 0.5, 0.5 );
 	this.bgSprite.kill();
+
+	this.lightSprite = lightSprite;
+	this.lightSprite.anchor.set( 0.5, 0.5 );
+	this.lightSprite.angle = 0;
+	this.lightSprite.tint = 0xffffff;
+	this.lightSprite.kill();
 
 	this.data = dataRef;
 

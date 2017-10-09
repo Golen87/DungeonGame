@@ -131,16 +131,16 @@ GuiManager.prototype.showPauseMenu = function ()
 	this.darkBg.drawRect( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
 	this.darkBg.endFill();
 
-	this.menu = DungeonGame.game.add.sprite( c.x+SCREEN_WIDTH/2, c.y+SCREEN_HEIGHT/2 + 8, 'items', randInt(0,8*9-1) );
-	this.menu.anchor.set( 0.5 );
-	this.choiseLabel = DungeonGame.game.add.bitmapText( c.x+SCREEN_WIDTH/2, c.y+SCREEN_HEIGHT/2 - 8, 'Adventurer', 'Paused', 16 );
-	this.choiseLabel.anchor.setTo( 0.5, 0.5 );
-
 	this.darkFg = DungeonGame.game.add.graphics( c.x, c.y );
 	this.darkFg.beginFill( 0x000000, 0.2 );
 	for (var i=0; i<SCREEN_HEIGHT/2; i++)
 		this.darkFg.drawRect( 0, i*2, SCREEN_WIDTH, 1 );
 	this.darkFg.endFill();
+
+	this.menu = DungeonGame.game.add.sprite( c.x+SCREEN_WIDTH/2, c.y+SCREEN_HEIGHT/2 + 8, 'items', randInt(0,8*9-1) );
+	this.menu.anchor.set( 0.5 );
+	this.choiseLabel = DungeonGame.game.add.bitmapText( c.x+SCREEN_WIDTH/2, c.y+SCREEN_HEIGHT/2 - 8, 'Adventurer', 'Paused', 16 );
+	this.choiseLabel.anchor.setTo( 0.5, 0.5 );
 };
 
 GuiManager.prototype.hidePauseMenu = function ()
@@ -213,7 +213,7 @@ GuiManager.prototype.showNewItem = function ( x, y, itemIndex )
 	DungeonGame.game.add.tween( this.chestBeam ).to({ y: y-16 }, 1500, Phaser.Easing.Exponential.Out, true );
 	DungeonGame.game.add.tween( this.chestItem ).to({ y: y-16 }, 1500, Phaser.Easing.Exponential.Out, true );
 
-	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 2.0, function() {
+	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 2.4, function() {
 		if ( this.chestBeam.alpha == 1.0 )
 		{
 			DungeonGame.game.add.tween( this.chestBeam ).to({ alpha: 0.0 }, 400, Phaser.Easing.Linear.In, true, 300 );

@@ -8,17 +8,18 @@ function World ()
 
 World.prototype.create = function ()
 {
+	this.worldWidth = DungeonGame.game.cache.getImage( 'floorMap' ).width / ROOM_WIDTH;
+	this.worldHeight = DungeonGame.game.cache.getImage( 'floorMap' ).height / ROOM_HEIGHT;
+	DungeonGame.game.world.setBounds( 0, 0, this.worldWidth * SCREEN_WIDTH, this.worldHeight * SCREEN_HEIGHT );
+
 	this.ground = DungeonGame.game.add.group();
 	this.entities = DungeonGame.game.add.group();
+	this.lighting = DungeonGame.game.add.group();
 
 	this.groundEmitter = this.ground.create( 0, 0, 'dungeon', 0 );
 	DungeonGame.Particle.initRubbleBurst( this.groundEmitter );
 
 	this.items = [];
-
-	this.worldWidth = DungeonGame.game.cache.getImage( 'floorMap' ).width / ROOM_WIDTH;
-	this.worldHeight = DungeonGame.game.cache.getImage( 'floorMap' ).height / ROOM_HEIGHT;
-	DungeonGame.game.world.setBounds( 0, 0, this.worldWidth * SCREEN_WIDTH, this.worldHeight * SCREEN_HEIGHT );
 
 	this.roomManager = new RoomManager( this.entities );
 	this.nextRoomOffset = 8;
@@ -32,10 +33,10 @@ World.prototype.create = function ()
 		this.entities
 	);
 
-	this.enemyManager = new EnemyManager( this.entities, this.roomManager.enemyMap, this.roomManager.physicsMap );
+	this.enemyManager = new EnemyManager( this.entities, this.ground, this.lighting, this.roomManager.enemyMap, this.roomManager.physicsMap );
 	this.enemyManager.loadRoom( this.currentArea[0], this.currentArea[1] );
 
-	this.entityManager = new EntityManager( this.entities, this.ground, this.roomManager.entityMap );
+	this.entityManager = new EntityManager( this.entities, this.ground, this.lighting, this.roomManager.entityMap );
 	this.entityManager.onOpen = World.prototype.onOpen.bind( this );
 	this.entityManager.loadRoom( this.currentArea[0], this.currentArea[1] );
 
@@ -66,6 +67,7 @@ World.prototype.create = function ()
 	DungeonGame.game.world.bringToTop( this.ground );
 	DungeonGame.game.world.bringToTop( this.entities );
 	DungeonGame.game.world.bringToTop( this.roomManager.foreground );
+	DungeonGame.game.world.bringToTop( this.lighting );
 	DungeonGame.game.world.bringToTop( DungeonGame.Gui.guiGroup );
 
 	DungeonGame.checkPhysicsAt = World.prototype.checkPhysicsAt.bind( this );

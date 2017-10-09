@@ -71,8 +71,8 @@ var OBJ_PRESSUREPLATE = {
 	'type': TYPE_OBJECT
 };
 
-var ENEMY = {
-	'name': 'enemy',
+var ENEMY_SLURG = {
+	'name': 'slurg',
 	'type': TYPE_ENEMY
 };
 
@@ -86,7 +86,7 @@ var PIXEL_TABLE = {
 	'50,50,50': TILE_SPIRAL,
 	'128,128,128': DECO_PILLAR,
 
-	'255,0,0': ENEMY,
+	'255,0,0': ENEMY_SLURG,
 
 	'255,0,255': OBJ_SPIKES,
 	'0,0,255': OBJ_DOOR,
@@ -107,7 +107,7 @@ var TILES = [
 	FLOOR_RUBBLE,
 	FLOOR_INDENT,
 
-	ENEMY,
+	ENEMY_SLURG,
 
 	OBJ_SPIKES,
 	OBJ_DOOR,

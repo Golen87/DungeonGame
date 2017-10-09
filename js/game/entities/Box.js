@@ -137,8 +137,6 @@ Box.prototype.defeat = function ()
 
 	DungeonGame.Particle.createRubbleBurst( this.sprite.x, this.sprite.y );
 
-	this.sprite.kill();
-
 	this.onDeath( this );
 };
 

@@ -131,6 +131,7 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].sound.addMarker( 'hurt_2', 1.4, 0.4, vol );
 	this.sounds[name].sound.addMarker( 'hurt_3', 1.9, 0.4, vol );
 	this.sounds[name].sound.addMarker( 'death_1', 2.4, 0.3, vol );
+	this.sounds[name].sound.allowMultiple = true;
 	this.sounds[name].markers = [];
 	this.sounds[name].markers['cry'] = ['cry_1', 'cry_2', 'cry_3']
 	this.sounds[name].markers['hurt'] = ['hurt_1', 'hurt_2', 'hurt_3']
@@ -148,6 +149,7 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].sound.addMarker( 'hurt_3', 6.3, 0.7, vol );
 	this.sounds[name].sound.addMarker( 'hurt_4', 7.1, 0.6, vol );
 	this.sounds[name].sound.addMarker( 'death_1', 7.8, 0.9, vol );
+	this.sounds[name].sound.allowMultiple = true;
 	this.sounds[name].markers = [];
 	this.sounds[name].markers['cry'] = ['cry_1', 'cry_2', 'cry_3', 'cry_4']
 	this.sounds[name].markers['hurt'] = ['hurt_1', 'hurt_2', 'hurt_3', 'hurt_4']
@@ -165,6 +167,7 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].sound.addMarker( 'hurt_3', 5.6, 0.7, vol );
 	this.sounds[name].sound.addMarker( 'death_1', 6.4, 0.8, vol );
 	this.sounds[name].sound.addMarker( 'death_2', 7.3, 0.8, vol );
+	this.sounds[name].sound.allowMultiple = true;
 	this.sounds[name].markers = [];
 	this.sounds[name].markers['cry'] = ['cry_1', 'cry_2', 'cry_3', 'cry_4']
 	this.sounds[name].markers['hurt'] = ['hurt_1', 'hurt_2', 'hurt_3']
@@ -180,6 +183,7 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].sound.addMarker( 'hurt_2', 5.2, 1.2, vol );
 	this.sounds[name].sound.addMarker( 'hurt_3', 6.5, 1.2, vol );
 	this.sounds[name].sound.addMarker( 'death_1', 7.8, 1.2, vol );
+	this.sounds[name].sound.allowMultiple = true;
 	this.sounds[name].markers = [];
 	this.sounds[name].markers['cry'] = ['cry_1', 'cry_2', 'cry_3']
 	this.sounds[name].markers['hurt'] = ['hurt_1', 'hurt_2', 'hurt_3']
@@ -197,6 +201,7 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].sound.addMarker( 'hurt_3', 9.3, 1.4, vol );
 	this.sounds[name].sound.addMarker( 'death_1', 10.8, 1.1, vol );
 	this.sounds[name].sound.addMarker( 'death_2', 12.0, 1.3, vol );
+	this.sounds[name].sound.allowMultiple = true;
 	this.sounds[name].markers = [];
 	this.sounds[name].markers['cry'] = ['cry_1', 'cry_2', 'cry_3', 'cry_4']
 	this.sounds[name].markers['hurt'] = ['hurt_1', 'hurt_2', 'hurt_3']
