@@ -4,6 +4,8 @@ function Enemy( sprite )
 {
 	this.spawn = new Phaser.Point();
 
+	this.isHurting = false;
+	this.isFlashing = false;
 	this.hitCooldown = 6;
 	this.hitBuffer = 0;
 };
@@ -43,60 +45,13 @@ Enemy.prototype.destroy = function () {};
 
 Enemy.prototype.update = function ()
 {
-	if ( this.state == 'hurt' )
-	{
-	}
-	else
-	{
-
-	if ( this.aiState == 'walk' && this.sprite.body.velocity.getMagnitude() == 0 )
-		this.aiState = 'idle';
-
-	if ( this.aiState == 'idle' && Math.random() < 0.02 )
-	{
-		this.aiState = 'walk';
-		var movement = [[1,0], [0,1], [-1,0], [0,-1]].choice()
-		var len = randInt( 1, 4 );
-		this.goalPos.x = this.sprite.body.position.x + len * 16 * movement[0];
-		this.goalPos.y = this.sprite.body.position.y + len * 16 * movement[1];
-	}
-	if ( this.aiState == 'walk' )
-	{
-		this.sprite.body.velocity.x = this.speed * ( this.goalPos.x - this.sprite.body.position.x ).clamp(-1,1);
-		this.sprite.body.velocity.y = this.speed * ( this.goalPos.y - this.sprite.body.position.y ).clamp(-1,1);
-
-		if ( this.aiState == 'walk' && this.sprite.body.position.distance( this.goalPos ) < 0.1 )
-		{
-			this.aiState = 'idle';
-			this.sprite.body.position.copyFrom( this.goalPos );
-			this.sprite.body.velocity.setTo( 0, 0 );
-		}
-	}
-
-	var v = this.sprite.body.velocity;
-	if ( v.getMagnitude() > 0 )
-	{
-		var direction;
-		if ( Math.abs( v.x ) >= Math.abs( v.y ) )
-			direction = v.x > 0 ? 'right' : 'left';
-		else
-			direction = v.y > 0 ? 'down' : 'up';
-		this.setAnimation( 'walk', direction );
-	}
-	else
-	{
-		this.setAnimation( 'idle', this.direction );
-	}
-
-	}
-
 	if ( this.aiState == 'idle' )
 	{
-		if ( Math.random() < 0.01 )
+		if ( Math.random() < 0.005 )
 			DungeonGame.Audio.play( this.sound, 'cry' );
 	}
 
-	this.damageTimer -= 1;
+	this.updateHurtState();
 };
 
 Enemy.prototype.render = function ()
@@ -108,58 +63,79 @@ Enemy.prototype.render = function ()
 };
 
 
-Enemy.prototype.damage = function ()
+/* Damage management */
+
+Enemy.prototype.updateHurtState = function ()
 {
-	if ( this.damageTimer > 0 )
+	this.hitBuffer -= 1;
+
+	if ( this.isFlashing )
 	{
-		this.damageTimer = 0;
-		this.health -= 1;
-
-		// Move please
-		DungeonGame.Audio.play( 'chop' );
-		DungeonGame.cameraShake( 2 );
-
-		if ( this.health <= 0 )
+		if ( ( Math.abs(this.hitBuffer) % 6 < 3 ) )
 		{
-			this.defeat();
+			this.sprite.alpha = 0.8;
+			this.sprite.tint = 0xffffff;
 		}
 		else
 		{
-			this.hurt();
+			this.sprite.alpha = 0.3;
+			this.sprite.tint = 0xff7777;
 		}
-	}
-	if ( this.state != 'hurt' )
-	{
-		this.damageTimer = 4;
-	}
-};
-
-Enemy.prototype.damageStep = function ()
-{
-	if ( this.state == 'hurt' )
-	{
-		// Toggles between 1 and 0.5
-		this.sprite.alpha = 1.5 - this.sprite.alpha;
-		DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.05, this.damageStep, this );
 	}
 	else
 	{
 		this.sprite.alpha = 1.0;
+		this.sprite.tint = 0xffffff;
 	}
 };
 
-Enemy.prototype.damageDone = function ()
+Enemy.prototype.getHit = function ( other )
 {
-	this.setAnimation( 'idle', this.direction );
+	// Ensure that monster has been colliding with sword at least 2 frames. This due to the swing setSize bug.
+	if ( this.hitBuffer > 0 )
+	{
+		this.hitBuffer = 0;
+
+		// Move please, as it may depend on weapon
+		DungeonGame.Audio.play( 'chop' );
+		DungeonGame.cameraShake( 2 );
+
+		// Knockback
+		var p = new Phaser.Point(
+			this.sprite.body.center.x - other.position.x,
+			this.sprite.body.center.y - other.position.y
+		).setMagnitude( 250 );
+		this.sprite.body.velocity.add( p.x, p.y );
+
+		// Take damage
+		this.isHurting = true;
+		this.isFlashing = true;
+		this.health -= 1;
+		if ( this.health > 0 )
+		{
+			this.takeDamage();
+		}
+		else
+		{
+			this.defeat();
+		}
+	}
+	if ( !this.isHurting )
+	{
+		this.hitBuffer = 4;
+	}
 };
 
-Enemy.prototype.hurt = function ()
+Enemy.prototype.takeDamage = function ()
 {
-	this.setAnimation( 'hurt', this.direction );
 	DungeonGame.Audio.play( this.sound, 'hurt' );
 
-	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.4, this.damageDone, this );
-	this.damageStep();
+	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.2, function () {
+		this.isHurting = false;
+	}, this );
+	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.5, function () {
+		this.isFlashing = false;
+	}, this );
 };
 
 Enemy.prototype.defeat = function ()
@@ -167,14 +143,13 @@ Enemy.prototype.defeat = function ()
 	DungeonGame.Audio.play( this.sound, 'death' );
 	DungeonGame.cameraShake( 8 );
 
-	DungeonGame.Particle.createSmokeBurst( this.sprite.x, this.sprite.y );
-
 	this.onDeath( this );
 };
 
+
 Enemy.prototype.getAttackPower = function ()
 {
-	return 20;
+	return 0;
 };
 
 Enemy.prototype.getGridPos = function ()

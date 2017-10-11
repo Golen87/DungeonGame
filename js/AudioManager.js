@@ -104,13 +104,14 @@ AudioManager.prototype.init = function ()
 
 
 	var vol = 0.4 * masterVol;
+	var cryVol = 0.3 * masterVol;
 
 	var name = 'rat';
 	this.sounds[name] = {};
 	this.sounds[name].sound = DungeonGame.game.add.audio( name );
-	this.sounds[name].sound.addMarker( 'cry_1', 0.0, 0.5, vol );
-	this.sounds[name].sound.addMarker( 'cry_2', 0.6, 0.5, vol );
-	this.sounds[name].sound.addMarker( 'cry_3', 1.2, 0.5, vol );
+	this.sounds[name].sound.addMarker( 'cry_1', 0.0, 0.5, cryVol );
+	this.sounds[name].sound.addMarker( 'cry_2', 0.6, 0.5, cryVol );
+	this.sounds[name].sound.addMarker( 'cry_3', 1.2, 0.5, cryVol );
 	this.sounds[name].sound.addMarker( 'hurt_1', 1.8, 0.35, vol );
 	this.sounds[name].sound.addMarker( 'hurt_2', 2.25, 0.35, vol );
 	this.sounds[name].sound.addMarker( 'hurt_3', 2.7, 0.35, vol );
@@ -124,9 +125,9 @@ AudioManager.prototype.init = function ()
 	var name = 'mouse';
 	this.sounds[name] = {};
 	this.sounds[name].sound = DungeonGame.game.add.audio( name );
-	this.sounds[name].sound.addMarker( 'cry_1', 0.0, 0.2, vol );
-	this.sounds[name].sound.addMarker( 'cry_2', 0.3, 0.2, vol );
-	this.sounds[name].sound.addMarker( 'cry_3', 0.6, 0.2, vol );
+	this.sounds[name].sound.addMarker( 'cry_1', 0.0, 0.2, cryVol );
+	this.sounds[name].sound.addMarker( 'cry_2', 0.3, 0.2, cryVol );
+	this.sounds[name].sound.addMarker( 'cry_3', 0.6, 0.2, cryVol );
 	this.sounds[name].sound.addMarker( 'hurt_1', 0.9, 0.4, vol );
 	this.sounds[name].sound.addMarker( 'hurt_2', 1.4, 0.4, vol );
 	this.sounds[name].sound.addMarker( 'hurt_3', 1.9, 0.4, vol );
@@ -140,10 +141,10 @@ AudioManager.prototype.init = function ()
 	var name = 'rhino';
 	this.sounds[name] = {};
 	this.sounds[name].sound = DungeonGame.game.add.audio( name );
-	this.sounds[name].sound.addMarker( 'cry_1', 0.0, 1.1, vol );
-	this.sounds[name].sound.addMarker( 'cry_2', 1.2, 1.1, vol );
-	this.sounds[name].sound.addMarker( 'cry_3', 2.4, 1.1, vol );
-	this.sounds[name].sound.addMarker( 'cry_4', 3.6, 1.3, vol );
+	this.sounds[name].sound.addMarker( 'cry_1', 0.0, 1.1, cryVol );
+	this.sounds[name].sound.addMarker( 'cry_2', 1.2, 1.1, cryVol );
+	this.sounds[name].sound.addMarker( 'cry_3', 2.4, 1.1, cryVol );
+	this.sounds[name].sound.addMarker( 'cry_4', 3.6, 1.3, cryVol );
 	this.sounds[name].sound.addMarker( 'hurt_1', 5.0, 0.6, vol );
 	this.sounds[name].sound.addMarker( 'hurt_2', 5.7, 0.5, vol );
 	this.sounds[name].sound.addMarker( 'hurt_3', 6.3, 0.7, vol );
@@ -158,10 +159,10 @@ AudioManager.prototype.init = function ()
 	var name = 'spider';
 	this.sounds[name] = {};
 	this.sounds[name].sound = DungeonGame.game.add.audio( name );
-	this.sounds[name].sound.addMarker( 'cry_1', 0.0, 0.9, vol );
-	this.sounds[name].sound.addMarker( 'cry_2', 1.0, 0.9, vol );
-	this.sounds[name].sound.addMarker( 'cry_3', 2.0, 0.9, vol );
-	this.sounds[name].sound.addMarker( 'cry_4', 3.0, 0.9, vol );
+	this.sounds[name].sound.addMarker( 'cry_1', 0.0, 0.9, cryVol );
+	this.sounds[name].sound.addMarker( 'cry_2', 1.0, 0.9, cryVol );
+	this.sounds[name].sound.addMarker( 'cry_3', 2.0, 0.9, cryVol );
+	this.sounds[name].sound.addMarker( 'cry_4', 3.0, 0.9, cryVol );
 	this.sounds[name].sound.addMarker( 'hurt_1', 4.0, 0.7, vol );
 	this.sounds[name].sound.addMarker( 'hurt_2', 4.8, 0.7, vol );
 	this.sounds[name].sound.addMarker( 'hurt_3', 5.6, 0.7, vol );
@@ -176,9 +177,9 @@ AudioManager.prototype.init = function ()
 	var name = 'slime';
 	this.sounds[name] = {};
 	this.sounds[name].sound = DungeonGame.game.add.audio( name );
-	this.sounds[name].sound.addMarker( 'cry_1', 0.0, 1.2, vol );
-	this.sounds[name].sound.addMarker( 'cry_2', 1.3, 1.2, vol );
-	this.sounds[name].sound.addMarker( 'cry_3', 2.6, 1.2, vol );
+	this.sounds[name].sound.addMarker( 'cry_1', 0.0, 1.2, cryVol );
+	this.sounds[name].sound.addMarker( 'cry_2', 1.3, 1.2, cryVol );
+	this.sounds[name].sound.addMarker( 'cry_3', 2.6, 1.2, cryVol );
 	this.sounds[name].sound.addMarker( 'hurt_1', 3.9, 1.2, vol );
 	this.sounds[name].sound.addMarker( 'hurt_2', 5.2, 1.2, vol );
 	this.sounds[name].sound.addMarker( 'hurt_3', 6.5, 1.2, vol );
@@ -192,10 +193,10 @@ AudioManager.prototype.init = function ()
 	var name = 'creature';
 	this.sounds[name] = {};
 	this.sounds[name].sound = DungeonGame.game.add.audio( name );
-	this.sounds[name].sound.addMarker( 'cry_1', 0.0, 1.6, vol );
-	this.sounds[name].sound.addMarker( 'cry_2', 1.7, 1.3, vol );
-	this.sounds[name].sound.addMarker( 'cry_3', 3.1, 1.3, vol );
-	this.sounds[name].sound.addMarker( 'cry_4', 4.5, 1.7, vol );
+	this.sounds[name].sound.addMarker( 'cry_1', 0.0, 1.6, cryVol );
+	this.sounds[name].sound.addMarker( 'cry_2', 1.7, 1.3, cryVol );
+	this.sounds[name].sound.addMarker( 'cry_3', 3.1, 1.3, cryVol );
+	this.sounds[name].sound.addMarker( 'cry_4', 4.5, 1.7, cryVol );
 	this.sounds[name].sound.addMarker( 'hurt_1', 6.3, 1.4, vol );
 	this.sounds[name].sound.addMarker( 'hurt_2', 7.8, 1.4, vol );
 	this.sounds[name].sound.addMarker( 'hurt_3', 9.3, 1.4, vol );

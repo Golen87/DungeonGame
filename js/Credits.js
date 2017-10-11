@@ -21,6 +21,8 @@ DungeonGame.Credits.prototype = {
 		y += 16;
 		var text = this.add.bitmapText( SCREEN_WIDTH/2, y, 'Pixelade', 'Magdalena "Camelopardia" Annell', 13 );
 		text.anchor.x = 0.5;
+		var icon = this.add.sprite( SCREEN_WIDTH - 48, y, 'camelopardia' );
+		icon.anchor.y = 0.5;
 
 		y += 16;
 		y += 16;

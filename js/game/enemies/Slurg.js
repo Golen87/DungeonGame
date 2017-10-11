@@ -8,7 +8,6 @@ function Slurg()
 	this.speed = 24;
 
 	this.sound = 'spider';
-	this.damageTimer = 0;
 };
 
 Slurg.prototype.create = function ()
@@ -85,7 +84,7 @@ Slurg.prototype.setAnimation = function ( newState, newDirection )
 			this.lightOffset.set( 0, 0 );
 		}
 
-		if ( this.state == 'hurt' )
+		if ( this.isHurting )
 			this.lightSprite.tint = 0x555555;
 		else
 			this.lightSprite.tint = 0x777777;
@@ -110,6 +109,46 @@ Slurg.prototype.update = function ()
 		this.sprite.body.position.x -= this.sprite.body.velocity.x / 60;
 		this.sprite.body.position.y -= this.sprite.body.velocity.y / 60;
 	}
+
+
+	if ( this.aiState == 'walk' && this.sprite.body.velocity.getMagnitude() == 0 )
+		this.aiState = 'idle';
+
+	if ( this.aiState == 'idle' && Math.random() < 0.02 )
+	{
+		this.aiState = 'walk';
+		var movement = [[1,0], [0,1], [-1,0], [0,-1]].choice()
+		var len = randInt( 1, 4 );
+		this.goalPos.x = this.sprite.body.position.x + len * 16 * movement[0];
+		this.goalPos.y = this.sprite.body.position.y + len * 16 * movement[1];
+	}
+	if ( this.aiState == 'walk' )
+	{
+		this.sprite.body.velocity.x = this.speed * ( this.goalPos.x - this.sprite.body.position.x ).clamp(-1,1);
+		this.sprite.body.velocity.y = this.speed * ( this.goalPos.y - this.sprite.body.position.y ).clamp(-1,1);
+
+		if ( this.aiState == 'walk' && this.sprite.body.position.distance( this.goalPos ) < 0.1 )
+		{
+			this.aiState = 'idle';
+			this.sprite.body.position.copyFrom( this.goalPos );
+			this.sprite.body.velocity.setTo( 0, 0 );
+		}
+	}
+
+	var v = this.sprite.body.velocity;
+	if ( v.getMagnitude() > 0 )
+	{
+		var direction;
+		if ( Math.abs( v.x ) >= Math.abs( v.y ) )
+			direction = v.x > 0 ? 'right' : 'left';
+		else
+			direction = v.y > 0 ? 'down' : 'up';
+		this.setAnimation( 'walk', direction );
+	}
+	else
+	{
+		this.setAnimation( 'idle', this.direction );
+	}
 };
 
 Slurg.prototype.overlap = function ( other )
@@ -117,11 +156,23 @@ Slurg.prototype.overlap = function ( other )
 	Enemy.prototype.overlap.call( this );
 };
 
-Slurg.prototype.hurt = function ()
+Slurg.prototype.takeDamage = function ()
 {
-	Enemy.prototype.hurt.call( this );
+	Enemy.prototype.takeDamage.call( this );
 
 	//DungeonGame.game.add.tween( this.chestBeam ).to({ alpha: 1.0 }, 400, Phaser.Easing.Linear.In, true );
+};
+
+Slurg.prototype.defeat = function ()
+{
+	Enemy.prototype.defeat.call( this );
+
+	DungeonGame.Particle.createSmokeBurst( this.sprite.x, this.sprite.y );
+};
+
+Slurg.prototype.getAttackPower = function ()
+{
+	return 15;
 };
 
 extend( Enemy, Slurg );

@@ -24,11 +24,13 @@ function RoomManager ( decoGroup )
 	this.activeMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
 
 	this.background = DungeonGame.game.add.group();
-	this.background.createMultiple( 4*ROOM_WIDTH*ROOM_HEIGHT, 'dungeon', 0, false );
+	this.background.createMultiple( 2*ROOM_WIDTH*ROOM_HEIGHT, 'dungeon', 0, false );
 	this.foreground = DungeonGame.game.add.group();
-	this.foreground.createMultiple( 4*ROOM_WIDTH*ROOM_HEIGHT, 'dungeon', 0, false );
+	this.foreground.createMultiple( 3*ROOM_WIDTH*ROOM_HEIGHT, 'dungeon', 0, false );
 	this.physics = DungeonGame.game.add.group();
-	this.physics.createMultiple( ROOM_WIDTH*ROOM_HEIGHT, 'dungeon', 0, false );
+	this.physics.createMultiple( ROOM_WIDTH*ROOM_HEIGHT / 2, null, 0, false );
+	this.boundaries = DungeonGame.game.add.group();
+	this.boundaries.createMultiple( 4, null, 0, false );
 
 	this.decorations = Array( 32 );
 	for ( var i = 0; i < this.decorations.length; i++ )
@@ -40,6 +42,11 @@ function RoomManager ( decoGroup )
 	for ( var i = 0; i < this.physics.children.length; i++ )
 	{
 		DungeonGame.game.physics.enable( this.physics.children[i], Phaser.Physics.ARCADE );
+	}
+
+	for ( var i = 0; i < this.boundaries.children.length; i++ )
+	{
+		DungeonGame.game.physics.enable( this.boundaries.children[i], Phaser.Physics.ARCADE );
 	}
 }
 
@@ -363,7 +370,14 @@ RoomManager.prototype.render = function ()
 		this.physics.forEach( function ( member ) {
 			if ( member.exists )
 			{
-				DungeonGame.game.debug.body( member );
+				DungeonGame.game.debug.body( member, GREEN );
+			}
+		}, this );
+
+		this.boundaries.forEach( function ( member ) {
+			if ( member.exists )
+			{
+				DungeonGame.game.debug.body( member, CYAN );
 			}
 		}, this );
 	}
@@ -388,6 +402,10 @@ RoomManager.prototype.clearOutOfView = function ( clearPhysics=false )
 		for ( var i = 0; i < this.physics.children.length; i++ )
 		{
 			this.physics.children[i].kill();
+		}
+		for ( var i = 0; i < this.boundaries.children.length; i++ )
+		{
+			this.boundaries.children[i].kill();
 		}
 	}
 	for ( var i = 0; i < this.background.children.length; i++ )
@@ -439,6 +457,8 @@ RoomManager.prototype.loadRoom = function ( room_x, room_y )
 	var offset_y = room_y * ROOM_HEIGHT;
 
 	this.clearOutOfView( true );
+
+	this.createRoomBorders( offset_x, offset_y );
 
 	for ( var y = offset_y; y < offset_y + ROOM_HEIGHT; y++ )
 	{
@@ -536,4 +556,43 @@ RoomManager.prototype.loadRoom = function ( room_x, room_y )
 			}
 		}
 	}
+};
+
+RoomManager.prototype.createRoomBorders = function ( offset_x, offset_y )
+{
+	var s = this.boundaries.children[0];
+	s.reset( 16*offset_x, 16*offset_y );
+	s.body.setSize( 16*ROOM_WIDTH, 16 );
+
+	var s = this.boundaries.children[1];
+	s.reset( 16*offset_x, 16*offset_y );
+	s.body.setSize( 16, 16*ROOM_HEIGHT );
+
+	var s = this.boundaries.children[2];
+	s.reset( 16*offset_x, 16*offset_y + 16*(ROOM_HEIGHT-1) );
+	s.body.setSize( 16*ROOM_WIDTH, 16 );
+
+	var s = this.boundaries.children[3];
+	s.reset( 16*offset_x + 16*(ROOM_WIDTH-1), 16*offset_y );
+	s.body.setSize( 16, 16*ROOM_HEIGHT );
+
+	for ( var i = 0; i < 4; i++ )
+	{
+		var s = this.boundaries.children[i];
+		s.renderable = false;
+		s.body.immovable = true;
+		s.body.moves = false;
+	}
+};
+
+RoomManager.prototype.checkPhysicsAt = function ( x, y )
+{
+	// Room border. Prevent enemies and entities from leaving.
+	if ((x % ROOM_WIDTH) == 0 ||
+		(x % ROOM_WIDTH) == ROOM_WIDTH-1 ||
+		(y % ROOM_HEIGHT) == 0 ||
+		(y % ROOM_HEIGHT) == ROOM_HEIGHT-1)
+		return true;
+
+	return this.physicsMap[y][x];
 };

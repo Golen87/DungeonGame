@@ -75,6 +75,10 @@ var ENEMY_SLURG = {
 	'name': 'slurg',
 	'type': TYPE_ENEMY
 };
+var ENEMY_BAT = {
+	'name': 'bat',
+	'type': TYPE_ENEMY
+};
 
 
 var PIXEL_TABLE = {
@@ -87,6 +91,7 @@ var PIXEL_TABLE = {
 	'128,128,128': DECO_PILLAR,
 
 	'255,0,0': ENEMY_SLURG,
+	'255,128,0': ENEMY_BAT,
 
 	'255,0,255': OBJ_SPIKES,
 	'0,0,255': OBJ_DOOR,
@@ -108,6 +113,7 @@ var TILES = [
 	FLOOR_INDENT,
 
 	ENEMY_SLURG,
+	ENEMY_BAT,
 
 	OBJ_SPIKES,
 	OBJ_DOOR,

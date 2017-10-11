@@ -121,8 +121,8 @@ EnemyManager.prototype.loadRoom = function ( room_x, room_y )
 
 					if ( this.enemyMap[y][x] == 'slurg' )
 						this.enemies[index] = new Slurg();
-					//else if ( this.enemyMap[y][x] == 'door' )
-					//	this.enemies[index] = new Door( this.onOpen );
+					else if ( this.enemyMap[y][x] == 'bat' )
+						this.enemies[index] = new Bat();
 
 					if ( this.enemies[index] )
 					{
@@ -157,3 +157,17 @@ EnemyManager.prototype.onDeath = function ( enemy )
 	enemy.bgSprite.kill();
 	enemy.lightSprite.kill();
 };
+
+EnemyManager.prototype.pause = function ( isPaused )
+{
+	for ( var i = 0; i < this.enemies.length; i++ )
+	{
+		if ( this.enemies[i] && this.enemies[i].sprite.exists )
+		{
+			if ( this.enemies[i].sprite.animations.currentAnim )
+			{
+				this.enemies[i].sprite.animations.paused = isPaused;
+			}
+		}
+	}
+}

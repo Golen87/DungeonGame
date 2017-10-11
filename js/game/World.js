@@ -23,7 +23,6 @@ World.prototype.create = function ()
 
 	this.roomManager = new RoomManager( this.entities );
 	this.nextRoomOffset = 8;
-	//this.currentArea = [7,7];
 	this.currentArea = [1,1];
 	this.roomManager.loadRoom( this.currentArea[0], this.currentArea[1] );
 
@@ -89,10 +88,15 @@ World.prototype.update = function ()
 		var enemy = this.enemyManager.enemies[i];
 		if ( enemy && enemy.sprite.exists )
 		{
-			DungeonGame.game.physics.arcade.overlap( this.Player.swing, enemy.sprite, enemy.damage, null, enemy );
+			DungeonGame.game.physics.arcade.overlap( this.Player.swing, enemy.sprite, enemy.getHit, null, enemy );
 			DungeonGame.game.physics.arcade.overlap( this.Player.sprite, enemy.sprite, function(){
 				this.Player.damage( enemy.getAttackPower(), enemy.sprite.body.position );
 			}, null, this );
+
+			if ( !Bat.prototype.isPrototypeOf( enemy ) )
+			{
+				DungeonGame.game.physics.arcade.collide( enemy.sprite, this.entityManager.sprites );
+			}
 		}
 	}
 
@@ -122,12 +126,14 @@ World.prototype.update = function ()
 	//DungeonGame.game.physics.arcade.collide( this.Player.sprite, this.entityManager.sprites );
 
 	DungeonGame.game.physics.arcade.collide( this.enemyManager.sprites, this.roomManager.physics );
-	DungeonGame.game.physics.arcade.collide( this.enemyManager.sprites, this.entityManager.sprites );
+	DungeonGame.game.physics.arcade.collide( this.enemyManager.sprites, this.roomManager.boundaries );
+	//DungeonGame.game.physics.arcade.collide( this.enemyManager.sprites, this.entityManager.sprites );
 
 	//DungeonGame.game.physics.arcade.collide( this.entityManager.sprites, this.entityManager.sprites, function( entityA, entityB ){
 	//	console.log("whoops", entityA, entityB);
 	//}, null, this );
 	DungeonGame.game.physics.arcade.collide( this.entityManager.sprites, this.roomManager.physics );
+	DungeonGame.game.physics.arcade.collide( this.entityManager.sprites, this.roomManager.boundaries );
 
 	//DungeonGame.game.physics.arcade.overlap( this.Player.sprite, this.Room.physics, this.collision, null, this );
 
@@ -251,6 +257,12 @@ World.prototype.render = function ()
 	}
 };
 
+World.prototype.pause = function ( isPaused )
+{
+	this.Player.sprite.animations.paused = isPaused;
+	this.enemyManager.pause( isPaused );
+}
+
 World.prototype.collision = function ( player, item )
 {
 	//console.log( player.body.position, item.body.position );
@@ -311,7 +323,7 @@ World.prototype.checkPhysicsAt = function ( x, y )
 {
 	if ( this.roomManager.isWithin( x, y ) )
 	{
-		if ( this.roomManager.physicsMap[y][x] )
+		if ( this.roomManager.checkPhysicsAt( x, y ) )
 		{
 			return true;
 		}

@@ -40,7 +40,7 @@ DungeonGame.Game.prototype =
 		if ( this.cinemaToggle.justDown )
 			DungeonGame.cinematic = !DungeonGame.cinematic;
 
-		if ( this.pauseToggle.justDown )
+		if ( this.pauseToggle.justDown && !DungeonGame.cinematic )
 		{
 			DungeonGame.paused = !DungeonGame.paused;
 			DungeonGame.game.physics.arcade.isPaused = DungeonGame.paused;
@@ -48,10 +48,12 @@ DungeonGame.Game.prototype =
 			if ( DungeonGame.paused )
 			{
 				DungeonGame.Gui.showPauseMenu();
+				this.World.pause( true );
 			}
 			else
 			{
 				DungeonGame.Gui.hidePauseMenu();
+				this.World.pause( false );
 			}
 		}
 
