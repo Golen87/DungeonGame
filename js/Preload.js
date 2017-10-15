@@ -48,11 +48,10 @@ DungeonGame.Preload.prototype = {
 		this.load.spritesheet( 'rubble', 'assets/sprites/particles/rubble.png', 5, 5 );
 		this.load.spritesheet( 'fire', 'assets/sprites/particles/fire.png', 8, 12 );
 
-		//this.load.image( 'map', 'assets/rooms/map.png' );
-		//this.load.image( 'overworld', 'assets/rooms/overworld.png' );
-		this.load.image( 'floorMap', 'assets/rooms/floorMap.png' );
-		this.load.image( 'wallMap', 'assets/rooms/wallMap.png' );
-		this.load.image( 'entityMap', 'assets/rooms/entityMap.png' );
+		var world = 'test';
+		this.load.image( 'floorMap', 'assets/rooms/{0}/floorMap.png'.format(world) );
+		this.load.image( 'wallMap', 'assets/rooms/{0}/wallMap.png'.format(world) );
+		this.load.image( 'entityMap', 'assets/rooms/{0}/entityMap.png'.format(world) );
 
 		this.load.image( 'camelopardia', 'assets/sprites/camelopardia.png' );
 

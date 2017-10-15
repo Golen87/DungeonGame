@@ -67,6 +67,16 @@ Object.defineProperties(Array.prototype, {
 	}
 });
 
+Array.prototype.contains = function(obj) {
+	var i = this.length;
+	while (i--) {
+		if (this[i] === obj) {
+			return true;
+		}
+	}
+	return false;
+}
+
 
 function tweenTint( obj, startColor, endColor, time )
 {

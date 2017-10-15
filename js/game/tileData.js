@@ -39,7 +39,7 @@ var FLOOR_RUBBLE = {
 var FLOOR_INDENT = {
 	'name': 'indent',
 	'type': TYPE_FLOOR,
-	'spos': [4,2]
+	'spos': [[6,2], [7,2], [6,3], [7,3], [6,4], [7,4]]
 };
 
 var OBJ_BOX = {
@@ -87,8 +87,8 @@ var PIXEL_TABLE = {
 	'255,128,128': FLOOR_INDENT,
 
 	'0,0,0': TILE_WALL,
-	'50,50,50': TILE_SPIRAL,
-	'128,128,128': DECO_PILLAR,
+	'32,32,64': TILE_SPIRAL,
+	'32,64,64': DECO_PILLAR,
 
 	'255,0,0': ENEMY_SLURG,
 	'255,128,0': ENEMY_BAT,
