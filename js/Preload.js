@@ -41,6 +41,7 @@ DungeonGame.Preload.prototype = {
 
 		this.load.image( 'healthHud', 'assets/sprites/gui/health-hud.png' );
 		this.load.image( 'itemHud', 'assets/sprites/gui/item-hud.png' );
+		this.load.image( 'fog', 'assets/sprites/gui/fog.png' );
 
 		this.load.spritesheet( 'smoke', 'assets/sprites/particles/smoke.png', 9, 9 );
 		this.load.spritesheet( 'sparkle', 'assets/sprites/particles/sparkle.png', 9, 9 );

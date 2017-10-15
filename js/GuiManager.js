@@ -11,6 +11,13 @@ GuiManager.prototype.create = function ()
 	this.guiGroup = DungeonGame.game.add.group();
 
 
+	/* General darkness */
+
+	this.fog = DungeonGame.game.add.sprite( 0, 0, 'fog' );
+	this.fog.blendMode = Phaser.blendModes.MULTIPLY;
+	this.guiGroup.add( this.fog );
+
+
 	/* Cinematic mode GUI */
 
 	this.cinDist = 24;
@@ -82,6 +89,9 @@ GuiManager.prototype.create = function ()
 
 GuiManager.prototype.update = function ()
 {
+	this.fog.x = DungeonGame.game.camera.view.x - 8;
+	this.fog.y = DungeonGame.game.camera.view.y - 8;
+
 	if ( DungeonGame.cinematic )
 	{
 		this.cinemaValue += ( 2 - this.cinemaValue ) / 6;
@@ -154,6 +164,11 @@ GuiManager.prototype.hidePauseMenu = function ()
 
 GuiManager.prototype.setHealth = function ( hpPerc, staPerc )
 {
+	if ( hpPerc < this.hpGoal )
+	{
+		tweenTint( this.fog, 0xffdddd, 0xffffff, 200 );
+	}
+
 	if ( this.hpGoal != hpPerc )
 	{
 		if ( this.hpCooldown < 0 && this.hpPerc != this.hpGoal )

@@ -58,7 +58,7 @@ Switch.prototype.toggle = function ( state, immediate=false )
 		if ( !immediate )
 		{
 			DungeonGame.Audio.play( 'crystal', 'on' );
-			this.tweenTint( this.lightSprite, this.TINT_OFF, this.TINT_ON, 200 );
+			tweenTint( this.lightSprite, this.TINT_OFF, this.TINT_ON, 200 );
 			this.lightTween = DungeonGame.game.add.tween( this.lightSprite ).to({ fac: 1.0 }, 600, Phaser.Easing.Elastic.Out, true );
 		}
 		else
@@ -73,7 +73,7 @@ Switch.prototype.toggle = function ( state, immediate=false )
 		if ( !immediate )
 		{
 			DungeonGame.Audio.play( 'crystal', 'off' );
-			this.tweenTint( this.lightSprite, this.TINT_ON, this.TINT_OFF, 300 );
+			tweenTint( this.lightSprite, this.TINT_ON, this.TINT_OFF, 300 );
 			this.lightTween = DungeonGame.game.add.tween( this.lightSprite ).to({ fac: 0.0 }, 600, Phaser.Easing.Exponential.Out, true );
 		}
 		else
@@ -88,19 +88,6 @@ Switch.prototype.hurt = function ()
 {
 	DungeonGame.Audio.play( 'chop' );
 	this.toggle( !this.active );
-};
-
-Switch.prototype.tweenTint = function (obj, startColor, endColor, time)
-{
-	var colorBlend = {step: 0};
-	var colorTween = DungeonGame.game.add.tween(colorBlend).to({step: 100}, time);
-
-	colorTween.onUpdateCallback(function() {
-		obj.tint = Phaser.Color.interpolateColor(startColor, endColor, 100, colorBlend.step);
-	});
-
-	obj.tint = startColor;
-	colorTween.start();
 };
 
 extend( Entity, Switch );

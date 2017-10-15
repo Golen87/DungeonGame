@@ -67,6 +67,20 @@ Object.defineProperties(Array.prototype, {
 	}
 });
 
+
+function tweenTint( obj, startColor, endColor, time )
+{
+	var colorBlend = {step: 0};
+	var colorTween = DungeonGame.game.add.tween(colorBlend).to({step: 100}, time);
+
+	colorTween.onUpdateCallback(function() {
+		obj.tint = Phaser.Color.interpolateColor(startColor, endColor, 100, colorBlend.step);
+	});
+
+	obj.tint = startColor;
+	colorTween.start();
+};
+
 var RED = 'rgba(255,0,0,0.4)';
 var YELLOW = 'rgba(255,255,0,0.4)';
 var GREEN = 'rgba(0,255,0,0.4)';
