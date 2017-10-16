@@ -11,7 +11,7 @@ AudioManager.prototype.init = function ()
 {
 	//addMarker(name, start, duration, volume, loop)
 
-	var masterVol = 1.0;
+	var masterVol = 0.8;
 
 	var name = 'footsteps';
 	var vol = 0.05 * masterVol;
@@ -62,7 +62,10 @@ AudioManager.prototype.init = function ()
 	var vol = 0.4 * masterVol;
 	this.sounds[name] = {};
 	this.sounds[name].sound = DungeonGame.game.add.audio( name );
-	this.sounds[name].sound.volume = vol;
+	this.sounds[name].sound.addMarker( '1', 0.0, 0.4, vol );
+	this.sounds[name].sound.addMarker( '2', 0.5, 0.4, vol );
+	this.sounds[name].sound.addMarker( '3', 1.0, 0.4, vol );
+	this.sounds[name].markers = ['1', '2', '3'];
 
 	var name = 'break';
 	var vol = 0.4 * masterVol;
