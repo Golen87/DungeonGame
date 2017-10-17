@@ -38,7 +38,7 @@ Block.prototype.update = function ()
 	else if ( this.isPushingBuffer > 0 )
 	{
 		this.pushBuffer += 1;
-		if ( this.pushBuffer > 10 )
+		if ( this.pushBuffer > 16 )
 		{
 			var p = this.getGridPos();
 			if ( !DungeonGame.checkPhysicsAt( p.x + this.pushDir[0], p.y + this.pushDir[1] ) )

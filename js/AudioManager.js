@@ -105,9 +105,25 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].sound = DungeonGame.game.add.audio( name );
 	this.sounds[name].sound.volume = vol;
 
+	var name = 'pressureplate';
+	var vol = 0.15 * masterVol;
+	this.sounds[name] = {};
+	this.sounds[name].sound = DungeonGame.game.add.audio( name );
+	this.sounds[name].sound.addMarker( 'on', 0.0, 0.2, vol );
+	this.sounds[name].sound.addMarker( 'off', 0.3, 0.2, vol );
+	this.sounds[name].markers = [];
+	this.sounds[name].markers['on'] = ['on']
+	this.sounds[name].markers['off'] = ['off']
+
+	var name = 'monsterroom-spawn';
+	var vol = 0.4 * masterVol;
+	this.sounds[name] = {};
+	this.sounds[name].sound = DungeonGame.game.add.audio( name );
+	this.sounds[name].sound.volume = vol;
+
 
 	var vol = 0.4 * masterVol;
-	var cryVol = 0.3 * masterVol;
+	var cryVol = 0.2 * masterVol;
 
 	var name = 'rat';
 	this.sounds[name] = {};

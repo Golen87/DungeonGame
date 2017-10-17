@@ -4,10 +4,10 @@ function Bat()
 {
 	Enemy.call( this );
 
-	this.health = 3;
+	this.health = 2;
 	this.maxSpeed = 60;
 
-	this.sound = 'mouse';
+	this.sound = 'rat';
 
 	this.flapSpeed = 0;
 	this.flapTimer = randInt(0, 5);

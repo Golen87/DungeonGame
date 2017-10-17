@@ -78,6 +78,9 @@ Spikes.prototype.setState = function ( state, sound=true )
 
 Spikes.prototype.toggle = function ( state, immediate=false )
 {
+	if ( this.active == state || this.lockState )
+		return;
+
 	this.active = state;
 
 	if ( state )

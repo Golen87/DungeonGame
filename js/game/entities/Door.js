@@ -10,12 +10,16 @@ function Door( onTryOpen )
 
 Door.prototype.create = function ()
 {
-	this.sprite.frame = 14;
+	this.sprite.loadTexture( 'entities32', 0 );
+	//this.sprite.frame = 15;
+	this.sprite.frame = 0;
+	this.sprite.anchor.set(0.25, 0.5);
+	this.sprite.body.setSize(32, 16);
 
 	if ( this.data.open )
 	{
 		this.isOpen = true;
-		this.sprite.frame = 15;
+		this.sprite.frame = 1;
 	}
 };
 
@@ -27,7 +31,7 @@ Door.prototype.destroy = function ()
 Door.prototype.open = function ()
 {
 	this.isOpen = true;
-	this.sprite.frame = 15;
+	this.sprite.frame = 1;
 	DungeonGame.Audio.play( 'open' );
 };
 

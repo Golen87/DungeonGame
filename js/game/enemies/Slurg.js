@@ -14,7 +14,7 @@ Slurg.prototype.create = function ()
 {
 	this.sprite.loadTexture( 'slurg', 0 );
 
-	this.sprite.body.setSize( 12, 10, 2, 2 );
+	this.sprite.body.setSize( 12, 10, 2, 3 );
 
 	this.lightSprite.reset( this.spawn.x*16, this.spawn.y*16 );
 	this.lightSprite.loadTexture( 'slurgLight', 0 );

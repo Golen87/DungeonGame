@@ -7,7 +7,8 @@ function PressurePlate( onTrigger )
 
 	this.active = false;
 	this.prevActive = false;
-	this.timer = 0;
+	this.holdTimer = 0;
+	this.animationTimer = 0;
 };
 
 PressurePlate.prototype.create = function ()
@@ -32,10 +33,16 @@ PressurePlate.prototype.update = function ()
 		this.toggle( true );
 	}
 
-	this.timer -= 1;
-	if ( this.timer <= 0 && this.active )
+	this.holdTimer -= 1;
+	if ( this.holdTimer <= 0 && this.active )
 	{
 		this.toggle( false );
+	}
+
+	this.animationTimer -= 1;
+	if ( this.animationTimer <= 0 && this.active )
+	{
+		this.bgSprite.frame = 13;
 	}
 };
 
@@ -48,13 +55,20 @@ PressurePlate.prototype.toggle = function ( state )
 		this.onTrigger( this );
 
 		if ( state )
-			this.bgSprite.frame = 13;
+		{
+			this.bgSprite.frame = 14;
+			this.animationTimer = 4;
+			DungeonGame.Audio.play( 'pressureplate', 'on' );
+		}
 		else
+		{
 			this.bgSprite.frame = 12;
+			DungeonGame.Audio.play( 'pressureplate', 'off' );
+		}
 	}
 
 	if ( state )
-		this.timer = 4;
+		this.holdTimer = 4;
 
 	this.prevActive = state;
 };
@@ -66,7 +80,7 @@ PressurePlate.prototype.overlap = function ( other )
 	var x = other.sprite.body.center.x - this.sprite.body.center.x;
 	var y = other.sprite.body.center.y - this.sprite.body.center.y + 4;
 
-	if ( Math.abs(x) < 8 && Math.abs(y) < 6 )
+	if ( Math.abs(x) < 8 && Math.abs(y) < 8 )
 	{
 		this.toggle( true );
 	}
