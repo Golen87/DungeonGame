@@ -19,6 +19,13 @@ DungeonGame.Game.prototype =
 		this.shadowToggle = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.F );
 		this.cinemaToggle = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.C );
 		this.pauseToggle = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.ESC );
+
+		var key = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.ESC );
+		key.onDown.add( this.togglePause, this );
+		var key = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.P );
+		key.onDown.add( this.togglePause, this );
+
+		DungeonGame.togglePause = DungeonGame.Game.prototype.togglePause.bind( this );
 	},
 
 	update: function()
@@ -39,23 +46,6 @@ DungeonGame.Game.prototype =
 
 		if ( this.cinemaToggle.justDown )
 			DungeonGame.cinematic = !DungeonGame.cinematic;
-
-		if ( this.pauseToggle.justDown && !DungeonGame.cinematic )
-		{
-			DungeonGame.paused = !DungeonGame.paused;
-			DungeonGame.game.physics.arcade.isPaused = DungeonGame.paused;
-
-			if ( DungeonGame.paused )
-			{
-				DungeonGame.Gui.showPauseMenu();
-				this.World.pause( true );
-			}
-			else
-			{
-				DungeonGame.Gui.hidePauseMenu();
-				this.World.pause( false );
-			}
-		}
 
 		if ( DungeonGame.game.input.activePointer.isDown )
 		{
@@ -86,5 +76,24 @@ DungeonGame.Game.prototype =
 	render: function()
 	{
 		this.World.render();
+	},
+
+	togglePause: function()
+	{
+		if ( !DungeonGame.cinematic )
+		{
+			DungeonGame.paused = !DungeonGame.paused;
+			DungeonGame.game.physics.arcade.isPaused = DungeonGame.paused;
+			this.World.pause( DungeonGame.paused );
+
+			if ( DungeonGame.paused )
+			{
+				DungeonGame.Gui.showPauseMenu();
+			}
+			else
+			{
+				DungeonGame.Gui.hidePauseMenu();
+			}
+		}
 	},
 };

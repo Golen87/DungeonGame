@@ -16,13 +16,17 @@ DungeonGame.MainMenu.prototype = {
 			}
 		}
 
-		var text = this.add.bitmapText( SCREEN_WIDTH/2, 48, 'OldWizard', 'DungeonGame', 32 );
+		var text = this.add.bitmapText( SCREEN_WIDTH/2, 48, 'Adventurer', 'Dragon\'s Crypt', 16 );
 		text.anchor.x = 0.5;
-		var text = this.add.bitmapText( SCREEN_WIDTH/2, 64+16, 'PixeladeFancy', 'For a lack of a better title', 13 );
+		var text = this.add.bitmapText( SCREEN_WIDTH/2, 64, 'PixeladeFancy', 'Kill dragons and stuff', 13 );
 		text.anchor.x = 0.5;
 
 		var text = this.add.bitmapText( SCREEN_WIDTH/2, SCREEN_HEIGHT - 32, 'Pixelade', 'Press [space] to start', 13 );
 		text.anchor.x = 0.5;
+
+		var text = this.add.bitmapText( 1, SCREEN_HEIGHT+1, 'Pixelade', 'v1.0', 13 );
+		text.anchor.set( 0, 1 );
+		text.tint = 0x555555;
 
 		var start = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.SPACEBAR );
 		var credits = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.ESC );
@@ -34,8 +38,8 @@ DungeonGame.MainMenu.prototype = {
 		//this.fire.animations.add( 'burn', [0,1,2,3,4,5,6,7], 10, true );
 		//this.fire.animations.play( 'burn' );
 
-		DungeonGame.Particle.createSmokeTrail( 16, 64 );
-		DungeonGame.Particle.createSmokeTrail( SCREEN_WIDTH-16, 64 );
+		DungeonGame.Particle.createSmokeTrail( 48, 64 );
+		DungeonGame.Particle.createSmokeTrail( SCREEN_WIDTH-48, 64 );
 	},
 	update: function() {
 		if ( DungeonGame.game.input.activePointer.isDown )
