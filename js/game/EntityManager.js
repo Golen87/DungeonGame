@@ -115,7 +115,6 @@ EntityManager.prototype.loadRoom = function ( room_x, room_y )
 				var index = this.getFirstDead();
 				if ( index != -1 )
 				{
-					this.activeMap[y][x] = true;
 					this.entities[index] = null;
 
 					if ( this.entityMap[y][x] == 'spikes' )
@@ -137,6 +136,7 @@ EntityManager.prototype.loadRoom = function ( room_x, room_y )
 					{
 						this.entities[index].init( this.sprites[index], this.bgSprites[index], this.lightSprites[index], this.dataMap[y][x], x, y );
 						newEntities.push( this.entities[index] );
+						this.activeMap[y][x] = this.entities[index];
 					}
 					else
 					{
@@ -154,6 +154,13 @@ EntityManager.prototype.loadRoom = function ( room_x, room_y )
 	for ( var i = 0; i < newEntities.length; i++ )
 	{
 		newEntities[i].create();
+
+		if ( Chest.prototype.isPrototypeOf( newEntities[i] ) && pointCmp( [room_x, room_y], this.monsterRooms ) )
+		{
+			newEntities[i].sprite.visible = false;
+			newEntities[i].bgSprite.visible = false;
+			newEntities[i].lightSprite.visible = false;
+		}
 	}
 };
 
@@ -177,31 +184,19 @@ EntityManager.prototype.checkPhysicsAt = function ( x, y )
 
 EntityManager.prototype.onTrigger = function ( entity, immediate )
 {
-	if ( Switch.prototype.isPrototypeOf( entity ) )
+	if ( Switch.prototype.isPrototypeOf( entity ) || PressurePlate.prototype.isPrototypeOf( entity ) )
 	{
 		for ( var i = 0; i < this.entities.length; i++ )
 		{
 			if ( this.entities[i] && this.entities[i].sprite.exists )
 			{
+				this.entities[i].manual = true;
 				if ( Spikes.prototype.isPrototypeOf( this.entities[i] ) )
 				{
-					this.entities[i].manual = true;
-					this.entities[i].toggle( !entity.active, immediate );
-				}
-			}
-		}
-	}
-
-	if ( PressurePlate.prototype.isPrototypeOf( entity ) )
-	{
-		for ( var i = 0; i < this.entities.length; i++ )
-		{
-			if ( this.entities[i] && this.entities[i].sprite.exists )
-			{
-				if ( Spikes.prototype.isPrototypeOf( this.entities[i] ) )
-				{
-					this.entities[i].manual = true;
-					this.entities[i].toggle( !entity.active, immediate );
+					if ( !this.scriptedTriggers( entity, this.entities[i], immediate ) )
+					{
+						this.entities[i].toggle( !entity.active, immediate );
+					}
 				}
 			}
 		}
@@ -211,9 +206,130 @@ EntityManager.prototype.onTrigger = function ( entity, immediate )
 EntityManager.prototype.onDeath = function ( entity )
 {
 	this.activeMap[entity.spawn.y][entity.spawn.x] = null;
-	this.entityMap[entity.spawn.y][entity.spawn.x] = null;
+	this.entityMap  [entity.spawn.y][entity.spawn.x] = null;
 
 	entity.sprite.kill();
 	entity.bgSprite.kill();
 	entity.lightSprite.kill();
+};
+
+
+EntityManager.prototype.onAllKilled = function ( roomPos )
+{
+	for ( var i = 0; i < this.entities.length; i++ )
+	{
+		var entity = this.entities[i];
+		if ( entity && entity.sprite.exists )
+		{
+			if ( Spikes.prototype.isPrototypeOf( entity ) )
+			{
+				this.scriptedTriggers( roomPos, entity, false, true );
+			}
+			if ( Chest.prototype.isPrototypeOf( entity ) )
+			{
+				if ( !entity.sprite.visible )
+				{
+					DungeonGame.cinematic = true;
+					DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 1.0, function () {
+						this.sprite.visible = true;
+						this.bgSprite.visible = true;
+						this.lightSprite.visible = true;
+
+						DungeonGame.Particle.createSmokeBurst( this.sprite.x, this.sprite.y );
+						DungeonGame.Audio.play( 'monsterroom-spawn' );
+					}, entity );
+					DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 2.2, function () {
+						DungeonGame.cinematic = false;
+					}, entity );
+				}
+			}
+		}
+	}
+};
+
+EntityManager.prototype.scriptedTriggers = function ( trigger, target, immediate, allMonsters=false )
+{
+	var tr, tg;
+	if ( allMonsters )
+	{
+		tr = trigger;
+	}
+	else
+	{
+		tr = trigger.getRoomPos();
+		tg = trigger.getRelGridPos();
+	}
+	var sr = target.getRoomPos();
+	var sg = target.getRelGridPos();
+
+	if ( tr.x == sr.x && tr.y == sr.y )
+	{
+		// Monster rooms
+		if ( pointCmp( tr, this.monsterRooms ) )
+		{
+			if ( allMonsters )
+			{
+				target.toggle( false, immediate );
+				target.lockState = true;
+				this.clearMonsterRoom( tr );
+			}
+			else if ( trigger.active && !pointCmp( tr, this.clearedMonsterRooms ) )
+			{
+				target.toggle( true, immediate );
+				this.triggerMonsterRoom( tr );
+			}
+			return true;
+		}
+
+		if ( allMonsters )
+			return false;
+
+		// Block puzzle
+		if ( pointCmp( tr, [[0, 0]] ) )
+		{
+			var states = this.getActiveAt( tr, [[9,2], [9,4]] );
+			if ( states.equals( [true, true] ) )
+				target.toggle( false, immediate );
+			else
+				target.toggle( true, immediate );
+			return true;
+		}
+		// Block puzzle
+		if ( pointCmp( tr, [[0, 1]] ) )
+		{
+			var states = this.getActiveAt( tr, [[7,3], [7,4]] );
+			if ( states.equals( [true, true] ) )
+				target.toggle( false, immediate );
+			else
+				target.toggle( true, immediate );
+			return true;
+		}
+		// Intersection switch
+		if ( pointCmp( tr, [[3, 1]] ) )
+		{
+			if ( pointCmp( sg, [[8, 4], [9, 4], [8, 9], [9, 9]] ) )
+				target.toggle( trigger.active, immediate );
+			if ( pointCmp( sg, [[6, 6], [11, 6], [6, 7], [11, 7]] ) )
+				target.toggle( !trigger.active, immediate );
+			return true;
+		}
+
+		console.log( 'Unknown: ({0},{1}) for ({2},{3}) -> ({4},{5})'.format( tr.x, tr.y, tg.x, tg.y, sg.x, sg.y ) );
+		return false;
+	}
+	return true;
+};
+
+EntityManager.prototype.getActiveAt = function ( roomPos, coordList )
+{
+	var result = [];
+	for ( var i=0; i<coordList.length; i++ )
+	{
+		var coords = coordList[i];
+		coords[0] += roomPos.x * ROOM_WIDTH;
+		coords[1] += roomPos.y * ROOM_HEIGHT;
+
+		result.push( this.activeMap[coords[1]][coords[0]].active );
+	}
+	return result;
 };

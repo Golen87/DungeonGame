@@ -40,7 +40,7 @@ EnemyManager.prototype.update = function ()
 {
 	for ( var i = 0; i < this.enemies.length; i++ )
 	{
-		if ( this.enemies[i] && this.enemies[i].sprite.exists )
+		if ( this.enemies[i] && this.enemies[i].sprite.exists && this.enemies[i].sprite.visible )
 		{
 			this.enemies[i].update();
 		}
@@ -145,6 +145,33 @@ EnemyManager.prototype.loadRoom = function ( room_x, room_y )
 	for ( var i = 0; i < newEnemies.length; i++ )
 	{
 		newEnemies[i].create();
+
+		if ( pointCmp( [room_x, room_y], this.monsterRooms ) )
+		{
+			newEnemies[i].sprite.visible = false;
+			newEnemies[i].bgSprite.visible = false;
+			newEnemies[i].lightSprite.visible = false;
+		}
+	}
+};
+
+EnemyManager.prototype.activateEnemies = function ()
+{
+	for ( var i = 0; i < this.enemies.length; i++ )
+	{
+		var enemy = this.enemies[i];
+		if ( enemy && enemy.sprite.exists )
+		{
+			if ( !enemy.sprite.visible )
+			{
+				enemy.sprite.visible = true;
+				enemy.bgSprite.visible = true;
+				enemy.lightSprite.visible = true;
+
+				DungeonGame.Particle.createSmokeBurst( enemy.sprite.x, enemy.sprite.y );
+				DungeonGame.Audio.play( 'monsterroom-spawn' );
+			}
+		}
 	}
 };
 
@@ -156,6 +183,20 @@ EnemyManager.prototype.onDeath = function ( enemy )
 	enemy.sprite.kill();
 	enemy.bgSprite.kill();
 	enemy.lightSprite.kill();
+
+	var enemyCount = 0;
+	for ( var i = 0; i < this.enemies.length; i++ )
+	{
+		if ( this.enemies[i] && this.enemies[i].sprite.exists )
+		{
+			enemyCount++;
+		}
+	}
+
+	if ( enemyCount == 0 )
+	{
+		this.onAllKilled( enemy.getRoomPos() );
+	}
 };
 
 EnemyManager.prototype.pause = function ( isPaused )

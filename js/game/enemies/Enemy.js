@@ -23,10 +23,12 @@ Enemy.prototype.init = function ( sprite, bgSprite, lightSprite, dataRef, x, y, 
 	this.sprite.body.moves = true;
 
 	this.bgSprite = bgSprite;
+	this.bgSprite.visible = true;
 	this.bgSprite.anchor.set( 0.5, 0.5 );
 	this.bgSprite.kill();
 
 	this.lightSprite = lightSprite;
+	this.lightSprite.visible = true;
 	this.lightSprite.anchor.set( 0.5, 0.5 );
 	this.lightSprite.kill();
 
@@ -154,10 +156,18 @@ Enemy.prototype.getAttackPower = function ()
 
 Enemy.prototype.getGridPos = function ()
 {
-	return {
-		"x": Math.floor(this.sprite.x / 16),
-		"y": Math.floor(this.sprite.y / 16)
-	};
+	return new Phaser.Point(
+		Math.floor(this.sprite.x / 16),
+		Math.floor(this.sprite.y / 16)
+	);
+};
+
+Enemy.prototype.getRoomPos = function ()
+{
+	return new Phaser.Point(
+		Math.floor(this.sprite.x / ROOM_WIDTH / 16),
+		Math.floor(this.sprite.y / ROOM_HEIGHT / 16)
+	);
 };
 
 Enemy.prototype.hasPhysics = function ()

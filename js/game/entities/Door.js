@@ -39,6 +39,15 @@ Door.prototype.hurt = function ()
 	}
 };
 
+Door.prototype.overlap = function ( other )
+{
+	Entity.prototype.overlap.call( this, other );
+	if ( !this.isOpen )
+	{
+		this.onTryOpen( this );
+	}
+};
+
 Door.prototype.hasPhysics = function ()
 {
 	return !this.isOpen;

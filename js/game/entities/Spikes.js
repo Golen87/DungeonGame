@@ -136,10 +136,10 @@ Spikes.prototype.hasPhysics = function ()
 
 Spikes.prototype.getGridPos = function ()
 {
-	return {
-		"x": Math.floor(this.sprite.x / 16),
-		"y": Math.floor((this.sprite.y+4) / 16)
-	};
+	return new Phaser.Point(
+		Math.floor(this.sprite.x / 16),
+		Math.floor((this.sprite.y+4) / 16)
+	);
 };
 
 

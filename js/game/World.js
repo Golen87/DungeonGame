@@ -24,20 +24,33 @@ World.prototype.create = function ()
 
 	this.roomManager = new RoomManager( this.entities );
 	this.nextRoomOffset = 8;
-	this.currentArea = [1,1];
+	this.currentArea = [9,11];
+	//this.currentArea = [1,1];
 	this.roomManager.loadRoom( this.currentArea[0], this.currentArea[1] );
 
 	this.Player.create(
 		this.currentArea[0] * SCREEN_WIDTH + SCREEN_WIDTH/2,
-		this.currentArea[1] * SCREEN_HEIGHT + SCREEN_HEIGHT/2,
+		this.currentArea[1] * SCREEN_HEIGHT + SCREEN_HEIGHT*5/8,
+		//this.currentArea[1] * SCREEN_HEIGHT + SCREEN_HEIGHT/2,
 		this.entities
 	);
 
 	this.enemyManager = new EnemyManager( this.entities, this.ground, this.lighting, this.roomManager.enemyMap, this.roomManager.physicsMap );
-	this.enemyManager.loadRoom( this.currentArea[0], this.currentArea[1] );
 
 	this.entityManager = new EntityManager( this.entities, this.ground, this.lighting, this.roomManager.entityMap );
 	this.entityManager.onOpen = World.prototype.onOpen.bind( this );
+	this.entityManager.triggerMonsterRoom = World.prototype.triggerMonsterRoom.bind( this );
+	this.entityManager.clearMonsterRoom = World.prototype.clearMonsterRoom.bind( this );
+
+	this.monsterRooms = [[1,0], [1,3], [2,3], [8,8]];
+	this.clearedMonsterRooms = [];
+	this.entityManager.monsterRooms = this.monsterRooms;
+	this.entityManager.clearedMonsterRooms = this.clearedMonsterRooms;
+	this.enemyManager.monsterRooms = this.monsterRooms;
+	this.enemyManager.clearedMonsterRooms = this.clearedMonsterRooms;
+	this.enemyManager.onAllKilled = this.entityManager.onAllKilled.bind( this.entityManager );
+
+	this.enemyManager.loadRoom( this.currentArea[0], this.currentArea[1] );
 	this.entityManager.loadRoom( this.currentArea[0], this.currentArea[1] );
 
 	//for ( var i = 0; i < 2; i++ )
@@ -343,4 +356,20 @@ World.prototype.checkPhysicsAt = function ( x, y )
 World.prototype.cameraShake = function ( value )
 {
 	this.shake = Math.max( Math.round(value), this.shake );
+};
+
+World.prototype.triggerMonsterRoom = function ( roomPos )
+{
+	if ( pointCmp( roomPos, this.monsterRooms ) && !pointCmp( roomPos, this.clearedMonsterRooms ) )
+	{
+		this.enemyManager.activateEnemies();
+	}
+};
+
+World.prototype.clearMonsterRoom = function ( roomPos )
+{
+	if ( pointCmp( roomPos, this.monsterRooms ) && !pointCmp( roomPos, this.clearedMonsterRooms ) )
+	{
+		this.clearedMonsterRooms.push( roomPos );
+	}
 };

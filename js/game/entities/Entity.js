@@ -22,16 +22,20 @@ Entity.prototype.init = function ( sprite, bgSprite, lightSprite, dataRef, x, y 
 	this.sprite.body.moves = false;
 
 	this.bgSprite = bgSprite;
+	this.bgSprite.loadTexture( 'entities16', 0 );
 	this.bgSprite.anchor.set( 0.5, 0.5 );
+	this.bgSprite.scale.x = 1;
 	this.bgSprite.kill();
 
 	this.lightSprite = lightSprite;
 	this.lightSprite.anchor.set( 0.5, 0.5 );
+	this.lightSprite.scale.x = 1;
 	this.lightSprite.angle = 0;
 	this.lightSprite.tint = 0xffffff;
 	this.lightSprite.kill();
 
 	this.data = dataRef;
+	this.lockState = false;
 
 	this.spawn.setTo( x, y );
 	this.sprite.reset( x*16 + 8, y*16 );
@@ -89,12 +93,28 @@ Entity.prototype.hurt = function ()
 };
 
 
+Entity.prototype.getRoomPos = function ()
+{
+	var p = this.getGridPos();
+	p.x = Math.floor(p.x / ROOM_WIDTH);
+	p.y = Math.floor(p.y / ROOM_HEIGHT);
+	return p;
+};
+
+Entity.prototype.getRelGridPos = function ()
+{
+	var p = this.getGridPos();
+	p.x %= ROOM_WIDTH;
+	p.y %= ROOM_HEIGHT;
+	return p;
+};
+
 Entity.prototype.getGridPos = function ()
 {
-	return {
-		"x": Math.floor(this.sprite.x / 16),
-		"y": Math.floor(this.sprite.y / 16)
-	};
+	return new Phaser.Point(
+		Math.floor(this.sprite.x / 16),
+		Math.floor(this.sprite.y / 16)
+	);
 };
 
 Entity.prototype.hasPhysics = function ()

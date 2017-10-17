@@ -27,6 +27,17 @@ Chest.prototype.destroy = function ()
 
 Chest.prototype.hurt = function ()
 {
+	this.open();
+};
+
+Chest.prototype.overlap = function ( other )
+{
+	Entity.prototype.overlap.call( this, other );
+	this.open();
+};
+
+Chest.prototype.open = function ()
+{
 	if ( !this.isOpen )
 	{
 		this.isOpen = true;

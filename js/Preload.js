@@ -75,6 +75,7 @@ DungeonGame.Preload.prototype = {
 		this.load.audio( 'spider', 'assets/sounds/monsters/spider.ogg' );
 		this.load.audio( 'slime', 'assets/sounds/monsters/slime.ogg' );
 		this.load.audio( 'creature', 'assets/sounds/monsters/creature.ogg' );
+		this.load.audio( 'monsterroom-spawn', 'assets/sounds/monsters/monsterroom-spawn.ogg' );
 
 
 		// Loading percentage text
