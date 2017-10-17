@@ -17,10 +17,10 @@ Player.prototype.create = function ( x, y, group )
 	//this.sprite.body.setCircle( 6, 2, 4 );
 
 	this.items = [];
-	var weapon = [1,3,4,5,6,14,15].choice();
-	this.giveItem( weapon );
+	//var weapon = [1,3,4,5,6,14,15].choice();
+	this.updateItemGui();
 
-	this.sword = group.create( x, y+2, 'items', weapon );
+	this.sword = group.create( x, y+2, 'items', 0 );
 	DungeonGame.game.physics.arcade.enable( this.sword, Phaser.Physics.ARCADE );
 	this.sword.anchor.set( 0.5 );
 	this.sword.body.setSize( 0, 0, 0, 0 );
@@ -127,44 +127,8 @@ Player.prototype.update = function ()
 {
 	if ( ( this.keys.space.justDown || DungeonGame.input.space ) && !DungeonGame.cinematic )
 	{
-		this.swing.reset(
-			Math.round(this.sprite.body.center.x + this.sprite.body.velocity.x/60),
-			Math.round(this.sprite.body.center.y + this.sprite.body.velocity.y/60)
-		);
-		this.sword.reset(
-			Math.round(this.sprite.body.center.x + this.sprite.body.velocity.x/60),
-			Math.round(this.sprite.body.center.y + this.sprite.body.velocity.y/60)
-		);
-		this.swing.animations.play( 'attack' );
-		this.swingTimer = 0;
-
-		this.swing.scale.y *= -1;
-		this.sword.scale.y = -this.swing.scale.y;
-		if ( this.direction == 'right' )
-		{
-			this.swing.angle = 0;
-			this.swing.body.setSize( 15, 28, 28, 10 );
-		}
-		else if ( this.direction == 'down' )
-		{
-			this.swing.angle = 90;
-			this.swing.body.setSize( 28, 15, 10, this.swing.scale.y == 1 ? 28 : 4 );
-		}
-		else if ( this.direction == 'left' )
-		{
-			this.swing.angle = 180;
-			this.swing.body.setSize( 15, 28, 5, 10 );
-		}
-		else if ( this.direction == 'up' )
-		{
-			this.swing.angle = 270;
-			this.swing.body.setSize( 28, 15, 10, this.swing.scale.y == 1 ? 5 : 27 );
-		}
-		this.sword.angle = this.swing.scale.y == 1 ? this.swing.angle - 90 : this.swing.angle + 90;
-		this.sword.position.x += Math.round(14*Math.cos((this.sword.angle + this.swing.scale.y * 45) * Math.PI / 180));
-		this.sword.position.y += Math.round(14*Math.sin((this.sword.angle + this.swing.scale.y * 45) * Math.PI / 180));
-
-		DungeonGame.Audio.play( 'swing' );
+		if ( this.sword.frame > 0 )
+		this.swingSword();
 	}
 	if ( this.keys.space.justUp )
 	{
@@ -248,6 +212,49 @@ Player.prototype.render = function ()
 		if ( this.sword.exists )
 			DungeonGame.game.debug.body( this.sword, RED );
 	}
+};
+
+
+Player.prototype.swingSword = function ()
+{
+	this.swing.reset(
+		Math.round(this.sprite.body.center.x + this.sprite.body.velocity.x/60),
+		Math.round(this.sprite.body.center.y + this.sprite.body.velocity.y/60)
+	);
+	this.sword.reset(
+		Math.round(this.sprite.body.center.x + this.sprite.body.velocity.x/60),
+		Math.round(this.sprite.body.center.y + this.sprite.body.velocity.y/60)
+	);
+	this.swing.animations.play( 'attack' );
+	this.swingTimer = 0;
+
+	this.swing.scale.y *= -1;
+	this.sword.scale.y = -this.swing.scale.y;
+	if ( this.direction == 'right' )
+	{
+		this.swing.angle = 0;
+		this.swing.body.setSize( 15, 28, 28, 10 );
+	}
+	else if ( this.direction == 'down' )
+	{
+		this.swing.angle = 90;
+		this.swing.body.setSize( 28, 15, 10, this.swing.scale.y == 1 ? 28 : 4 );
+	}
+	else if ( this.direction == 'left' )
+	{
+		this.swing.angle = 180;
+		this.swing.body.setSize( 15, 28, 5, 10 );
+	}
+	else if ( this.direction == 'up' )
+	{
+		this.swing.angle = 270;
+		this.swing.body.setSize( 28, 15, 10, this.swing.scale.y == 1 ? 5 : 27 );
+	}
+	this.sword.angle = this.swing.scale.y == 1 ? this.swing.angle - 90 : this.swing.angle + 90;
+	this.sword.position.x += Math.round(14*Math.cos((this.sword.angle + this.swing.scale.y * 45) * Math.PI / 180));
+	this.sword.position.y += Math.round(14*Math.sin((this.sword.angle + this.swing.scale.y * 45) * Math.PI / 180));
+
+	DungeonGame.Audio.play( 'swing' );
 };
 
 Player.prototype.damage = function ( power, position )
@@ -355,14 +362,24 @@ Player.prototype.gameOver = function ()
 
 Player.prototype.giveItem = function ( itemIndex )
 {
+	if ( itemIndex < 16 )
+	{
+		for ( var i=0; i<16; i++ )
+			this.takeItem( i );
+		this.sword.frame = itemIndex;
+	}
+
 	this.items.push( itemIndex );
 	this.updateItemGui();
 };
 
 Player.prototype.takeItem = function ( itemIndex )
 {
-	this.items.splice( this.items.indexOf( itemIndex ), 1 );
-	this.updateItemGui();
+	if ( this.items.indexOf( itemIndex ) != -1 )
+	{
+		this.items.splice( this.items.indexOf( itemIndex ), 1 );
+		this.updateItemGui();
+	}
 };
 
 Player.prototype.hasItem = function ( itemIndex )

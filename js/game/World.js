@@ -319,8 +319,14 @@ World.prototype.onOpen = function ( entity )
 {
 	if ( Chest.prototype.isPrototypeOf( entity ) )
 	{
-		this.Player.giveItem( 69 ); // 68-69 Key
-		DungeonGame.Gui.showNewItem( entity.sprite.x, entity.sprite.y, 69 );
+		var item = null;
+		if ( pointCmp( entity.getRoomPos(), [[7,10]] ) )
+			item = 1; // Basic sword
+		else
+			item = 69; // 68-69 Key
+
+		this.Player.giveItem( item );
+		DungeonGame.Gui.showNewItem( entity.sprite.x, entity.sprite.y, item );
 	}
 
 	if ( Door.prototype.isPrototypeOf( entity ) )
