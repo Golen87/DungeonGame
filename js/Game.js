@@ -101,6 +101,11 @@ DungeonGame.Game.prototype =
 				DungeonGame.input.up = ( angle < -Math.PI*1/8 && angle > -Math.PI*7/8 );
 				DungeonGame.input.down = ( angle < Math.PI*7/8 && angle > Math.PI*1/8 );
 			}
+			if ( this.holdPosition.distance( this.mousePosition ) > 64 )
+			{
+				this.holdPosition.x += ( this.mousePosition.x - this.holdPosition.x ) / 3;
+				this.holdPosition.y += ( this.mousePosition.y - this.holdPosition.y ) / 3;
+			}
 		}
 		else
 		{
