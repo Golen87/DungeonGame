@@ -3,6 +3,7 @@
 function MenuManager ()
 {
 	this.startPosition = new Phaser.Point( 0, 0 );
+	this.corners = null;
 
 	this.history = [];
 
@@ -27,13 +28,11 @@ MenuManager.prototype.setupInput = function ()
 
 	var key = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.SPACEBAR );
 	key.onDown.add( function() {this.pickChoice();}, this );
-	var key = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.ENTER );
-	key.onDown.add( function() {this.pickChoice();}, this );
 };
 
 MenuManager.prototype.update = function ()
 {
-	if ( DungeonGame.paused )
+	if ( this.corners )
 	{
 		for ( var i=0; i<4; i++ )
 		{
@@ -51,16 +50,15 @@ MenuManager.prototype.createMenu = function ( x, y, choiceList )
 
 	this.selection = 0;
 
-	y += 16 - 8;
 	this.labels = [];
 	for ( var i=0; i<this.choiceList.length; i++ )
 	{
-		y += 24;
 		var label = DungeonGame.game.add.bitmapText( x, y, 'OldWizard', this.choiceList[i][0], 16 );
 		label.anchor.set( 0.5 );
 		label.tint = 0x777777;
 		label.function = this.choiceList[i][1];
 		this.labels.push( label );
+		y += 24;
 	}
 
 
@@ -91,16 +89,15 @@ MenuManager.prototype.nextMenu = function ( choiceList )
 
 	var x = this.startPosition.x;
 	var y = this.startPosition.y;
-	y += 16 - 8;
 	this.labels = [];
 	for ( var i=0; i<this.choiceList.length; i++ )
 	{
-		y += 24;
 		var label = DungeonGame.game.add.bitmapText( x, y, 'OldWizard', this.choiceList[i][0], 16 );
 		label.anchor.set( 0.5 );
 		label.tint = 0x777777;
 		label.function = this.choiceList[i][1];
 		this.labels.push( label );
+		y += 24;
 
 		label.x += this.animationDist;
 		label.alpha = 0;
@@ -156,6 +153,7 @@ MenuManager.prototype.killMenu = function ()
 	{
 		this.corners[i].kill();
 	}
+	this.corners = null;
 
 	for ( var i=0; i<this.history.length; i++ )
 	{
@@ -190,7 +188,7 @@ MenuManager.prototype.nextChoice = function ( inc )
 			var y = this.labels[this.selection].y - corner.scale.y * 4;
 			if ( corner.x == 0 && corner.y == 0 )
 			{
-				corner.x = this.startPosition.x - corner.scale.x * 38;
+				corner.x = this.startPosition.x - corner.scale.x * 44;
 				corner.startX = corner.x;
 				corner.y = y;
 			}
@@ -204,6 +202,10 @@ MenuManager.prototype.pickChoice = function ()
 {
 	if ( DungeonGame.paused )
 	{
-		this.choiceList[this.selection][1]();
+		var newText = this.choiceList[this.selection][1]();
+		if ( newText )
+		{
+			this.labels[this.selection].text = newText;
+		}
 	}
 };

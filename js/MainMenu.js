@@ -5,53 +5,95 @@ DungeonGame.MainMenu = function() {};
 DungeonGame.MainMenu.prototype = {
 	create: function() {
 		DungeonGame.game.stage.backgroundColor = '#111111';
+		DungeonGame.paused = true;
 
+		//this.obj = [];
+		//for ( var j = 0; j < 2; j++ )
+		//{
+		//	for ( var i = 5; i < 10-j; i++ )
+		//	{
+		//		this.obj.push( this.add.sprite( 16*i + 8*j + 8, 128-8+16*j, 'items', randInt(0,8*9-1) ) );
+		//	}
+		//}
 
-		this.obj = [];
-		for ( var j = 0; j < 2; j++ )
-		{
-			for ( var i = 5; i < 10-j; i++ )
-			{
-				this.obj.push( this.add.sprite( 16*i + 8*j + 8, 128-8+16*j, 'items', randInt(0,8*9-1) ) );
-			}
-		}
+		var x = SCREEN_WIDTH/2;
+		var y = 32;
 
-		var text = this.add.bitmapText( SCREEN_WIDTH/2, 48, 'Adventurer', 'Dragon\'s Crypt', 16 );
+		/* Title */
+		var text = this.add.bitmapText( x, y, 'Adventurer', 'Dragon\'s Crypt', 16 );
 		text.anchor.x = 0.5;
-		var text = this.add.bitmapText( SCREEN_WIDTH/2, 64, 'PixeladeFancy', 'Kill dragons and stuff', 13 );
+
+		/* Torches */
+		var margin = 54;
+		DungeonGame.Particle.createSmokeTrail( margin, y );
+		DungeonGame.Particle.createSmokeTrail( SCREEN_WIDTH-margin, y );
+
+		/* Subtitle */
+		y += 20;
+		var text = this.add.bitmapText( x, y, 'PixeladeFancy', 'Kill dragons and stuff', 13 );
 		text.anchor.x = 0.5;
 
-		var text = this.add.bitmapText( SCREEN_WIDTH/2, SCREEN_HEIGHT - 32, 'Pixelade', 'Press [space] to start', 13 );
-		text.anchor.x = 0.5;
+		/* Selection menu */
+		this.menuManager = new MenuManager();
+		this.setupMenus();
+		this.menuManager.createMenu( SCREEN_WIDTH/2, 96, this.startMenu );
 
+		//var text = this.add.bitmapText( SCREEN_WIDTH/2, SCREEN_HEIGHT - 32, 'Pixelade', 'Press [space] to start', 13 );
+		//text.anchor.x = 0.5;
+
+		/* Version */
 		var text = this.add.bitmapText( 1, SCREEN_HEIGHT+1, 'Pixelade', 'v1.0', 13 );
 		text.anchor.set( 0, 1 );
 		text.tint = 0x555555;
-
-		var start = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.SPACEBAR );
-		var credits = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.ESC );
-		start.onDown.add( this.startGame, this );
-		credits.onDown.add( this.showCredits, this );
 
 		//this.fire = DungeonGame.game.add.sprite( 32, 32, 'fire', 0 );
 		//this.fire.anchor.set( 0.5 );
 		//this.fire.animations.add( 'burn', [0,1,2,3,4,5,6,7], 10, true );
 		//this.fire.animations.play( 'burn' );
-
-		DungeonGame.Particle.createSmokeTrail( 48, 64 );
-		DungeonGame.Particle.createSmokeTrail( SCREEN_WIDTH-48, 64 );
 	},
 	update: function() {
+		this.menuManager.update();
+
 		if ( DungeonGame.game.input.activePointer.isDown )
 		{
-			this.startGame();
+			this.state.start( 'Game' );
 		}
 	},
+};
 
-	startGame: function() {
-		this.state.start( 'Game' );
-	},
-	showCredits: function() {
-		this.state.start( 'Credits' );
-	},
+
+DungeonGame.MainMenu.prototype.setupMenus = function ()
+{
+	var play = function() { this.state.start( 'Game' ); };
+	var options = function() { this.menuManager.nextMenu( this.optionsMenu ); };
+	var credits = function() { this.state.start( 'Credits' ); };
+
+	this.startMenu = [
+		[ 'play', play.bind(this) ],
+		[ 'options', options.bind(this) ],
+		[ 'credits', credits.bind(this) ],
+	];
+
+	function musicText() { return 'music {0}'.format(DungeonGame.music ? 'on' : 'off'); }
+	function soundText() { return 'sound {0}'.format(DungeonGame.sound ? 'on' : 'off'); }
+
+	var music = function() {
+		DungeonGame.music = !DungeonGame.music;
+		createCookie( 'music', DungeonGame.music ? 'on' : 'off', 100 );
+		this.optionsMenu[this.menuManager.selection][0] = musicText();
+		return musicText();
+	};
+	var sound = function() {
+		DungeonGame.sound = !DungeonGame.sound;
+		createCookie( 'sound', DungeonGame.sound ? 'on' : 'off', 100 );
+		this.optionsMenu[this.menuManager.selection][0] = soundText();
+		return soundText();
+	};
+	var back = function() { this.menuManager.previousMenu(); };
+
+	this.optionsMenu = [
+		[ musicText(), music.bind(this) ],
+		[ soundText(), sound.bind(this) ],
+		[ 'back', back.bind(this) ],
+	];
 };

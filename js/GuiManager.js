@@ -152,20 +152,33 @@ GuiManager.prototype.setupMenus = function ()
 		[ 'quit', quit.bind(this) ],
 	];
 
-	var music = function() { console.log("Music"); };
-	var sounds = function() { console.log("Sounds"); };
+	function musicText() { return 'music {0}'.format(DungeonGame.music ? 'on' : 'off'); }
+	function soundText() { return 'sound {0}'.format(DungeonGame.sound ? 'on' : 'off'); }
+
+	var music = function() {
+		DungeonGame.music = !DungeonGame.music;
+		createCookie( 'music', DungeonGame.music ? 'on' : 'off', 100 );
+		this.optionsMenu[this.menuManager.selection][0] = musicText();
+		return musicText();
+	};
+	var sound = function() {
+		DungeonGame.sound = !DungeonGame.sound;
+		createCookie( 'sound', DungeonGame.sound ? 'on' : 'off', 100 );
+		this.optionsMenu[this.menuManager.selection][0] = soundText();
+		return soundText();
+	};
 	var back = function() { this.menuManager.previousMenu(); };
 
 	this.optionsMenu = [
-		[ 'music', music.bind(this) ],
-		[ 'sounds', sounds.bind(this) ],
+		[ musicText(), music.bind(this) ],
+		[ soundText(), sound.bind(this) ],
 		[ 'back', back.bind(this) ],
 	];
 
 	var yes = function() { DungeonGame.game.state.start( 'MainMenu' ); };
 
 	this.confirmationMenu = [
-		[ 'yes', yes.bind(this) ],
+		[ 'quit', yes.bind(this) ],
 		[ 'no', back.bind(this) ],
 	];
 };
@@ -190,10 +203,11 @@ GuiManager.prototype.showPauseMenu = function ()
 
 	this.choiceTitle = DungeonGame.game.add.bitmapText( x, y, 'OldWizard', 'Pause', 16 );
 	this.choiceTitle.anchor.setTo( 0.5, 0.5 );
-	y += 16 + 8;
+	y += 24;
 	this.menu = DungeonGame.game.add.sprite( x, y, 'items', randInt(0,8*9-1) );
 	this.menu.anchor.set( 0.5 );
 
+	y += 32;
 	this.menuManager.createMenu( x, y, this.pauseMenu );
 };
 

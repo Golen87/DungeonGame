@@ -18,6 +18,8 @@ DungeonGame.Boot.prototype = {
 			this.rescale();
 		}, this);
 
+		this.readSettings();
+
 		this.state.start( 'Preload' );
 	},
 
@@ -31,5 +33,12 @@ DungeonGame.Boot.prototype = {
 		DungeonGame.inputScale.y = 1 / zoom;
 		DungeonGame.inputOffset.x = rect.left * (1 - 1/zoom); //rect.width / zoom / 4
 		DungeonGame.inputOffset.y = rect.top * (1 - 1/zoom); //rect.height / zoom / 4
-	}
+	},
+
+	readSettings: function() {
+		if ( readCookie( 'music' ) == 'off' )
+			DungeonGame.music = false;
+		if ( readCookie( 'sound' ) == 'off' )
+			DungeonGame.sound = false;
+	},
 };
