@@ -11,6 +11,12 @@ GuiManager.prototype.create = function ()
 	this.guiGroup = DungeonGame.game.add.group();
 
 
+	/* Pause menu */
+
+	this.menuManager = new MenuManager();
+	this.setupMenus();
+
+
 	/* General darkness */
 
 	this.fog = DungeonGame.game.add.sprite( 0, 0, 'fog' );
@@ -85,15 +91,12 @@ GuiManager.prototype.create = function ()
 	this.chestItem = this.guiGroup.create( 0, 0, 'items' );
 	this.chestItem.anchor.set( 0.5 );
 	this.chestItem.kill();
-
-
-	/* Pause menu */
-
-	this.setupMenuInput();
 };
 
 GuiManager.prototype.update = function ()
 {
+	this.menuManager.update();
+
 	this.fog.x = DungeonGame.game.camera.view.x - 8;
 	this.fog.y = DungeonGame.game.camera.view.y - 8;
 
@@ -134,33 +137,37 @@ GuiManager.prototype.update = function ()
 	}
 
 	this.chestBeam.angle += 0.5;
-
-	if ( DungeonGame.paused )
-	{
-		for ( var i=0; i<4; i++ )
-		{
-			var corner = this.choiceMarkers[i];
-			corner.anchor.x = 0.5 + 0.25 * Math.sin( 1.6 * DungeonGame.game.time.totalElapsedSeconds() * Math.PI );
-		}
-	}
 };
 
 
-GuiManager.prototype.setupMenuInput = function ()
+GuiManager.prototype.setupMenus = function ()
 {
-	var key = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.DOWN );
-	key.onDown.add( function() {this.nextChoice( 1 );}, this );
-	var key = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.S );
-	key.onDown.add( function() {this.nextChoice( 1 );}, this );
-	var key = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.UP );
-	key.onDown.add( function() {this.nextChoice( -1 );}, this );
-	var key = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.W );
-	key.onDown.add( function() {this.nextChoice( -1 );}, this );
+	var resume = function() { DungeonGame.togglePause(); };
+	var options = function() { this.menuManager.nextMenu( this.optionsMenu ); };
+	var quit = function() { this.menuManager.nextMenu( this.confirmationMenu ); };
 
-	var key = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.SPACEBAR );
-	key.onDown.add( function() {this.pickChoice();}, this );
-	var key = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.ENTER );
-	key.onDown.add( function() {this.pickChoice();}, this );
+	this.pauseMenu = [
+		[ 'resume', resume.bind(this) ],
+		[ 'options', options.bind(this) ],
+		[ 'quit', quit.bind(this) ],
+	];
+
+	var music = function() { console.log("Music"); };
+	var sounds = function() { console.log("Sounds"); };
+	var back = function() { this.menuManager.previousMenu(); };
+
+	this.optionsMenu = [
+		[ 'music', music.bind(this) ],
+		[ 'sounds', sounds.bind(this) ],
+		[ 'back', back.bind(this) ],
+	];
+
+	var yes = function() { DungeonGame.game.state.start( 'MainMenu' ); };
+
+	this.confirmationMenu = [
+		[ 'yes', yes.bind(this) ],
+		[ 'no', back.bind(this) ],
+	];
 };
 
 GuiManager.prototype.showPauseMenu = function ()
@@ -181,50 +188,13 @@ GuiManager.prototype.showPauseMenu = function ()
 	var x = c.x+SCREEN_WIDTH/2;
 	var y = c.y + 32;
 
-	this.choiceTitle = DungeonGame.game.add.bitmapText( x, y, 'Adventurer', 'Paused', 16 );
+	this.choiceTitle = DungeonGame.game.add.bitmapText( x, y, 'OldWizard', 'Pause', 16 );
 	this.choiceTitle.anchor.setTo( 0.5, 0.5 );
 	y += 16 + 8;
 	this.menu = DungeonGame.game.add.sprite( x, y, 'items', randInt(0,8*9-1) );
 	this.menu.anchor.set( 0.5 );
 
-	this.menuChoices = [
-		['resume', function() {
-			DungeonGame.togglePause();
-		}],
-		['options', function() {
-			console.log("Options");
-		}],
-		['quit', function() {
-			console.log("Quit");
-			DungeonGame.game.state.start( 'MainMenu' );
-		}],
-	];
-	this.currentChoice = 0;
-
-	y += 16 - 8;
-	this.choiceOptions = [];
-	for ( var i=0; i<this.menuChoices.length; i++ )
-	{
-		y += 24;
-		var label = DungeonGame.game.add.bitmapText( x, y, 'OldWizard', this.menuChoices[i][0], 16 );
-		label.anchor.set( 0.5 );
-		label.tint = 0x777777;
-		label.function = this.menuChoices[i][1];
-		this.choiceOptions.push( label );
-	}
-
-
-	this.choiceMarkers = [];
-	this.choiceMarkers.push( DungeonGame.game.add.sprite( 0, 0, 'corner' ) );
-	this.choiceMarkers[0].scale.set( 1, 1 );
-	this.choiceMarkers.push( DungeonGame.game.add.sprite( 0, 0, 'corner' ) );
-	this.choiceMarkers[1].scale.set( 1, -1 );
-	this.choiceMarkers.push( DungeonGame.game.add.sprite( 0, 0, 'corner' ) );
-	this.choiceMarkers[2].scale.set( -1, 1 );
-	this.choiceMarkers.push( DungeonGame.game.add.sprite( 0, 0, 'corner' ) );
-	this.choiceMarkers[3].scale.set( -1, -1 );
-
-	this.nextChoice( 0 );
+	this.menuManager.createMenu( x, y, this.pauseMenu );
 };
 
 GuiManager.prototype.hidePauseMenu = function ()
@@ -234,52 +204,11 @@ GuiManager.prototype.hidePauseMenu = function ()
 	this.menu.kill();
 	this.choiceTitle.kill();
 
-	for ( var i=0; i<this.choiceOptions.length; i++ )
-	{
-		this.choiceOptions[i].kill();
-	}
-
-	for ( var i=0; i<4; i++ )
-	{
-		this.choiceMarkers[i].kill();
-	}
+	this.menuManager.killMenu();
 
 	//var c = DungeonGame.game.camera.view;
 	//DungeonGame.game.add.sprite( c.x+SCREEN_WIDTH*3/4, c.y+64+16, 'dragon' );
 };
-
-GuiManager.prototype.nextChoice = function ( inc )
-{
-	if ( DungeonGame.paused )
-	{
-		this.choiceOptions[this.currentChoice].tint = 0x777777;
-
-		this.currentChoice += inc + this.choiceOptions.length; // Avoid negative modulo
-		this.currentChoice %= this.choiceOptions.length;
-
-		this.choiceOptions[this.currentChoice].tint = 0xffffff;
-
-		for ( var i=0; i<4; i++ )
-		{
-			var corner = this.choiceMarkers[i];
-			corner.anchor.set( 0.5 );
-			corner.reset(
-				this.choiceOptions[this.currentChoice].x - corner.scale.x * 38,
-				this.choiceOptions[this.currentChoice].y - corner.scale.y * 4
-			);
-		}
-	}
-};
-
-GuiManager.prototype.pickChoice = function ()
-{
-	if ( DungeonGame.paused )
-	{
-		this.menuChoices[this.currentChoice][1]();
-	}
-};
-
-
 
 
 GuiManager.prototype.setHealth = function ( hpPerc, staPerc )

@@ -12,6 +12,12 @@ DungeonGame.Game.prototype =
 	{
 		this.stage.backgroundColor = '#403020';
 
+		DungeonGame.debug = false;
+		DungeonGame.shadow = false;
+		DungeonGame.paused = false;
+		DungeonGame.cinematic = false;
+		DungeonGame.game.physics.arcade.isPaused = false;
+
 		DungeonGame.Gui.create();
 		this.World.create();
 
