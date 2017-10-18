@@ -20,7 +20,7 @@ DungeonGame.inputOffset = new Phaser.Point( 0, 0 );
 
 DungeonGame.debug = false;
 DungeonGame.shadow = false;
-DungeonGame.paused = true;
+DungeonGame.paused = false;
 DungeonGame.cinematic = false;
 
 /* Options */

@@ -15,7 +15,7 @@ DungeonGame.Game.prototype =
 		DungeonGame.debug = false;
 		DungeonGame.shadow = false;
 		DungeonGame.paused = false;
-		DungeonGame.cinematic = false;
+		DungeonGame.cinematic = true;
 		DungeonGame.game.physics.arcade.isPaused = false;
 
 		DungeonGame.Gui.create();

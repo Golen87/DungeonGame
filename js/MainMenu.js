@@ -5,7 +5,7 @@ DungeonGame.MainMenu = function() {};
 DungeonGame.MainMenu.prototype = {
 	create: function() {
 		DungeonGame.game.stage.backgroundColor = '#111111';
-		DungeonGame.paused = true;
+		DungeonGame.game.camera.flash( 0x111111, 500 );
 
 		//this.obj = [];
 		//for ( var j = 0; j < 2; j++ )
@@ -17,7 +17,7 @@ DungeonGame.MainMenu.prototype = {
 		//}
 
 		var x = SCREEN_WIDTH/2;
-		var y = 32;
+		var y = 48;
 
 		/* Title */
 		var text = this.add.bitmapText( x, y, 'Adventurer', 'Dragon\'s Crypt', 16 );
@@ -25,8 +25,8 @@ DungeonGame.MainMenu.prototype = {
 
 		/* Torches */
 		var margin = 54;
-		DungeonGame.Particle.createSmokeTrail( margin, y );
-		DungeonGame.Particle.createSmokeTrail( SCREEN_WIDTH-margin, y );
+		DungeonGame.Particle.createSmokeTrail( margin, y + 16 );
+		DungeonGame.Particle.createSmokeTrail( SCREEN_WIDTH-margin, y + 16 );
 
 		/* Subtitle */
 		y += 20;
@@ -34,12 +34,15 @@ DungeonGame.MainMenu.prototype = {
 		text.anchor.x = 0.5;
 
 		/* Selection menu */
+		y += 44;
 		this.menuManager = new MenuManager();
 		this.setupMenus();
-		this.menuManager.createMenu( SCREEN_WIDTH/2, 96, this.startMenu );
+		this.menuManager.createMenu( SCREEN_WIDTH/2, y, this.startMenu );
 
-		//var text = this.add.bitmapText( SCREEN_WIDTH/2, SCREEN_HEIGHT - 32, 'Pixelade', 'Press [space] to start', 13 );
-		//text.anchor.x = 0.5;
+		this.menuManager.allowInput = false;
+		DungeonGame.game.time.events.add( 550, function() {
+			this.menuManager.allowInput = true;
+		}, this );
 
 		/* Version */
 		var text = this.add.bitmapText( 1, SCREEN_HEIGHT+1, 'Pixelade', 'v1.0', 13 );
@@ -56,7 +59,7 @@ DungeonGame.MainMenu.prototype = {
 
 		if ( DungeonGame.game.input.activePointer.isDown )
 		{
-			this.state.start( 'Game' );
+			this.startGame();
 		}
 	},
 };
@@ -64,7 +67,7 @@ DungeonGame.MainMenu.prototype = {
 
 DungeonGame.MainMenu.prototype.setupMenus = function ()
 {
-	var play = function() { this.state.start( 'Game' ); };
+	var play = function() { this.startGame(); };
 	var options = function() { this.menuManager.nextMenu( this.optionsMenu ); };
 	var credits = function() { this.state.start( 'Credits' ); };
 
@@ -96,4 +99,17 @@ DungeonGame.MainMenu.prototype.setupMenus = function ()
 		[ soundText(), sound.bind(this) ],
 		[ 'back', back.bind(this) ],
 	];
+};
+
+DungeonGame.MainMenu.prototype.startGame = function ()
+{
+	if ( this.menuManager.allowInput )
+	{
+		this.menuManager.allowInput = false;
+
+		this.camera.fade(0x000000, 700);
+		this.time.events.add( 800, function() {
+			this.state.start( 'Game' );
+		}, this);
+	}
 };

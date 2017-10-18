@@ -2,6 +2,7 @@
 // Constructor
 function MenuManager ()
 {
+	this.allowInput = true;
 	this.startPosition = new Phaser.Point( 0, 0 );
 	this.corners = null;
 
@@ -171,7 +172,7 @@ MenuManager.prototype.killMenu = function ()
 
 MenuManager.prototype.nextChoice = function ( inc )
 {
-	if ( DungeonGame.paused )
+	if ( this.allowInput )
 	{
 		this.labels[this.selection].tint = 0x777777;
 
@@ -203,7 +204,7 @@ MenuManager.prototype.nextChoice = function ( inc )
 
 MenuManager.prototype.pickChoice = function ()
 {
-	if ( DungeonGame.paused )
+	if ( this.allowInput )
 	{
 		var newText = this.choiceList[this.selection][1]();
 		if ( newText )

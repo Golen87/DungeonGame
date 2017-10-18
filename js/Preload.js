@@ -105,8 +105,7 @@ DungeonGame.Preload.prototype = {
 	create: function () {
 		this.setup();
 
-		this.state.start( 'MainMenu' );
-		//this.state.start( 'Game' );
+		this.state.start( 'MainMenu', Phaser.Plugin.StateTransition.Out.ScaleUp );
 	},
 	fileComplete: function ( progress, cacheKey, success, totalLoaded, totalFiles ) {}
 };

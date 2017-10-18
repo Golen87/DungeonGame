@@ -58,6 +58,18 @@ Player.prototype.create = function ( x, y, group )
 
 	this.gridPos = new Phaser.Point( x, y );
 	this.prevGridPos = new Phaser.Point( x, y );
+
+	this.sprite.visible = false;
+	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.1, function() {
+		DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.8, function() {
+			DungeonGame.Particle.createSmokeBurst( this.sprite.x, this.sprite.y );
+			DungeonGame.Audio.play( 'monsterroom-spawn' );
+			this.sprite.visible = true;
+		}, this );
+		DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 1.9, function() {
+			DungeonGame.cinematic = false;
+		}, this );
+	}, this );
 };
 
 Player.prototype.setupAnimation = function ()
@@ -92,7 +104,7 @@ Player.prototype.setupAnimation = function ()
 	this.direction = 'down';
 	this.sprite.animations.play( 'idle_down' );
 
-	this.swing.animations.add( 'attack', [1,1,1,2,3], 60, false );
+	this.swing.animations.add( 'attack', [1,1,1,1,2,3], 60, false );
 	this.swing.animations.currentAnim.onComplete.add(function () {
 		this.swing.kill();
 		this.sword.kill();
@@ -357,6 +369,8 @@ Player.prototype.gameOver = function ()
 	DungeonGame.Particle.createSmokeBurst( this.sprite.x, this.sprite.y );
 
 	this.sprite.kill();
+
+	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 1.0, function() {DungeonGame.Gui.showGameOver();}, this );
 };
 
 

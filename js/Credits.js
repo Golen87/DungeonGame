@@ -5,6 +5,7 @@ DungeonGame.Credits = function() {};
 DungeonGame.Credits.prototype = {
 	create: function() {
 		DungeonGame.game.stage.backgroundColor = '#111111';
+		DungeonGame.game.camera.flash( 0x111111, 500 );
 
 		var y = 32;
 		var text = this.add.bitmapText( SCREEN_WIDTH/2, y, 'PixeladeFancy', '- Made by -', 13 );

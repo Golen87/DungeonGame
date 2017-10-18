@@ -6,8 +6,6 @@ function GuiManager()
 
 GuiManager.prototype.create = function ()
 {
-	DungeonGame.game.camera.flash(0x111111, 1000);
-
 	this.guiGroup = DungeonGame.game.add.group();
 
 
@@ -15,6 +13,7 @@ GuiManager.prototype.create = function ()
 
 	this.menuManager = new MenuManager();
 	this.setupMenus();
+	this.menuManager.allowInput = false;
 
 
 	/* General darkness */
@@ -26,18 +25,19 @@ GuiManager.prototype.create = function ()
 
 	/* Cinematic mode GUI */
 
-	this.cinDist = 24;
+	this.cinDist = 32;
+	this.cinOffset = 104;
 	this.cinematicTop = DungeonGame.game.add.graphics( 0, 0 );
 	this.cinematicTop.beginFill( 0x000000, 1.0 );
-	this.cinematicTop.drawRect( 0, 0, SCREEN_WIDTH, this.cinDist );
+	this.cinematicTop.drawRect( 0, -this.cinOffset, SCREEN_WIDTH, this.cinDist + this.cinOffset );
 	this.cinematicTop.endFill();
 	this.guiGroup.add( this.cinematicTop );
 	this.cinematicBottom = DungeonGame.game.add.graphics( 0, 0 );
 	this.cinematicBottom.beginFill( 0x000000, 1.0 );
-	this.cinematicBottom.drawRect( 0, SCREEN_HEIGHT - this.cinDist, SCREEN_WIDTH, this.cinDist );
+	this.cinematicBottom.drawRect( 0, SCREEN_HEIGHT - this.cinDist, SCREEN_WIDTH, this.cinDist + this.cinOffset );
 	this.cinematicBottom.endFill();
 	this.guiGroup.add( this.cinematicBottom );
-	this.cinemaValue = 0;
+	this.cinemaValue = 5;
 
 
 	/* Health GUI */
@@ -175,16 +175,32 @@ GuiManager.prototype.setupMenus = function ()
 		[ 'back', back.bind(this) ],
 	];
 
-	var yes = function() { DungeonGame.game.state.start( 'MainMenu' ); };
+	var exit = function() {
+		if ( this.menuManager.allowInput )
+		{
+			this.menuManager.allowInput = false;
+
+			DungeonGame.game.camera.fade(0x111111, 700);
+			DungeonGame.game.time.events.add( 700, function() {
+				DungeonGame.game.state.start( 'MainMenu' );
+			}, this);
+		}
+	};
 
 	this.confirmationMenu = [
-		[ 'quit', yes.bind(this) ],
+		[ 'quit', exit.bind(this) ],
 		[ 'no', back.bind(this) ],
+	];
+
+	this.gameoverMenu = [
+		[ 'Try again', exit.bind(this) ],
 	];
 };
 
 GuiManager.prototype.showPauseMenu = function ()
 {
+	this.menuManager.allowInput = true;
+
 	var c = DungeonGame.game.camera.view;
 
 	this.darkBg = DungeonGame.game.add.graphics( c.x, c.y );
@@ -215,6 +231,8 @@ GuiManager.prototype.showPauseMenu = function ()
 
 GuiManager.prototype.hidePauseMenu = function ()
 {
+	this.menuManager.allowInput = false;
+
 	this.darkBg.clear();
 	this.darkFg.clear();
 	this.menu.kill();
@@ -222,7 +240,40 @@ GuiManager.prototype.hidePauseMenu = function ()
 
 	this.menuManager.killMenu();
 
+	//var c = DungeonGame.game.camera.view;
+	//DungeonGame.game.add.sprite( c.x+SCREEN_WIDTH*3/4, c.y+64+16, 'dragon' );
+
 	DungeonGame.Audio.play( 'menu', 'close' );
+};
+
+
+GuiManager.prototype.showGameOver = function ()
+{
+	var c = DungeonGame.game.camera.view;
+
+	var x = c.x + SCREEN_WIDTH/2;
+	var y = c.y + SCREEN_HEIGHT/2;
+
+	this.choiceTitleBg = DungeonGame.game.add.bitmapText( x+1, y+1, 'OldWizard', 'Game Over', 32 );
+	this.choiceTitleBg.anchor.setTo( 0.5, 0.5 );
+	this.choiceTitleBg.tint = 0x000000;
+	this.choiceTitle = DungeonGame.game.add.bitmapText( x, y, 'OldWizard', 'Game Over', 32 );
+	this.choiceTitle.anchor.setTo( 0.5, 0.5 );
+	this.choiceTitle.tint = 0xE64A19;
+
+	this.choiceTitle.x -= 16;
+	this.choiceTitle.alpha = 0;
+	this.choiceTitleBg.x += 16;
+	this.choiceTitleBg.alpha = 0;
+	DungeonGame.game.add.tween( this.choiceTitle ).to({ x: x, alpha: 1 }, 1500, Phaser.Easing.Quadratic.Out, true );
+	DungeonGame.game.add.tween( this.choiceTitleBg ).to({ x: x+1, alpha: 1 }, 1500, Phaser.Easing.Quadratic.Out, true );
+
+	DungeonGame.game.time.events.add( 2000, function() {
+		var x = c.x + SCREEN_WIDTH/2;
+		var y = c.y + SCREEN_HEIGHT - 20;
+		this.menuManager.allowInput = true;
+		this.menuManager.createMenu( x, y, this.gameoverMenu );
+	}, this );
 };
 
 
