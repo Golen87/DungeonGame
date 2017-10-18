@@ -235,7 +235,7 @@ EntityManager.prototype.onAllKilled = function ( roomPos )
 						this.bgSprite.visible = true;
 						this.lightSprite.visible = true;
 
-						DungeonGame.Particle.createSmokeBurst( this.sprite.x, this.sprite.y );
+						DungeonGame.Particle.createSmokeBurst( this.sprite.x, this.sprite.y + 8 );
 						DungeonGame.Audio.play( 'monsterroom-spawn' );
 					}, entity );
 					DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 2.2, function () {

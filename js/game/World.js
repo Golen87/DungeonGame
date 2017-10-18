@@ -96,61 +96,15 @@ World.prototype.update = function ()
 	this.enemyManager.update();
 	this.entityManager.update();
 
-
-	for ( var i = 0; i < this.enemyManager.enemies.length; i++ )
+	if ( this.skipCollisions == null )
 	{
-		var enemy = this.enemyManager.enemies[i];
-		if ( enemy && enemy.sprite.exists )
-		{
-			DungeonGame.game.physics.arcade.overlap( this.Player.swing, enemy.sprite, enemy.getHit, null, enemy );
-			DungeonGame.game.physics.arcade.overlap( this.Player.sprite, enemy.sprite, function(){
-				this.Player.damage( enemy.getAttackPower(), enemy.sprite.body.position );
-			}, null, this );
-
-			if ( !Bat.prototype.isPrototypeOf( enemy ) )
-			{
-				DungeonGame.game.physics.arcade.collide( enemy.sprite, this.entityManager.sprites );
-			}
-		}
+		this.handleCollisions();
+		this.skipCollisions = true;
 	}
-
-	for ( var i = 0; i < this.entityManager.entities.length; i++ )
+	else
 	{
-		var entity = this.entityManager.entities[i];
-		if ( entity && entity.sprite.exists )
-		{
-			DungeonGame.game.physics.arcade.overlap( this.Player.swing, entity.sprite, entity.damage, null, entity );
-			DungeonGame.game.physics.arcade.overlap( this.Player.sprite, entity.sprite, function(){
-				entity.overlap( this.Player );
-			}, null, this );
-
-			DungeonGame.game.physics.arcade.overlap( this.entityManager.sprites, entity.sprite, function( other ){
-				entity.overlapEntity( other );
-			}, null, this );
-		}
+		this.skipCollisions = null;
 	}
-
-	for ( var i = 0; i < this.items.length; i++ )
-	{
-		DungeonGame.game.physics.arcade.overlap( this.Player.sprite, this.items[i].sprite, this.collision, null, this );
-	}
-
-
-	DungeonGame.game.physics.arcade.collide( this.Player.sprite, this.roomManager.physics );
-	//DungeonGame.game.physics.arcade.collide( this.Player.sprite, this.entityManager.sprites );
-
-	DungeonGame.game.physics.arcade.collide( this.enemyManager.sprites, this.roomManager.physics );
-	DungeonGame.game.physics.arcade.collide( this.enemyManager.sprites, this.roomManager.boundaries );
-	//DungeonGame.game.physics.arcade.collide( this.enemyManager.sprites, this.entityManager.sprites );
-
-	//DungeonGame.game.physics.arcade.collide( this.entityManager.sprites, this.entityManager.sprites, function( entityA, entityB ){
-	//	console.log("whoops", entityA, entityB);
-	//}, null, this );
-	DungeonGame.game.physics.arcade.collide( this.entityManager.sprites, this.roomManager.physics );
-	DungeonGame.game.physics.arcade.collide( this.entityManager.sprites, this.roomManager.boundaries );
-
-	//DungeonGame.game.physics.arcade.overlap( this.Player.sprite, this.Room.physics, this.collision, null, this );
-
 
 	this.entities.sort( 'y', Phaser.Group.SORT_ASCENDING );
 	//this.foreground.sort( 'y', Phaser.Group.SORT_ASCENDING );
@@ -214,6 +168,56 @@ World.prototype.update = function ()
 		for ( var i = 0; i < this.roomManager.foreground.children.length; i++ )
 			this.applyLighting( this.roomManager.foreground.children[i], false );
 	}*/
+};
+
+World.prototype.handleCollisions = function ()
+{
+	for ( var i = 0; i < this.enemyManager.enemies.length; i++ )
+	{
+		var enemy = this.enemyManager.enemies[i];
+		if ( enemy && enemy.sprite.exists )
+		{
+			DungeonGame.game.physics.arcade.overlap( this.Player.swing, enemy.sprite, enemy.getHit, null, enemy );
+			DungeonGame.game.physics.arcade.overlap( this.Player.sprite, enemy.sprite, function(){
+				this.Player.damage( enemy.getAttackPower(), enemy.sprite.body.position );
+			}, null, this );
+
+			if ( !Bat.prototype.isPrototypeOf( enemy ) )
+			{
+				DungeonGame.game.physics.arcade.collide( enemy.sprite, this.entityManager.sprites );
+			}
+		}
+	}
+
+	for ( var i = 0; i < this.entityManager.entities.length; i++ )
+	{
+		var entity = this.entityManager.entities[i];
+		if ( entity && entity.sprite.exists )
+		{
+			DungeonGame.game.physics.arcade.overlap( this.Player.swing, entity.sprite, entity.damage, null, entity );
+			DungeonGame.game.physics.arcade.overlap( this.Player.sprite, entity.sprite, function(){
+				entity.overlap( this.Player );
+			}, null, this );
+
+			DungeonGame.game.physics.arcade.overlap( this.entityManager.sprites, entity.sprite, function( other ){
+				entity.overlapEntity( other );
+			}, null, this );
+		}
+	}
+
+	for ( var i = 0; i < this.items.length; i++ )
+	{
+		DungeonGame.game.physics.arcade.overlap( this.Player.sprite, this.items[i].sprite, this.collision, null, this );
+	}
+
+
+	DungeonGame.game.physics.arcade.collide( this.Player.sprite, this.roomManager.physics );
+
+	DungeonGame.game.physics.arcade.collide( this.enemyManager.sprites, this.roomManager.physics );
+	DungeonGame.game.physics.arcade.collide( this.enemyManager.sprites, this.roomManager.boundaries );
+
+	DungeonGame.game.physics.arcade.collide( this.entityManager.sprites, this.roomManager.physics );
+	DungeonGame.game.physics.arcade.collide( this.entityManager.sprites, this.roomManager.boundaries );
 };
 
 World.prototype.applyLighting = function ( sprite, entities )
