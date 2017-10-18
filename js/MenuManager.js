@@ -195,6 +195,9 @@ MenuManager.prototype.nextChoice = function ( inc )
 			else
 				DungeonGame.game.add.tween( corner ).to({ y: y }, 200, Phaser.Easing.Exponential.Out, true );
 		}
+
+		if ( inc != 0 )
+			DungeonGame.Audio.play( 'menu', 'select' );
 	}
 };
 
@@ -207,5 +210,7 @@ MenuManager.prototype.pickChoice = function ()
 		{
 			this.labels[this.selection].text = newText;
 		}
+
+		DungeonGame.Audio.play( 'menu', 'click' );
 	}
 };

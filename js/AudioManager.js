@@ -81,8 +81,8 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].sound.addMarker( 'on', 0.0, 0.9, vol );
 	this.sounds[name].sound.addMarker( 'off', 1.0, 1.0, vol );
 	this.sounds[name].markers = [];
-	this.sounds[name].markers['on'] = ['on']
-	this.sounds[name].markers['off'] = ['off']
+	this.sounds[name].markers['on'] = ['on'];
+	this.sounds[name].markers['off'] = ['off'];
 
 	var name = 'spikes';
 	var vol = 0.2 * masterVol;
@@ -112,14 +112,28 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].sound.addMarker( 'on', 0.0, 0.2, vol );
 	this.sounds[name].sound.addMarker( 'off', 0.3, 0.2, vol );
 	this.sounds[name].markers = [];
-	this.sounds[name].markers['on'] = ['on']
-	this.sounds[name].markers['off'] = ['off']
+	this.sounds[name].markers['on'] = ['on'];
+	this.sounds[name].markers['off'] = ['off'];
 
 	var name = 'monsterroom-spawn';
 	var vol = 0.4 * masterVol;
 	this.sounds[name] = {};
 	this.sounds[name].sound = DungeonGame.game.add.audio( name );
 	this.sounds[name].sound.volume = vol;
+
+	var name = 'menu';
+	var vol = 0.3 * masterVol;
+	this.sounds[name] = {};
+	this.sounds[name].sound = DungeonGame.game.add.audio( name );
+	this.sounds[name].sound.addMarker( 'select', 0.0, 0.2, vol );
+	this.sounds[name].sound.addMarker( 'open', 0.3, 0.3, vol );
+	this.sounds[name].sound.addMarker( 'close', 0.7, 0.3, vol );
+	this.sounds[name].sound.addMarker( 'click', 1.1, 0.2, vol );
+	this.sounds[name].markers = [];
+	this.sounds[name].markers['select'] = ['select'];
+	this.sounds[name].markers['open'] = ['open'];
+	this.sounds[name].markers['close'] = ['close'];
+	this.sounds[name].markers['click'] = ['click'];
 
 
 	var vol = 0.4 * masterVol;
@@ -137,9 +151,9 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].sound.addMarker( 'death_1', 3.15, 0.55, vol );
 	this.sounds[name].sound.allowMultiple = true;
 	this.sounds[name].markers = [];
-	this.sounds[name].markers['cry'] = ['cry_1', 'cry_2', 'cry_3']
-	this.sounds[name].markers['hurt'] = ['hurt_1', 'hurt_2', 'hurt_3']
-	this.sounds[name].markers['death'] = ['death_1']
+	this.sounds[name].markers['cry'] = ['cry_1', 'cry_2', 'cry_3'];
+	this.sounds[name].markers['hurt'] = ['hurt_1', 'hurt_2', 'hurt_3'];
+	this.sounds[name].markers['death'] = ['death_1'];
 
 	var name = 'mouse';
 	this.sounds[name] = {};
@@ -153,9 +167,9 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].sound.addMarker( 'death_1', 2.4, 0.3, vol );
 	this.sounds[name].sound.allowMultiple = true;
 	this.sounds[name].markers = [];
-	this.sounds[name].markers['cry'] = ['cry_1', 'cry_2', 'cry_3']
-	this.sounds[name].markers['hurt'] = ['hurt_1', 'hurt_2', 'hurt_3']
-	this.sounds[name].markers['death'] = ['death_1']
+	this.sounds[name].markers['cry'] = ['cry_1', 'cry_2', 'cry_3'];
+	this.sounds[name].markers['hurt'] = ['hurt_1', 'hurt_2', 'hurt_3'];
+	this.sounds[name].markers['death'] = ['death_1'];
 
 	var name = 'rhino';
 	this.sounds[name] = {};
@@ -171,9 +185,9 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].sound.addMarker( 'death_1', 7.8, 0.9, vol );
 	this.sounds[name].sound.allowMultiple = true;
 	this.sounds[name].markers = [];
-	this.sounds[name].markers['cry'] = ['cry_1', 'cry_2', 'cry_3', 'cry_4']
-	this.sounds[name].markers['hurt'] = ['hurt_1', 'hurt_2', 'hurt_3', 'hurt_4']
-	this.sounds[name].markers['death'] = ['death_1']
+	this.sounds[name].markers['cry'] = ['cry_1', 'cry_2', 'cry_3', 'cry_4'];
+	this.sounds[name].markers['hurt'] = ['hurt_1', 'hurt_2', 'hurt_3', 'hurt_4'];
+	this.sounds[name].markers['death'] = ['death_1'];
 
 	var name = 'spider';
 	this.sounds[name] = {};
@@ -189,9 +203,9 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].sound.addMarker( 'death_2', 7.3, 0.8, vol );
 	this.sounds[name].sound.allowMultiple = true;
 	this.sounds[name].markers = [];
-	this.sounds[name].markers['cry'] = ['cry_1', 'cry_2', 'cry_3', 'cry_4']
-	this.sounds[name].markers['hurt'] = ['hurt_1', 'hurt_2', 'hurt_3']
-	this.sounds[name].markers['death'] = ['death_1', 'death_2']
+	this.sounds[name].markers['cry'] = ['cry_1', 'cry_2', 'cry_3', 'cry_4'];
+	this.sounds[name].markers['hurt'] = ['hurt_1', 'hurt_2', 'hurt_3'];
+	this.sounds[name].markers['death'] = ['death_1', 'death_2'];
 
 	var name = 'slime';
 	this.sounds[name] = {};
@@ -205,9 +219,9 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].sound.addMarker( 'death_1', 7.8, 1.2, vol );
 	this.sounds[name].sound.allowMultiple = true;
 	this.sounds[name].markers = [];
-	this.sounds[name].markers['cry'] = ['cry_1', 'cry_2', 'cry_3']
-	this.sounds[name].markers['hurt'] = ['hurt_1', 'hurt_2', 'hurt_3']
-	this.sounds[name].markers['death'] = ['death_1']
+	this.sounds[name].markers['cry'] = ['cry_1', 'cry_2', 'cry_3'];
+	this.sounds[name].markers['hurt'] = ['hurt_1', 'hurt_2', 'hurt_3'];
+	this.sounds[name].markers['death'] = ['death_1'];
 
 	var name = 'creature';
 	this.sounds[name] = {};
@@ -223,9 +237,9 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].sound.addMarker( 'death_2', 12.0, 1.3, vol );
 	this.sounds[name].sound.allowMultiple = true;
 	this.sounds[name].markers = [];
-	this.sounds[name].markers['cry'] = ['cry_1', 'cry_2', 'cry_3', 'cry_4']
-	this.sounds[name].markers['hurt'] = ['hurt_1', 'hurt_2', 'hurt_3']
-	this.sounds[name].markers['death'] = ['death_1', 'death_2']
+	this.sounds[name].markers['cry'] = ['cry_1', 'cry_2', 'cry_3', 'cry_4'];
+	this.sounds[name].markers['hurt'] = ['hurt_1', 'hurt_2', 'hurt_3'];
+	this.sounds[name].markers['death'] = ['death_1', 'death_2'];
 };
 
 AudioManager.prototype.getMarkers = function ( name, marker=null )
@@ -238,6 +252,9 @@ AudioManager.prototype.getMarkers = function ( name, marker=null )
 
 AudioManager.prototype.play = function ( name, marker=null )
 {
+	if ( !DungeonGame.sound )
+		return;
+
 	var markers = this.getMarkers( name, marker );
 	if ( markers )
 	{

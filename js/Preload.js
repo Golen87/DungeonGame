@@ -78,6 +78,8 @@ DungeonGame.Preload.prototype = {
 		this.load.audio( 'creature', 'assets/sounds/monsters/creature.ogg' );
 		this.load.audio( 'monsterroom-spawn', 'assets/sounds/monsters/monsterroom-spawn.ogg' );
 
+		this.load.audio( 'menu', 'assets/sounds/menu.ogg' );
+
 
 		// Loading percentage text
 		//this.progress = this.game.add.text(this.game.world.centerX, this.game.world.centerY-30, '0%', {fill: 'white'});

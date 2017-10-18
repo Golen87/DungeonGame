@@ -209,6 +209,8 @@ GuiManager.prototype.showPauseMenu = function ()
 
 	y += 32;
 	this.menuManager.createMenu( x, y, this.pauseMenu );
+
+	DungeonGame.Audio.play( 'menu', 'open' );
 };
 
 GuiManager.prototype.hidePauseMenu = function ()
@@ -220,8 +222,7 @@ GuiManager.prototype.hidePauseMenu = function ()
 
 	this.menuManager.killMenu();
 
-	//var c = DungeonGame.game.camera.view;
-	//DungeonGame.game.add.sprite( c.x+SCREEN_WIDTH*3/4, c.y+64+16, 'dragon' );
+	DungeonGame.Audio.play( 'menu', 'close' );
 };
 
 
