@@ -18,6 +18,20 @@ Box.prototype.create = function ()
 {
 	this.sprite.frame = 0;
 	this.sprite.scale.x = [-1,1].choice();
+
+	if ( this.data.position )
+		this.sprite.position = this.data.position;
+};
+
+Box.prototype.destroy = function () {
+	if ( this.lockState )
+	{
+		this.data.position = new Phaser.Point( this.sprite.position.x, this.sprite.position.y );
+	}
+	else
+	{
+		this.data.position = null;
+	}
 };
 
 

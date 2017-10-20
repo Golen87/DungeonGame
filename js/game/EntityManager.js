@@ -181,6 +181,24 @@ EntityManager.prototype.checkPhysicsAt = function ( x, y )
 	return false;
 };
 
+EntityManager.prototype.getBlockAt = function ( x, y )
+{
+	for ( var i = 0; i < this.entities.length; i++ )
+	{
+		if ( this.entities[i] && this.entities[i].sprite.exists )
+		{
+			if ( Box.prototype.isPrototypeOf( this.entities[i] ) || Block.prototype.isPrototypeOf( this.entities[i] ) )
+			{
+				var p = this.entities[i].getGridPos();
+				if ( p.x == x && p.y == y )
+				{
+					return this.entities[i];
+				}
+			}
+		}
+	}
+};
+
 
 EntityManager.prototype.onTrigger = function ( entity, immediate )
 {
@@ -249,34 +267,34 @@ EntityManager.prototype.onAllKilled = function ( roomPos )
 
 EntityManager.prototype.scriptedTriggers = function ( trigger, target, immediate, allMonsters=false )
 {
-	var tr, tg;
+	var room_pos, tri_pos;
 	if ( allMonsters )
 	{
-		tr = trigger;
+		room_pos = trigger;
 	}
 	else
 	{
-		tr = trigger.getRoomPos();
-		tg = trigger.getRelGridPos();
+		room_pos = trigger.getRoomPos();
+		tri_pos = trigger.getRelGridPos();
 	}
-	var sr = target.getRoomPos();
-	var sg = target.getRelGridPos();
+	var spike_room = target.getRoomPos();
+	var spike_pos = target.getRelGridPos();
 
-	if ( tr.x == sr.x && tr.y == sr.y )
+	if ( room_pos.x == spike_room.x && room_pos.y == spike_room.y )
 	{
 		// Monster rooms
-		if ( pointCmp( tr, this.monsterRooms ) )
+		if ( pointCmp( room_pos, this.monsterRooms ) )
 		{
 			if ( allMonsters )
 			{
 				target.toggle( false, immediate );
 				target.lockState = true;
-				this.clearMonsterRoom( tr );
+				this.clearMonsterRoom( room_pos );
 			}
-			else if ( trigger.active && !pointCmp( tr, this.clearedMonsterRooms ) )
+			else if ( trigger.active && !pointCmp( room_pos, this.clearedMonsterRooms ) )
 			{
 				target.toggle( true, immediate );
-				this.triggerMonsterRoom( tr );
+				this.triggerMonsterRoom( room_pos );
 			}
 			return true;
 		}
@@ -285,51 +303,115 @@ EntityManager.prototype.scriptedTriggers = function ( trigger, target, immediate
 			return false;
 
 		// Block puzzle
-		if ( pointCmp( tr, [[0, 0]] ) )
+		if ( pointCmp( room_pos, [[0, 0]] ) )
 		{
-			var states = this.getActiveAt( tr, [[9,2], [9,4]] );
-			if ( states.equals( [true, true] ) )
-				target.toggle( false, immediate );
-			else
-				target.toggle( true, immediate );
+			this.blockPuzzle( trigger, target, immediate, room_pos, [[9,2], [9,4]] );
 			return true;
 		}
 		// Block puzzle
-		if ( pointCmp( tr, [[0, 1]] ) )
+		if ( pointCmp( room_pos, [[0, 1]] ) )
 		{
-			var states = this.getActiveAt( tr, [[7,3], [7,4]] );
-			if ( states.equals( [true, true] ) )
-				target.toggle( false, immediate );
-			else
-				target.toggle( true, immediate );
+			this.blockPuzzle( trigger, target, immediate, room_pos, [[7,3], [7,4]] );
 			return true;
 		}
 		// Intersection switch
-		if ( pointCmp( tr, [[3, 1]] ) )
+		if ( pointCmp( room_pos, [[3, 1]] ) )
 		{
-			if ( pointCmp( sg, [[8, 4], [9, 4], [8, 9], [9, 9]] ) )
+			if ( pointCmp( spike_pos, [[8, 4], [9, 4], [8, 9], [9, 9]] ) )
 				target.toggle( trigger.active, immediate );
-			if ( pointCmp( sg, [[6, 6], [11, 6], [6, 7], [11, 7]] ) )
+			if ( pointCmp( spike_pos, [[6, 6], [11, 6], [6, 7], [11, 7]] ) )
 				target.toggle( !trigger.active, immediate );
 			return true;
 		}
+		// Block puzzle
+		if ( pointCmp( room_pos, [[11, 9]] ) )
+		{
+			this.blockPuzzle( trigger, target, immediate, room_pos, [[9,6], [7,9]] );
+			return true;
+		}
+		// Block puzzle
+		if ( pointCmp( room_pos, [[13, 9]] ) )
+		{
+			this.blockPuzzle( trigger, target, immediate, room_pos, [[2,4], [2,5]] );
+			return true;
+		}
 
-		console.log( 'Unknown: ({0},{1}) for ({2},{3}) -> ({4},{5})'.format( tr.x, tr.y, tg.x, tg.y, sg.x, sg.y ) );
+		//console.log( 'Unknown: ({0},{1}) for ({2},{3}) -> ({4},{5})'.format( room_pos.x, room_pos.y, tri_pos.x, tri_pos.y, spike_pos.x, spike_pos.y ) );
 		return false;
 	}
 	return true;
 };
 
-EntityManager.prototype.getActiveAt = function ( roomPos, coordList )
+EntityManager.prototype.blockPuzzle = function ( trigger, target, immediate, room_pos, plate_positions )
+{
+	var states = this.getActiveAt( room_pos, plate_positions );
+	if ( states.equals( [true, true] ) )
+	{
+		target.toggle( false, immediate );
+
+		var block1 = this.getBlockAt(
+			plate_positions[0][0] + room_pos.x * ROOM_WIDTH,
+			plate_positions[0][1] + room_pos.y * ROOM_HEIGHT
+		);
+		var block2 = this.getBlockAt(
+			plate_positions[1][0] + room_pos.x * ROOM_WIDTH,
+			plate_positions[1][1] + room_pos.y * ROOM_HEIGHT
+		);
+
+		if ( block1 && block2 )
+		{
+			var plates = this.getEntitiesAt( room_pos, plate_positions );
+			plates[0].myBlock = block1;
+			plates[0].myBlock.lockState = true;
+			plates[1].myBlock = block2;
+			plates[1].myBlock.lockState = true;
+		}
+	}
+	else
+	{
+		target.toggle( true, immediate );
+		if ( trigger.myBlock )
+		{
+			var plates = this.getEntitiesAt( room_pos, plate_positions );
+			if ( plates[0].myBlock )
+			{
+				plates[0].myBlock.lockState = false;
+				plates[0].myBlock = null;
+			}
+			if ( plates[1].myBlock )
+			{
+				plates[1].myBlock.lockState = false;
+				plates[1].myBlock = null;
+			}
+		}
+	}
+};
+
+EntityManager.prototype.getEntitiesAt = function ( roomPos, coordList )
 {
 	var result = [];
 	for ( var i=0; i<coordList.length; i++ )
 	{
-		var coords = coordList[i];
-		coords[0] += roomPos.x * ROOM_WIDTH;
-		coords[1] += roomPos.y * ROOM_HEIGHT;
+		var coords = [
+			coordList[i][0] + roomPos.x * ROOM_WIDTH,
+			coordList[i][1] + roomPos.y * ROOM_HEIGHT
+		];
 
-		result.push( this.activeMap[coords[1]][coords[0]].active );
+		if ( this.activeMap[coords[1]][coords[0]] )
+			result.push( this.activeMap[coords[1]][coords[0]] );
+		else
+			console.error( 'No trigger at ({0},{1})'.format( roomPos.x, roomPos.y ) );
+	}
+	return result;
+};
+
+
+EntityManager.prototype.getActiveAt = function ( roomPos, coordList )
+{
+	var result = this.getEntitiesAt( roomPos, coordList );
+	for ( var i=0; i<result.length; i++ )
+	{
+		result[i] = result[i].active;
 	}
 	return result;
 };

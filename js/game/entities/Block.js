@@ -17,6 +17,20 @@ Block.prototype.create = function ()
 {
 	this.sprite.frame = 11;
 	this.sprite.scale.x = [-1,1].choice();
+
+	if ( this.data.position )
+		this.sprite.position = this.data.position;
+};
+
+Block.prototype.destroy = function () {
+	if ( this.lockState )
+	{
+		this.data.position = new Phaser.Point( this.sprite.position.x, this.sprite.position.y );
+	}
+	else
+	{
+		this.data.position = null;
+	}
 };
 
 
