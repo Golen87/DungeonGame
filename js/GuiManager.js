@@ -219,11 +219,11 @@ GuiManager.prototype.showPauseMenu = function ()
 
 	this.choiceTitle = DungeonGame.game.add.bitmapText( x, y, 'OldWizard', 'Pause', 16 );
 	this.choiceTitle.anchor.setTo( 0.5, 0.5 );
-	y += 24;
+	y += 28;
 	this.menu = DungeonGame.game.add.sprite( x, y, 'items', randInt(0,8*9-1) );
 	this.menu.anchor.set( 0.5 );
 
-	y += 32;
+	y += 28;
 	this.menuManager.createMenu( x, y, this.pauseMenu );
 
 	DungeonGame.Audio.play( 'menu', 'open' );

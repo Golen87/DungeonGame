@@ -206,12 +206,12 @@ MenuManager.prototype.pickChoice = function ()
 {
 	if ( this.allowInput )
 	{
+		DungeonGame.Audio.play( 'menu', 'click' );
+
 		var newText = this.choiceList[this.selection][1]();
 		if ( newText )
 		{
 			this.labels[this.selection].text = newText;
 		}
-
-		DungeonGame.Audio.play( 'menu', 'click' );
 	}
 };

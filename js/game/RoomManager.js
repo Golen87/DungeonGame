@@ -223,6 +223,7 @@ RoomManager.prototype.makeSpriteMap = function ()
 						this.addBackground( x, y, TILE_WALL['spos'] );
 					//else if ( this.isFloor( x, y-1, true ) )
 					//	this.addBackground( x, y, TILE_FLOOR['spos'] );
+					if ( !this.isWall( x, y+1, true ) )
 					this.addDecoration( x, y, DECO_PILLAR['spos'] );
 					this.addForeground( x, y-1, [4,0] );
 				}
