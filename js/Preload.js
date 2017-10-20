@@ -30,6 +30,7 @@ DungeonGame.Preload.prototype = {
 
 		this.load.image( 'sunshine', 'assets/sprites/lighting/sunshine.png' );
 		this.load.image( 'glow', 'assets/sprites/lighting/glow.png' );
+		this.load.image( 'torchlight', 'assets/sprites/lighting/torchlight.png' );
 		this.load.spritesheet( 'slurgLight', 'assets/sprites/lighting/slurg_light.png', 32, 32 );
 
 		this.load.spritesheet( 'player', 'assets/sprites/player/player_old.png', 16, 16 );
@@ -47,7 +48,7 @@ DungeonGame.Preload.prototype = {
 		this.load.spritesheet( 'smoke', 'assets/sprites/particles/smoke.png', 9, 9 );
 		this.load.spritesheet( 'sparkle', 'assets/sprites/particles/sparkle.png', 9, 9 );
 		this.load.spritesheet( 'rubble', 'assets/sprites/particles/rubble.png', 5, 5 );
-		this.load.spritesheet( 'fire', 'assets/sprites/particles/fire.png', 8, 12 );
+		this.load.spritesheet( 'fire', 'assets/sprites/particles/fire.png', 16, 16 );
 
 		var world = 'test';
 		this.load.image( 'floorMap', 'assets/rooms/{0}/floorMap.png'.format(world) );

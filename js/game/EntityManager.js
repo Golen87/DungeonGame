@@ -131,6 +131,10 @@ EntityManager.prototype.loadRoom = function ( room_x, room_y )
 						this.entities[index] = new Box( this.onDeath.bind(this) );
 					else if ( this.entityMap[y][x] == 'block' )
 						this.entities[index] = new Block();
+					else if ( this.entityMap[y][x] == 'torch' )
+						this.entities[index] = new Torch( true );
+					else if ( this.entityMap[y][x] == 'torch_hidden' )
+						this.entities[index] = new Torch( false );
 
 					if ( this.entities[index] )
 					{

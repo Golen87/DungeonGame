@@ -70,6 +70,10 @@ var OBJ_PRESSUREPLATE = {
 	'name': 'pressureplate',
 	'type': TYPE_OBJECT
 };
+var OBJ_TORCH = {
+	'name': 'torch',
+	'type': TYPE_OBJECT
+};
 
 var ENEMY_SLURG = {
 	'name': 'slurg',
@@ -100,6 +104,7 @@ var PIXEL_TABLE = {
 	'0,255,0': OBJ_CHEST,
 	'255,255,0': OBJ_BOX,
 	'128,128,0': OBJ_BLOCK,
+	'128,64,0': OBJ_TORCH,
 }
 
 var TILES = [
@@ -122,6 +127,7 @@ var TILES = [
 	OBJ_CHEST,
 	OBJ_BOX,
 	OBJ_BLOCK,
+	OBJ_TORCH,
 ];
 
 

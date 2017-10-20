@@ -385,7 +385,15 @@ RoomManager.prototype.makeSpriteMap = function ()
 			{
 				if ( TILES[i]['type'] == TYPE_OBJECT && this.getTileName( x, y ).contains( TILES[i]['name'] ) )
 				{
-					this.addEntity( x, y, TILES[i]['name'] );
+					if ( TILES[i]['name'] == 'torch' )
+					{
+						if ( this.isFloor( x, y+1 ) )
+							this.addEntity( x, y, 'torch' );
+						else
+							this.addEntity( x, y, 'torch_hidden' );
+					}
+					else
+						this.addEntity( x, y, TILES[i]['name'] );
 				}
 				if ( TILES[i]['type'] == TYPE_ENEMY && this.getTileName( x, y ).contains( TILES[i]['name'] ) )
 				{

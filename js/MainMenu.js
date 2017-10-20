@@ -7,6 +7,10 @@ DungeonGame.MainMenu.prototype = {
 		DungeonGame.game.stage.backgroundColor = '#111111';
 		DungeonGame.game.camera.flash( 0x111111, 500 );
 
+		// Particles need to move
+		DungeonGame.game.physics.arcade.isPaused = false;
+
+
 		//this.obj = [];
 		//for ( var j = 0; j < 2; j++ )
 		//{
@@ -25,8 +29,16 @@ DungeonGame.MainMenu.prototype = {
 
 		/* Torches */
 		var margin = 54;
-		DungeonGame.Particle.createSmokeTrail( margin, y + 16 );
-		DungeonGame.Particle.createSmokeTrail( SCREEN_WIDTH-margin, y + 16 );
+		var fx = margin;
+		var fy = y + 16;
+		var t = this.add.sprite( fx-8, fy-21, 'entities16', 18 );
+		DungeonGame.Particle.createSmokeTrail( fx, fy );
+		DungeonGame.Particle.createFire( fx, fy );
+		var fx = SCREEN_WIDTH-margin;
+		var fy = y + 16;
+		var t = this.add.sprite( fx-8, fy-21, 'entities16', 18 );
+		DungeonGame.Particle.createSmokeTrail( fx, fy );
+		DungeonGame.Particle.createFire( fx, fy );
 
 		/* Subtitle */
 		y += 20;
@@ -43,6 +55,10 @@ DungeonGame.MainMenu.prototype = {
 		DungeonGame.game.time.events.add( 550, function() {
 			this.menuManager.allowInput = true;
 		}, this );
+
+		/* Darkness around edges */
+		this.fog = DungeonGame.game.add.sprite( 0, 0, 'fog' );
+		this.fog.blendMode = Phaser.blendModes.MULTIPLY;
 
 		/* Version */
 		var text = this.add.bitmapText( 1, SCREEN_HEIGHT+1, 'Pixelade', 'v1.0', 13 );

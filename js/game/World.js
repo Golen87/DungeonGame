@@ -16,6 +16,7 @@ World.prototype.create = function ()
 	this.ground = DungeonGame.game.add.group();
 	this.entities = DungeonGame.game.add.group();
 	this.lighting = DungeonGame.game.add.group();
+	DungeonGame.lightingGroup = this.lighting;
 
 	this.groundEmitter = this.ground.create( 0, 0, null, 0 );
 	DungeonGame.Particle.initRubbleBurst( this.groundEmitter );
@@ -24,7 +25,7 @@ World.prototype.create = function ()
 
 	this.roomManager = new RoomManager( this.entities );
 	this.nextRoomOffset = 8;
-	this.currentArea = [9,11];
+	this.currentArea = [9,11-1];
 	//this.currentArea = [1,1];
 	this.roomManager.loadRoom( this.currentArea[0], this.currentArea[1] );
 
@@ -87,6 +88,11 @@ World.prototype.create = function ()
 	DungeonGame.cameraShake = World.prototype.cameraShake.bind( this );
 	this.shake = 0;
 	this.prevShakeDir = [0,0];
+
+	// Due to how fire particles somehow don't end up on top at spawn
+	this.Player.sprite.position.y += ROOM_HEIGHT * 16;
+	this.shiftRoom( 0, 1 );
+	this.camPos.y += ROOM_HEIGHT * 16;
 };
 
 World.prototype.update = function ()

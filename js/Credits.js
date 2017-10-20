@@ -44,6 +44,10 @@ DungeonGame.Credits.prototype = {
 		"special thanks"
 		"time"
 
+		/* Darkness around edges */
+		this.fog = DungeonGame.game.add.sprite( 0, 0, 'fog' );
+		this.fog.blendMode = Phaser.blendModes.MULTIPLY;
+
 		/* Copyright */
 		var text = this.add.bitmapText( 1, SCREEN_HEIGHT+1, 'Pixelade', '©2017 Golen', 13 );
 		text.anchor.set( 0, 1 );
