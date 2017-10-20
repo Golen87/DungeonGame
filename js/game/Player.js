@@ -21,6 +21,7 @@ Player.prototype.create = function ( x, y, group )
 	this.updateItemGui();
 
 	this.sword = group.create( x, y+2, 'items', 0 );
+	if ( DungeonGame.skip ) this.sword.frame = 1;
 	DungeonGame.game.physics.arcade.enable( this.sword, Phaser.Physics.ARCADE );
 	this.sword.anchor.set( 0.5 );
 	this.sword.body.setSize( 0, 0, 0, 0 );
@@ -70,6 +71,12 @@ Player.prototype.create = function ( x, y, group )
 			DungeonGame.cinematic = false;
 		}, this );
 	}, this );
+
+	if ( DungeonGame.skip )
+	{
+		DungeonGame.cinematic = false;
+		this.sprite.visible = true;
+	}
 };
 
 Player.prototype.setupAnimation = function ()

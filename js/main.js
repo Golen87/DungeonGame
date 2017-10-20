@@ -26,3 +26,5 @@ DungeonGame.cinematic = false;
 /* Options */
 DungeonGame.music = true;
 DungeonGame.sound = true;
+
+DungeonGame.skip = false;
