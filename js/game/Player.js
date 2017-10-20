@@ -118,8 +118,6 @@ Player.prototype.setAnimation = function ( newState, newDirection )
 {
 	if ( this.damageState == 'dead' )
 		return;
-	if ( this.damageState == 'hurt' )
-		newState = 'hurt';
 
 	var name = null;
 	if ( this.state != newState || this.direction != newDirection )
@@ -307,8 +305,7 @@ Player.prototype.hurt = function ()
 	DungeonGame.Audio.play( 'hurt' );
 	this.setAnimation( 'hurt', this.direction );
 
-	// 1.2
-	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.5, this.damageOver, this );
+	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 1.2, this.damageOver, this );
 
 	if ( !this.damageStepActive )
 	{
