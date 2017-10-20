@@ -269,7 +269,7 @@ EntityManager.prototype.onAllKilled = function ( roomPos )
 	}
 };
 
-EntityManager.prototype.scriptedTriggers = function ( trigger, target, immediate, allMonsters=false )
+EntityManager.prototype.scriptedTriggers = function ( trigger, spikes, immediate, allMonsters=false )
 {
 	var room_pos, tri_pos;
 	if ( allMonsters )
@@ -281,8 +281,8 @@ EntityManager.prototype.scriptedTriggers = function ( trigger, target, immediate
 		room_pos = trigger.getRoomPos();
 		tri_pos = trigger.getRelGridPos();
 	}
-	var spike_room = target.getRoomPos();
-	var spike_pos = target.getRelGridPos();
+	var spike_room = spikes.getRoomPos();
+	var spike_pos = spikes.getRelGridPos();
 
 	if ( room_pos.x == spike_room.x && room_pos.y == spike_room.y )
 	{
@@ -291,13 +291,13 @@ EntityManager.prototype.scriptedTriggers = function ( trigger, target, immediate
 		{
 			if ( allMonsters )
 			{
-				target.toggle( false, immediate );
-				target.lockState = true;
+				spikes.toggle( false, immediate );
+				spikes.lockState = true;
 				this.clearMonsterRoom( room_pos );
 			}
 			else if ( trigger.active && !pointCmp( room_pos, this.clearedMonsterRooms ) )
 			{
-				target.toggle( true, immediate );
+				spikes.toggle( true, immediate );
 				this.triggerMonsterRoom( room_pos );
 			}
 			return true;
@@ -309,49 +309,58 @@ EntityManager.prototype.scriptedTriggers = function ( trigger, target, immediate
 		// Block puzzle
 		if ( pointCmp( room_pos, [[0, 0]] ) )
 		{
-			this.blockPuzzle( trigger, target, immediate, room_pos, [[9,2], [9,4]] );
+			this.blockPuzzle( trigger, spikes, immediate, room_pos, [[9,2], [9,4]] );
 			return true;
 		}
 		// Block puzzle
 		if ( pointCmp( room_pos, [[0, 1]] ) )
 		{
-			this.blockPuzzle( trigger, target, immediate, room_pos, [[7,3], [7,4]] );
+			this.blockPuzzle( trigger, spikes, immediate, room_pos, [[7,3], [7,4]] );
+			return true;
+		}
+		// Spike path towards chest
+		if ( pointCmp( room_pos, [[2, 0]] ) )
+		{
+			if ( pointCmp( spike_pos, [[4,7], [5,7], [4,8], [5,8], [8,9], [9,9], [8,10], [9,10]] ) )
+				spikes.toggle( !trigger.active, immediate );
+			else
+				spikes.manual = false;
 			return true;
 		}
 		// Intersection switch
 		if ( pointCmp( room_pos, [[3, 1]] ) )
 		{
 			if ( pointCmp( spike_pos, [[8, 4], [9, 4], [8, 9], [9, 9]] ) )
-				target.toggle( trigger.active, immediate );
+				spikes.toggle( trigger.active, immediate );
 			if ( pointCmp( spike_pos, [[6, 6], [11, 6], [6, 7], [11, 7]] ) )
-				target.toggle( !trigger.active, immediate );
+				spikes.toggle( !trigger.active, immediate );
 			return true;
 		}
 		// Block puzzle
 		if ( pointCmp( room_pos, [[11, 9]] ) )
 		{
-			this.blockPuzzle( trigger, target, immediate, room_pos, [[9,6], [7,9]] );
+			this.blockPuzzle( trigger, spikes, immediate, room_pos, [[9,6], [7,9]] );
 			return true;
 		}
 		// Block puzzle
 		if ( pointCmp( room_pos, [[13, 9]] ) )
 		{
-			this.blockPuzzle( trigger, target, immediate, room_pos, [[2,4], [2,5]] );
+			this.blockPuzzle( trigger, spikes, immediate, room_pos, [[2,4], [2,5]] );
 			return true;
 		}
 
-		//console.log( 'Unknown: ({0},{1}) for ({2},{3}) -> ({4},{5})'.format( room_pos.x, room_pos.y, tri_pos.x, tri_pos.y, spike_pos.x, spike_pos.y ) );
+		console.log( 'Unknown: ({0},{1}) for ({2},{3}) -> ({4},{5})'.format( room_pos.x, room_pos.y, tri_pos.x, tri_pos.y, spike_pos.x, spike_pos.y ) );
 		return false;
 	}
 	return true;
 };
 
-EntityManager.prototype.blockPuzzle = function ( trigger, target, immediate, room_pos, plate_positions )
+EntityManager.prototype.blockPuzzle = function ( trigger, spikes, immediate, room_pos, plate_positions )
 {
 	var states = this.getActiveAt( room_pos, plate_positions );
 	if ( states.equals( [true, true] ) )
 	{
-		target.toggle( false, immediate );
+		spikes.toggle( false, immediate );
 
 		var block1 = this.getBlockAt(
 			plate_positions[0][0] + room_pos.x * ROOM_WIDTH,
@@ -373,7 +382,7 @@ EntityManager.prototype.blockPuzzle = function ( trigger, target, immediate, roo
 	}
 	else
 	{
-		target.toggle( true, immediate );
+		spikes.toggle( true, immediate );
 		if ( trigger.myBlock )
 		{
 			var plates = this.getEntitiesAt( room_pos, plate_positions );
