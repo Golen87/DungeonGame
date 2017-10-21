@@ -60,22 +60,23 @@ Player.prototype.create = function ( x, y, group )
 	this.gridPos = new Phaser.Point( x, y );
 	this.prevGridPos = new Phaser.Point( x, y );
 
-	this.sprite.visible = false;
-	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.1, function() {
-		DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.8, function() {
-			DungeonGame.Particle.createSmokeBurst( this.sprite.x, this.sprite.y );
-			DungeonGame.Audio.play( 'monsterroom-spawn' );
-			this.sprite.visible = true;
-		}, this );
-		DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 1.9, function() {
-			DungeonGame.cinematic = false;
-		}, this );
-	}, this );
-
 	if ( DungeonGame.skip )
 	{
 		DungeonGame.cinematic = false;
-		this.sprite.visible = true;
+	}
+	else
+	{
+		this.sprite.visible = false;
+		DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.1, function() {
+			DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.8, function() {
+				DungeonGame.Particle.createSmokeBurst( this.sprite.x, this.sprite.y );
+				DungeonGame.Audio.play( 'monsterroom-spawn' );
+				this.sprite.visible = true;
+			}, this );
+			DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 1.9, function() {
+				DungeonGame.cinematic = false;
+			}, this );
+		}, this );
 	}
 };
 
@@ -284,7 +285,7 @@ Player.prototype.damage = function ( power, position )
 
 		// Move please
 		DungeonGame.Audio.play( 'chop' );
-		DungeonGame.cameraShake( power / 5 );
+		DungeonGame.World.cameraShake( power / 5 );
 
 		// Knockback
 		var p = new Phaser.Point(
@@ -326,7 +327,7 @@ Player.prototype.defeat = function ()
 	this.setAnimation( 'hurt', this.direction );
 	this.damageState = 'dead';
 	DungeonGame.Audio.play( 'hurt' );
-	DungeonGame.cameraShake( 16 );
+	DungeonGame.World.cameraShake( 16 );
 	DungeonGame.cinematic = true;
 
 	if ( !this.damageStepActive )
@@ -336,10 +337,10 @@ Player.prototype.defeat = function ()
 	}
 
 	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 1.0, function() {
-		DungeonGame.cameraShake( 8 );
+		DungeonGame.World.cameraShake( 8 );
 	}, this );
 	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 2.0, function() {
-		DungeonGame.cameraShake( 4 );
+		DungeonGame.World.cameraShake( 4 );
 	}, this );
 	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 2.5, this.gameOver, this );
 };

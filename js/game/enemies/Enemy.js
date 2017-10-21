@@ -5,7 +5,9 @@ function Enemy( sprite )
 	this.spawn = new Phaser.Point();
 
 	this.isHurting = false;
+	this.isHurtingTimer = 0;
 	this.isFlashing = false;
+	this.isFlashingTimer = 0;
 	this.hitCooldown = 6;
 	this.hitBuffer = 0;
 };
@@ -37,6 +39,7 @@ Enemy.prototype.init = function ( sprite, bgSprite, lightSprite, dataRef, x, y, 
 	this.spawn.setTo( x, y );
 	this.sprite.reset( x*16+8, y*16+8 );
 	this.sprite.body.setSize( 16, 16, 0, 16 );
+	this.sprite.body.bounce.set( 0.0 );
 
 	this.onDeath = onDeath;
 };
@@ -70,6 +73,13 @@ Enemy.prototype.render = function ()
 Enemy.prototype.updateHurtState = function ()
 {
 	this.hitBuffer -= 1;
+	this.isHurtingTimer -= 1;
+	this.isFlashingTimer -= 1;
+
+	if ( this.isHurtingTimer == 0 )
+		this.isHurting = false;
+	if ( this.isFlashingTimer == 0 )
+		this.isFlashing = false;
 
 	if ( this.isFlashing )
 	{
@@ -100,14 +110,10 @@ Enemy.prototype.getHit = function ( other )
 
 		// Move please, as it may depend on weapon
 		DungeonGame.Audio.play( 'chop' );
-		DungeonGame.cameraShake( 2 );
+		DungeonGame.World.cameraShake( 2 );
 
 		// Knockback
-		var p = new Phaser.Point(
-			this.sprite.body.center.x - other.position.x,
-			this.sprite.body.center.y - other.position.y
-		).setMagnitude( 250 );
-		this.sprite.body.velocity.add( p.x, p.y );
+		this.knockback( other.position );
 
 		// Take damage
 		this.isHurting = true;
@@ -132,18 +138,16 @@ Enemy.prototype.takeDamage = function ()
 {
 	DungeonGame.Audio.play( this.sound, 'hurt' );
 
-	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.2, function () {
-		this.isHurting = false;
-	}, this );
-	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.5, function () {
-		this.isFlashing = false;
-	}, this );
+	this.isHurtingTimer = 10;
+	this.isFlashingTimer = 35;
 };
+
+Enemy.prototype.knockback = function ( from ) {};
 
 Enemy.prototype.defeat = function ()
 {
 	DungeonGame.Audio.play( this.sound, 'death' );
-	DungeonGame.cameraShake( 8 );
+	DungeonGame.World.cameraShake( 8 );
 
 	this.onDeath( this );
 };
@@ -160,6 +164,11 @@ Enemy.prototype.getGridPos = function ()
 		Math.floor(this.sprite.x / 16),
 		Math.floor(this.sprite.y / 16)
 	);
+};
+
+Enemy.prototype.getPhysicsPos = function ()
+{
+	return this.getGridPos();
 };
 
 Enemy.prototype.getRoomPos = function ()

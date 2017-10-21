@@ -155,6 +155,28 @@ EnemyManager.prototype.loadRoom = function ( room_x, room_y )
 	}
 };
 
+EnemyManager.prototype.checkPhysicsAt = function ( x, y )
+{
+	for ( var i = 0; i < this.enemies.length; i++ )
+	{
+		if ( this.enemies[i] && this.enemies[i].sprite.exists )
+		{
+			if ( this.enemies[i].hasPhysics() )
+			{
+				var p = this.enemies[i].getPhysicsPos();
+
+				if ( p.x == x && p.y == y )
+					return true;
+
+				// Special case since doors are 32 wide
+				if ( p.x+1 == x && p.y == y && Door.prototype.isPrototypeOf( this.enemies[i] ) )
+					return true;
+			}
+		}
+	}
+	return false;
+};
+
 EnemyManager.prototype.activateEnemies = function ()
 {
 	for ( var i = 0; i < this.enemies.length; i++ )

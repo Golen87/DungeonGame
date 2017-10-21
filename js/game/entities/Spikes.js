@@ -93,7 +93,7 @@ Spikes.prototype.toggle = function ( state, immediate=false )
 	{
 		this.sprite.frame = 8;
 		this.sprite.alpha = 1.0;
-		this.animationTimer = 16;
+		this.animationTimer = 12;
 	}
 
 	if ( immediate )

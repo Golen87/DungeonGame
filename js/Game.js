@@ -4,6 +4,7 @@ var DungeonGame = DungeonGame || {};
 DungeonGame.Game = function()
 {
 	this.World = new World();
+	DungeonGame.World = this.World;
 };
 
 DungeonGame.Game.prototype =

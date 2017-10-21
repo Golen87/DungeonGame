@@ -18,7 +18,6 @@ Torch.prototype.create = function ()
 	this.lightSprite.reset( this.spawn.x*16 + 8, this.spawn.y*16 + 8 + 4 );
 	this.lightSprite.loadTexture( 'torchlight' );
 	this.lightSprite.blendMode = Phaser.blendModes.COLOR_DODGE;
-	this.lightSprite.tint = 0xdddddd;
 
 	var behindWallOffset = this.visible ? 0 : 6;
 	this.lightSprite.position.y -= behindWallOffset;
@@ -26,10 +25,10 @@ Torch.prototype.create = function ()
 	if ( this.visible )
 	{
 		this.fire = DungeonGame.Particle.createFire( this.spawn.x*16 + 8, this.spawn.y*16 + 8 - 2 );
-		DungeonGame.lightingGroup.add( this.fire );
+		DungeonGame.World.lighting.add( this.fire );
 	}
 	this.trail = DungeonGame.Particle.createSmokeTrail( this.spawn.x*16 + 8, this.spawn.y*16 + 8 - 2 - behindWallOffset );
-	DungeonGame.lightingGroup.add( this.trail );
+	DungeonGame.World.lighting.add( this.trail );
 };
 
 Torch.prototype.destroy = function () {

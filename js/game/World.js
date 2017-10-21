@@ -16,7 +16,6 @@ World.prototype.create = function ()
 	this.ground = DungeonGame.game.add.group();
 	this.entities = DungeonGame.game.add.group();
 	this.lighting = DungeonGame.game.add.group();
-	DungeonGame.lightingGroup = this.lighting;
 
 	this.groundEmitter = this.ground.create( 0, 0, null, 0 );
 	DungeonGame.Particle.initRubbleBurst( this.groundEmitter );
@@ -51,8 +50,8 @@ World.prototype.create = function ()
 	this.enemyManager.clearedMonsterRooms = this.clearedMonsterRooms;
 	this.enemyManager.onAllKilled = this.entityManager.onAllKilled.bind( this.entityManager );
 
-	this.enemyManager.loadRoom( this.currentArea[0], this.currentArea[1] );
-	this.entityManager.loadRoom( this.currentArea[0], this.currentArea[1] );
+	//this.entityManager.loadRoom( this.currentArea[0], this.currentArea[1] );
+	//this.enemyManager.loadRoom( this.currentArea[0], this.currentArea[1] );
 
 	//for ( var i = 0; i < 2; i++ )
 	//{
@@ -84,8 +83,6 @@ World.prototype.create = function ()
 	DungeonGame.game.world.bringToTop( this.lighting );
 	DungeonGame.game.world.bringToTop( DungeonGame.Gui.guiGroup );
 
-	DungeonGame.checkPhysicsAt = World.prototype.checkPhysicsAt.bind( this );
-	DungeonGame.cameraShake = World.prototype.cameraShake.bind( this );
 	this.shake = 0;
 	this.prevShakeDir = [0,0];
 
@@ -102,15 +99,7 @@ World.prototype.update = function ()
 	this.enemyManager.update();
 	this.entityManager.update();
 
-	if ( this.skipCollisions == null )
-	{
-		this.handleCollisions();
-		this.skipCollisions = true;
-	}
-	else
-	{
-		this.skipCollisions = null;
-	}
+	this.handleCollisions();
 
 	this.entities.sort( 'y', Phaser.Group.SORT_ASCENDING );
 	//this.foreground.sort( 'y', Phaser.Group.SORT_ASCENDING );
@@ -313,8 +302,8 @@ World.prototype.shiftRoom = function ( dx, dy )
 		this.currentArea[1] = y;
 
 		this.roomManager.loadRoom( x, y );
-		this.enemyManager.loadRoom( x, y );
 		this.entityManager.loadRoom( x, y );
+		this.enemyManager.loadRoom( x, y );
 
 		this.camGoal.x = x * SCREEN_WIDTH;
 		this.camGoal.y = y * SCREEN_HEIGHT;
@@ -358,6 +347,10 @@ World.prototype.checkPhysicsAt = function ( x, y )
 			return true;
 		}
 		else if ( this.entityManager.checkPhysicsAt( x, y ) )
+		{
+			return true;
+		}
+		else if ( this.enemyManager.checkPhysicsAt( x, y ) )
 		{
 			return true;
 		}

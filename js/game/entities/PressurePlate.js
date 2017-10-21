@@ -28,7 +28,7 @@ PressurePlate.prototype.update = function ()
 	Entity.prototype.update.call( this );
 
 	var p = this.getGridPos();
-	if ( DungeonGame.checkPhysicsAt( p.x, p.y ) )
+	if ( DungeonGame.World.checkPhysicsAt( p.x, p.y ) )
 	{
 		this.toggle( true );
 	}

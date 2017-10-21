@@ -119,6 +119,15 @@ Bat.prototype.takeDamage = function ()
 	//DungeonGame.game.add.tween( this.chestBeam ).to({ alpha: 1.0 }, 400, Phaser.Easing.Linear.In, true );
 };
 
+Bat.prototype.knockback = function ( from )
+{
+	var p = new Phaser.Point(
+		this.sprite.body.center.x - from.x,
+		this.sprite.body.center.y - from.y
+	).setMagnitude( 300 );
+	this.sprite.body.velocity.add( p.x, p.y );
+};
+
 Bat.prototype.defeat = function ()
 {
 	Enemy.prototype.defeat.call( this );
@@ -129,6 +138,11 @@ Bat.prototype.defeat = function ()
 Bat.prototype.getAttackPower = function ()
 {
 	return 15;
+};
+
+Bat.prototype.hasPhysics = function ()
+{
+	return false;
 };
 
 extend( Enemy, Bat );
