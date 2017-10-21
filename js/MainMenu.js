@@ -29,14 +29,27 @@ DungeonGame.MainMenu.prototype = {
 
 		/* Torches */
 		var margin = 54;
+		this.timer = 0;
+
 		var fx = margin;
 		var fy = y + 16;
 		var t = this.add.sprite( fx-8, fy-21, 'entities16', 18 );
+		for (var i = 0; i < 2; i++) {
+			this.light1 = this.add.sprite( fx, fy, 'torchlight' );
+			this.light1.anchor.set( 0.5 );
+			this.light1.blendMode = Phaser.blendModes.COLOR_DODGE;
+		}
 		DungeonGame.Particle.createSmokeTrail( fx, fy );
 		DungeonGame.Particle.createFire( fx, fy );
+
 		var fx = SCREEN_WIDTH-margin;
 		var fy = y + 16;
 		var t = this.add.sprite( fx-8, fy-21, 'entities16', 18 );
+		for (var i = 0; i < 2; i++) {
+			this.light2 = this.add.sprite( fx, fy, 'torchlight' );
+			this.light2.anchor.set( 0.5 );
+			this.light2.blendMode = Phaser.blendModes.COLOR_DODGE;
+		}
 		DungeonGame.Particle.createSmokeTrail( fx, fy );
 		DungeonGame.Particle.createFire( fx, fy );
 
@@ -77,6 +90,12 @@ DungeonGame.MainMenu.prototype = {
 		{
 			this.startGame();
 		}
+
+		this.timer += 1;
+		if ( this.timer % 2 == 0 )
+			this.light1.tint = randInt(0x40, 0x90) * 0x010101;
+		if ( this.timer % 2 == 1 )
+			this.light2.tint = randInt(0x40, 0x90) * 0x010101;
 	},
 };
 
