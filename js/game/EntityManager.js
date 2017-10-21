@@ -174,10 +174,15 @@ EntityManager.prototype.checkPhysicsAt = function ( x, y )
 	{
 		if ( this.entities[i] && this.entities[i].sprite.exists )
 		{
-			var p = this.entities[i].getGridPos();
-			if ( p.x == x && p.y == y )
+			if ( this.entities[i].hasPhysics() )
 			{
-				if ( this.entities[i].hasPhysics() )
+				var p = this.entities[i].getGridPos();
+
+				if ( p.x == x && p.y == y )
+					return true;
+
+				// Special case since doors are 32 wide
+				if ( p.x+1 == x && p.y == y && Door.prototype.isPrototypeOf( this.entities[i] ) )
 					return true;
 			}
 		}
@@ -349,7 +354,7 @@ EntityManager.prototype.scriptedTriggers = function ( trigger, spikes, immediate
 			return true;
 		}
 
-		console.log( 'Unknown: ({0},{1}) for ({2},{3}) -> ({4},{5})'.format( room_pos.x, room_pos.y, tri_pos.x, tri_pos.y, spike_pos.x, spike_pos.y ) );
+		//console.log( 'Unknown: ({0},{1}) for ({2},{3}) -> ({4},{5})'.format( room_pos.x, room_pos.y, tri_pos.x, tri_pos.y, spike_pos.x, spike_pos.y ) );
 		return false;
 	}
 	return true;
