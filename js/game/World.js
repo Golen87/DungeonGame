@@ -177,7 +177,7 @@ World.prototype.handleCollisions = function ()
 				this.Player.damage( enemy.getAttackPower(), enemy.sprite.body.position );
 			}, null, this );
 
-			if ( !Bat.prototype.isPrototypeOf( enemy ) )
+			if ( !Fry.prototype.isPrototypeOf( enemy ) )
 			{
 				DungeonGame.game.physics.arcade.collide( enemy.sprite, this.entityManager.sprites );
 			}

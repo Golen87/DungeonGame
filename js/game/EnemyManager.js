@@ -121,8 +121,8 @@ EnemyManager.prototype.loadRoom = function ( room_x, room_y )
 
 					if ( this.enemyMap[y][x] == 'slurg' )
 						this.enemies[index] = new Slurg();
-					else if ( this.enemyMap[y][x] == 'bat' )
-						this.enemies[index] = new Bat();
+					else if ( this.enemyMap[y][x] == 'fry' )
+						this.enemies[index] = new Fry();
 
 					if ( this.enemies[index] )
 					{

@@ -1,6 +1,6 @@
 
 // Constructor
-function Bat()
+function Fry()
 {
 	Enemy.call( this );
 
@@ -18,9 +18,9 @@ function Bat()
 	this.turnTimer = 0;
 };
 
-Bat.prototype.create = function ()
+Fry.prototype.create = function ()
 {
-	this.sprite.loadTexture( 'bat', 0 );
+	this.sprite.loadTexture( 'fry', 0 );
 
 	this.sprite.body.setSize( 12, 10, 2, 16 );
 	this.sprite.position.y += 8;
@@ -40,7 +40,7 @@ Bat.prototype.create = function ()
 	this.sprite.body.turning = null;
 };
 
-Bat.prototype.update = function ()
+Fry.prototype.update = function ()
 {
 	Enemy.prototype.update.call( this );
 
@@ -48,7 +48,7 @@ Bat.prototype.update = function ()
 	this.updateAnimation();
 };
 
-Bat.prototype.updateMovement = function ()
+Fry.prototype.updateMovement = function ()
 {
 	this.turnTimer -= 1;
 
@@ -79,7 +79,7 @@ Bat.prototype.updateMovement = function ()
 	this.sprite.body.velocity.setMagnitude( Math.min( this.sprite.body.velocity.getMagnitude(), this.maxSpeed ) );
 };
 
-Bat.prototype.updateAnimation = function ()
+Fry.prototype.updateAnimation = function ()
 {
 	var p = this.sprite.body.velocity;
 	var m = p.getMagnitude();
@@ -107,19 +107,19 @@ Bat.prototype.updateAnimation = function ()
 	this.sprite.frame = this.flapFrameOffset + this.flapFrame;
 };
 
-Bat.prototype.overlap = function ( other )
+Fry.prototype.overlap = function ( other )
 {
 	//Enemy.prototype.overlap.call( this );
 };
 
-Bat.prototype.takeDamage = function ()
+Fry.prototype.takeDamage = function ()
 {
 	Enemy.prototype.takeDamage.call( this );
 
 	//DungeonGame.game.add.tween( this.chestBeam ).to({ alpha: 1.0 }, 400, Phaser.Easing.Linear.In, true );
 };
 
-Bat.prototype.knockback = function ( from )
+Fry.prototype.knockback = function ( from )
 {
 	var p = new Phaser.Point(
 		this.sprite.body.center.x - from.x,
@@ -128,21 +128,21 @@ Bat.prototype.knockback = function ( from )
 	this.sprite.body.velocity.add( p.x, p.y );
 };
 
-Bat.prototype.defeat = function ()
+Fry.prototype.defeat = function ()
 {
 	Enemy.prototype.defeat.call( this );
 
 	DungeonGame.Particle.createSmokeBurst( this.sprite.x, this.sprite.y - 16 );
 };
 
-Bat.prototype.getAttackPower = function ()
+Fry.prototype.getAttackPower = function ()
 {
 	return 15;
 };
 
-Bat.prototype.hasPhysics = function ()
+Fry.prototype.hasPhysics = function ()
 {
 	return false;
 };
 
-extend( Enemy, Bat );
+extend( Enemy, Fry );
