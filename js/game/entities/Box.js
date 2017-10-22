@@ -21,6 +21,10 @@ Box.prototype.create = function ()
 
 	if ( this.data.position )
 		this.sprite.position = this.data.position;
+
+	this.trail = DungeonGame.Particle.createWalkTrail( 0, 0 );
+	this.trailCooldown = 0;
+	DungeonGame.World.entities.add( this.trail );
 };
 
 Box.prototype.destroy = function () {
@@ -32,6 +36,8 @@ Box.prototype.destroy = function () {
 	{
 		this.data.position = null;
 	}
+
+	this.trail.destroy();
 };
 
 
@@ -49,6 +55,15 @@ Box.prototype.update = function ()
 		this.sprite.position.x += mx;
 		this.moveBuffer.y -= my;
 		this.sprite.position.y += my;
+
+		this.trailCooldown -= 1;
+		if ( this.trailCooldown < 0 )
+		{
+			this.trailCooldown = 4;
+			this.trail.x = this.sprite.body.center.x - mx*8;
+			this.trail.y = this.sprite.body.center.y - my*8;
+			this.trail.start( true, 4000, null, 1 );
+		}
 	}
 	else if ( this.isPushingBuffer > 0 )
 	{

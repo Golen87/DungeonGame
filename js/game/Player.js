@@ -78,6 +78,10 @@ Player.prototype.create = function ( x, y, group )
 			}, this );
 		}, this );
 	}
+
+	this.trail = DungeonGame.Particle.createWalkTrail( 0, 0 );
+	this.trailCooldown = 0;
+	DungeonGame.World.entities.add( this.trail );
 };
 
 Player.prototype.setupAnimation = function ()
@@ -202,6 +206,15 @@ Player.prototype.update = function ()
 		else
 			direction = p.y > 0 ? 'down' : 'up';
 		this.setAnimation( 'walk', direction );
+
+		this.trailCooldown -= 1;
+		if ( this.trailCooldown < 0 )
+		{
+			this.trailCooldown = 10;
+			this.trail.x = this.sprite.body.center.x - p.x/this.speed*4;
+			this.trail.y = this.sprite.body.center.y - p.y/this.speed*2 + 4;
+			this.trail.start( true, 4000, null, 1 );
+		}
 	}
 	else
 	{

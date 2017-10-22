@@ -339,6 +339,49 @@ ParticleManager.prototype.createFire = function ( x, y )
 	return flame;
 }
 
+
+/* Walk trail */
+
+ParticleManager.prototype.WalkTrailParticle = (function ()
+{
+	var WalkTrailParticle = function ( game, x, y )
+	{
+		Phaser.Particle.call( this, game, x, y, 'smoke' );
+		this.animations.add( 'evaporate', [5,4,3,2,1,0] );
+		this.animations.currentAnim.killOnComplete = true;
+	};
+	WalkTrailParticle.prototype = Object.create( Phaser.Particle.prototype );
+	WalkTrailParticle.prototype.constructor = WalkTrailParticle;
+	WalkTrailParticle.prototype.onEmit = function ()
+	{
+		this.animations.stop( 'evaporate', true );
+		this.animations.play( 'evaporate', 8+8*Math.random(), false );
+		if ( Math.random() < 0.5 ) this.scale.x *= -1;
+		if ( Math.random() < 0.5 ) this.scale.y *= -1;
+		var color = 0x111111 * [10, 12, 14].choice();
+		this.tint = color;
+	}
+	return WalkTrailParticle;
+}());
+
+ParticleManager.prototype.createWalkTrail = function ( x, y )
+{
+	var trail = DungeonGame.game.add.emitter( x, y - 4, 8 );
+
+	trail.particleClass = this.WalkTrailParticle;
+	trail.setAlpha( 0.3, 0.0, 1000 )
+	trail.setRotation( 0, 0 );
+	trail.gravity = -32;
+	trail.width = 2;
+	trail.height = 2;
+	trail.setXSpeed( -4, 4 );
+	trail.setYSpeed( -12, -4 );
+	trail.makeParticles();
+
+	return trail;
+}
+
+
 /* Unused */
 
 ParticleManager.prototype.SparkleParticle = (function ()
