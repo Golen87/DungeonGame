@@ -240,9 +240,6 @@ GuiManager.prototype.hidePauseMenu = function ()
 
 	this.menuManager.killMenu();
 
-	//var c = DungeonGame.game.camera.view;
-	//DungeonGame.game.add.sprite( c.x+SCREEN_WIDTH*3/4, c.y+64+16, 'dragon' );
-
 	DungeonGame.Audio.play( 'menu', 'close' );
 };
 

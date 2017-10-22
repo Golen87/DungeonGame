@@ -53,4 +53,9 @@ Chest.prototype.open = function ()
 	}
 };
 
+Chest.prototype.hasPhysics = function ()
+{
+	return this.sprite.visible;
+};
+
 extend( Entity, Chest );

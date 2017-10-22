@@ -32,6 +32,12 @@ Spikes.prototype.create = function ()
 
 	this.setState( this.active, false );
 
+
+	// Any Monster room
+	if ( pointCmp( this.getRoomPos(), DungeonGame.World.monsterRooms ) )
+	{
+		this.hide();
+	}
 	// Tarragon
 	if ( pointCmp( this.getRoomPos(), [[4,0]] ) )
 	{
@@ -71,6 +77,36 @@ Spikes.prototype.update = function ()
 	}
 };
 
+Spikes.prototype.hide = function ()
+{
+	if ( this.data.hidden == false )
+		return;
+
+	this.hidden = true;
+
+	var spos = FLOOR_INDENT['spos'].choice();
+	var index = spos[0] + spos[1]*8;
+	this.bgSprite.loadTexture( 'dungeon', index );
+	this.bgSprite.anchor.set( 0.5, 0 );
+};
+
+Spikes.prototype.unhide = function ( immediate=false )
+{
+	if ( this.hidden )
+	{
+		this.hidden = false;
+
+		this.bgSprite.loadTexture( 'entities16', 6 );
+		this.bgSprite.anchor.set( 0.5, 0.5 );
+
+		if ( !immediate )
+		{
+			DungeonGame.World.cameraShake( 4 );
+			DungeonGame.Particle.createFloorRubbleBurst( this.sprite.x, this.sprite.y+8 );
+		}
+	}
+};
+
 Spikes.prototype.setState = function ( state, sound=true )
 {
 	this.active = state;
@@ -80,8 +116,9 @@ Spikes.prototype.setState = function ( state, sound=true )
 		this.sprite.alpha = 1.0;
 		this.sprite.frame = 9;
 
-		if ( sound )
+		if ( sound && !this.silent )
 			DungeonGame.Audio.play( 'spikes' );
+		this.unhide( !sound );
 	}
 	else
 	{
@@ -114,6 +151,8 @@ Spikes.prototype.toggle = function ( state, immediate=false )
 		this.animationTimer = 0;
 		this.setState( this.active, false );
 	}
+
+	this.unhide( immediate );
 };
 
 Spikes.prototype.prepare = function ( state )
@@ -125,6 +164,8 @@ Spikes.prototype.prepare = function ( state )
 
 		this.prepareTimer = this.prepareDuration;
 		this.autoTimer += this.prepareDuration / 2;
+
+		this.unhide();
 	}
 	else
 	{

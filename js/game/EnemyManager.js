@@ -148,7 +148,7 @@ EnemyManager.prototype.loadRoom = function ( room_x, room_y )
 	{
 		newEnemies[i].create();
 
-		if ( pointCmp( [room_x, room_y], this.monsterRooms ) )
+		if ( pointCmp( [room_x, room_y], DungeonGame.World.monsterRooms ) )
 		{
 			newEnemies[i].sprite.visible = false;
 			newEnemies[i].bgSprite.visible = false;
@@ -190,7 +190,8 @@ EnemyManager.prototype.activateEnemies = function ()
 			{
 				enemy.sprite.visible = true;
 				enemy.bgSprite.visible = true;
-				enemy.lightSprite.visible = true;
+				if ( Slurg.prototype.isPrototypeOf( enemy ) )
+					enemy.lightSprite.visible = true;
 
 				DungeonGame.Particle.createSmokeBurst( enemy.sprite.x, enemy.sprite.y );
 				DungeonGame.Audio.play( 'monsterroom-spawn' );

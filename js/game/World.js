@@ -43,11 +43,9 @@ World.prototype.create = function ()
 	this.entityManager.triggerMonsterRoom = World.prototype.triggerMonsterRoom.bind( this );
 	this.entityManager.clearMonsterRoom = World.prototype.clearMonsterRoom.bind( this );
 
-	this.monsterRooms = [[1,0], [1,3], [2,3], [8,8]];
+	this.monsterRooms = [[0,1], [0,2], [2,6], [3,8], [4,2], [5,6]];
 	this.clearedMonsterRooms = [];
-	this.entityManager.monsterRooms = this.monsterRooms;
 	this.entityManager.clearedMonsterRooms = this.clearedMonsterRooms;
-	this.enemyManager.monsterRooms = this.monsterRooms;
 	this.enemyManager.clearedMonsterRooms = this.clearedMonsterRooms;
 	this.enemyManager.onAllKilled = this.entityManager.onAllKilled.bind( this.entityManager );
 
@@ -175,12 +173,14 @@ World.prototype.handleCollisions = function ()
 		{
 			DungeonGame.game.physics.arcade.overlap( this.Player.swing, enemy.sprite, enemy.getHit, null, enemy );
 			DungeonGame.game.physics.arcade.overlap( this.Player.sprite, enemy.sprite, function(){
-				this.Player.damage( enemy.getAttackPower(), enemy.sprite.body.position );
+				this.Player.damage( enemy.getAttackPower(), enemy.sprite.body.center );
 			}, null, this );
 
 			if ( !Fry.prototype.isPrototypeOf( enemy ) )
 			{
-				DungeonGame.game.physics.arcade.collide( enemy.sprite, this.entityManager.sprites );
+				DungeonGame.game.physics.arcade.overlap( this.entityManager.sprites, enemy.sprite, function( other ){
+					enemy.overlapEntity( other );
+				}, null, this );
 			}
 		}
 	}

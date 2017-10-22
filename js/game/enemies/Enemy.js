@@ -30,7 +30,7 @@ Enemy.prototype.init = function ( sprite, bgSprite, lightSprite, dataRef, x, y, 
 	this.bgSprite.kill();
 
 	this.lightSprite = lightSprite;
-	this.lightSprite.visible = true;
+	this.lightSprite.visible = false;
 	this.lightSprite.anchor.set( 0.5, 0.5 );
 	this.lightSprite.kill();
 
@@ -183,3 +183,5 @@ Enemy.prototype.hasPhysics = function ()
 {
 	return true;
 };
+
+Enemy.prototype.overlapEntity = function ( other ) {};

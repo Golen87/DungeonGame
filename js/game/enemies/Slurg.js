@@ -23,6 +23,7 @@ Slurg.prototype.create = function ()
 
 	this.lightSprite.reset( this.spawn.x*16, this.spawn.y*16 );
 	this.lightSprite.loadTexture( 'slurgLight', 0 );
+	this.lightSprite.visible = true;
 	this.lightSprite.tint = 0x777777;
 	this.lightOffset = new Phaser.Point( 0, 0 );
 
@@ -326,6 +327,22 @@ Slurg.prototype.getPhysicsPos = function ()
 Slurg.prototype.overlap = function ( other )
 {
 	Enemy.prototype.overlap.call( this );
+};
+
+Slurg.prototype.overlapEntity = function ( other )
+{
+	if ( Spikes.prototype.isPrototypeOf( other.owner ) )
+	{
+		if ( other.owner.hasPhysics() )
+		{
+			this.getHit( other );
+			DungeonGame.game.physics.arcade.collide( this.sprite, other );
+		}
+	}
+	else
+	{
+		DungeonGame.game.physics.arcade.collide( this.sprite, other );
+	}
 };
 
 Slurg.prototype.takeDamage = function ()
