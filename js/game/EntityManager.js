@@ -112,44 +112,46 @@ EntityManager.prototype.loadRoom = function ( room_x, room_y )
 		{
 			if ( !this.activeMap[y][x] && this.entityMap[y][x] )
 			{
-				var index = this.getFirstDead();
-				if ( index != -1 )
-				{
-					this.entities[index] = null;
-
-					if ( this.entityMap[y][x] == 'spikes' )
-						this.entities[index] = new Spikes();
-					else if ( this.entityMap[y][x] == 'door' )
-						this.entities[index] = new Door( this.onOpen );
-					else if ( this.entityMap[y][x] == 'switch' )
-						this.entities[index] = new Switch( this.onTrigger.bind(this) );
-					else if ( this.entityMap[y][x] == 'pressureplate' )
-						this.entities[index] = new PressurePlate( this.onTrigger.bind(this) );
-					else if ( this.entityMap[y][x] == 'chest' )
-						this.entities[index] = new Chest( this.onOpen );
-					else if ( this.entityMap[y][x] == 'box' )
-						this.entities[index] = new Box( this.onDeath.bind(this) );
-					else if ( this.entityMap[y][x] == 'block' )
-						this.entities[index] = new Block();
-					else if ( this.entityMap[y][x] == 'torch' )
-						this.entities[index] = new Torch( true );
-					else if ( this.entityMap[y][x] == 'torch_hidden' )
-						this.entities[index] = new Torch( false );
-
-					if ( this.entities[index] )
+				for ( var i = 0; i < this.entityMap[y][x].length; i++ ) {
+					var index = this.getFirstDead();
+					if ( index != -1 )
 					{
-						this.entities[index].init( this.sprites[index], this.bgSprites[index], this.lightSprites[index], this.dataMap[y][x], x, y );
-						newEntities.push( this.entities[index] );
-						this.activeMap[y][x] = this.entities[index];
+						this.entities[index] = null;
+
+						if ( this.entityMap[y][x][i] == 'spikes' )
+							this.entities[index] = new Spikes();
+						else if ( this.entityMap[y][x][i] == 'door' )
+							this.entities[index] = new Door( this.onOpen );
+						else if ( this.entityMap[y][x][i] == 'switch' )
+							this.entities[index] = new Switch( this.onTrigger.bind(this) );
+						else if ( this.entityMap[y][x][i] == 'pressureplate' )
+							this.entities[index] = new PressurePlate( this.onTrigger.bind(this) );
+						else if ( this.entityMap[y][x][i] == 'chest' )
+							this.entities[index] = new Chest( this.onOpen );
+						else if ( this.entityMap[y][x][i] == 'box' )
+							this.entities[index] = new Box( this.onDeath.bind(this) );
+						else if ( this.entityMap[y][x][i] == 'block' )
+							this.entities[index] = new Block();
+						else if ( this.entityMap[y][x][i] == 'torch' )
+							this.entities[index] = new Torch( true );
+						else if ( this.entityMap[y][x][i] == 'torch_hidden' )
+							this.entities[index] = new Torch( false );
+
+						if ( this.entities[index] )
+						{
+							this.entities[index].init( this.sprites[index], this.bgSprites[index], this.lightSprites[index], this.dataMap[y][x], x, y );
+							newEntities.push( this.entities[index] );
+							this.activeMap[y][x] = this.entities[index];
+						}
+						else
+						{
+							console.error( "Entity not defined." );
+						}
 					}
 					else
 					{
-						console.error( "Entity not defined." );
+						console.error( "Out of Entity resources!" );
 					}
-				}
-				else
-				{
-					console.error( "Out of Entity resources!" );
 				}
 			}
 		}
@@ -241,7 +243,7 @@ EntityManager.prototype.onDeath = function ( entity )
 };
 
 
-EntityManager.prototype.onAllKilled = function ( roomPos )
+EntityManager.prototype.onAllKilled = function ( roomPos, manual=false )
 {
 	for ( var i = 0; i < this.entities.length; i++ )
 	{
@@ -250,7 +252,10 @@ EntityManager.prototype.onAllKilled = function ( roomPos )
 		{
 			if ( Spikes.prototype.isPrototypeOf( entity ) )
 			{
-				this.scriptedTriggers( roomPos, entity, false, true );
+				if ( !manual )
+				{
+					this.scriptedTriggers( roomPos, entity, false, true );
+				}
 			}
 			if ( Chest.prototype.isPrototypeOf( entity ) )
 			{

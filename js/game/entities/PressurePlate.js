@@ -23,6 +23,16 @@ PressurePlate.prototype.create = function ()
 	this.onTrigger( this, true );
 };
 
+PressurePlate.prototype.hide = function ()
+{
+	this.hidden = true;
+
+	var spos = FLOOR_INDENT['spos'].choice();
+	var index = spos[0] + spos[1]*8;
+	this.bgSprite.loadTexture( 'dungeon', index );
+	this.bgSprite.anchor.set( 0.5, 0 );
+};
+
 PressurePlate.prototype.update = function ()
 {
 	Entity.prototype.update.call( this );
@@ -40,7 +50,7 @@ PressurePlate.prototype.update = function ()
 	}
 
 	this.animationTimer -= 1;
-	if ( this.animationTimer <= 0 && this.active )
+	if ( this.animationTimer <= 0 && this.active && !this.hidden )
 	{
 		this.bgSprite.frame = 13;
 	}
@@ -54,16 +64,19 @@ PressurePlate.prototype.toggle = function ( state )
 	{
 		this.onTrigger( this );
 
-		if ( state )
+		if ( !this.hidden )
 		{
-			this.bgSprite.frame = 14;
-			this.animationTimer = 4;
-			DungeonGame.Audio.play( 'pressureplate', 'on' );
-		}
-		else
-		{
-			this.bgSprite.frame = 12;
-			DungeonGame.Audio.play( 'pressureplate', 'off' );
+			if ( state )
+			{
+				this.bgSprite.frame = 14;
+				this.animationTimer = 4;
+				DungeonGame.Audio.play( 'pressureplate', 'on' );
+			}
+			else
+			{
+				this.bgSprite.frame = 12;
+				DungeonGame.Audio.play( 'pressureplate', 'off' );
+			}
 		}
 	}
 

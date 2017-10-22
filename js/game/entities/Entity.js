@@ -17,19 +17,19 @@ Entity.prototype.init = function ( sprite, bgSprite, lightSprite, dataRef, x, y 
 	this.sprite.anchor.set( 0.5, 0.5 );
 	this.sprite.visible = true;
 	this.sprite.alpha = 1.0;
-	this.sprite.scale.x = 1;
+	this.sprite.scale.set( 1 );
 	this.sprite.body.immovable = true;
 	this.sprite.body.moves = false;
 
 	this.bgSprite = bgSprite;
 	this.bgSprite.loadTexture( 'entities16', 0 );
 	this.bgSprite.anchor.set( 0.5, 0.5 );
-	this.bgSprite.scale.x = 1;
+	this.bgSprite.scale.set( 1 );
 	this.bgSprite.kill();
 
 	this.lightSprite = lightSprite;
 	this.lightSprite.anchor.set( 0.5, 0.5 );
-	this.lightSprite.scale.x = 1;
+	this.lightSprite.scale.set( 1 );
 	this.lightSprite.angle = 0;
 	this.lightSprite.tint = 0xffffff;
 	this.lightSprite.kill();

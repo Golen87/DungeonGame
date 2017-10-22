@@ -19,6 +19,7 @@ World.prototype.create = function ()
 
 	this.groundEmitter = this.ground.create( 0, 0, null, 0 );
 	DungeonGame.Particle.initRubbleBurst( this.groundEmitter );
+	DungeonGame.Particle.initFloorRubbleBurst( this.groundEmitter );
 
 	this.items = [];
 

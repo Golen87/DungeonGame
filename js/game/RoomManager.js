@@ -127,7 +127,9 @@ RoomManager.prototype.addPhysics = function ( x, y )
 
 RoomManager.prototype.addEntity = function ( x, y, name )
 {
-	this.entityMap[y][x] = name;
+	if ( !this.entityMap[y][x] )
+		this.entityMap[y][x] = [];
+	this.entityMap[y][x].push( name );
 };
 
 RoomManager.prototype.addEnemy = function ( x, y, name )

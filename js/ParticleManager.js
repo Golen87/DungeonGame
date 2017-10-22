@@ -30,7 +30,7 @@ ParticleManager.prototype.WhiteSmokeParticle = (function ()
 
 ParticleManager.prototype.initSmokeBurst = function ()
 {
-	this.smokeBurst = DungeonGame.game.add.emitter( 0,0, 64 );
+	this.smokeBurst = DungeonGame.game.add.emitter( 0,0, 256 );
 	this.smokeBurst.particleClass = this.WhiteSmokeParticle;
 	this.smokeBurst.width = 8;
 	this.smokeBurst.height = 8;
@@ -231,6 +231,77 @@ ParticleManager.prototype.createRubbleBurst = function ( x, y )
 };
 
 
+/* Floor rubble burst */
+
+ParticleManager.prototype.FloorRubbleParticle = (function ()
+{
+	var FloorRubbleParticle = function ( game, x, y )
+	{
+		Phaser.Particle.call( this, game, x, y, 'rubble' );
+		//this.animations.add( 'evaporate', [7,6,5,4,3,2,1,0] );
+		//this.animations.currentAnim.killOnComplete = true;
+	};
+	FloorRubbleParticle.prototype = Object.create( Phaser.Particle.prototype );
+	FloorRubbleParticle.prototype.constructor = FloorRubbleParticle;
+	FloorRubbleParticle.prototype.onEmit = function ()
+	{
+		//this.animations.stop( 'evaporate', true );
+		//this.animations.play( 'evaporate', 3+8*Math.random(), false );
+		this.frame = randInt( 0, 9 );
+		if ( Math.random() < 0.5 ) this.scale.x *= -1;
+		if ( Math.random() < 0.5 ) this.scale.y *= -1;
+		//this.animations.getAnimation( 'evaporate' ).frame = Math.floor( Math.random() * this.animations.getAnimation( 'evaporate' ).frameTotal );
+
+		this.tint = Phaser.Color.interpolateColor( 0x936b44, 0xc39b74, 8, randInt(0,8) );
+
+		this.body.gravity.y = 320;
+		this.life = 0;
+		this.land = randInt( 20, 30 );
+		this.death = randInt( 100, 200 );
+	};
+	FloorRubbleParticle.prototype.update = function ()
+	{
+		this.life += 1;
+		if ( this.life == this.land )
+		{
+			this.body.velocity.setTo( 0, 0 );
+			this.body.gravity.y = 0;
+		}
+		if ( this.life == this.death )
+		{
+			this.kill();
+		}
+	};
+	return FloorRubbleParticle;
+}());
+
+ParticleManager.prototype.initFloorRubbleBurst = function ( sprite )
+{
+	this.floorRubbleBurst = DungeonGame.game.add.emitter( 0, 0, 128 );
+	sprite.addChild( this.floorRubbleBurst );
+	this.floorRubbleBurst.particleClass = this.FloorRubbleParticle;
+	this.floorRubbleBurst.width = 16;
+	this.floorRubbleBurst.height = 16;
+	this.floorRubbleBurst.setXSpeed( -30, 30 );
+	this.floorRubbleBurst.setYSpeed( -80, -20 );
+	this.floorRubbleBurst.setRotation(0, 0);
+	//this.floorRubbleBurst.forEach(function(particle) {particle.tint = 0xff0000;});
+	//makeParticles(keys, frames, quantity, collide, collideWorldBounds)
+	this.floorRubbleBurst.makeParticles();
+};
+
+ParticleManager.prototype.createFloorRubbleBurst = function ( x, y )
+{
+	if ( this.floorRubbleBurst == null || this.floorRubbleBurst.game == null )
+		this.initFloorRubbleBurst();
+
+	this.floorRubbleBurst.x = x;
+	this.floorRubbleBurst.y = y;
+	// start(explode, lifespan, frequency, quantity, forceQuantity)
+	this.floorRubbleBurst.start( true, 0, 4000, 8 );
+};
+
+
 /* Fire */
 
 ParticleManager.prototype.FireParticle = (function ()
@@ -244,7 +315,6 @@ ParticleManager.prototype.FireParticle = (function ()
 	FireParticle.prototype.constructor = FireParticle;
 	FireParticle.prototype.onEmit = function ()
 	{
-		console.log("Fire onEmit");
 		this.animations.play( 'burn', 10, true );
 		//this.scale.x *= random;
 		this.animations.getAnimation( 'burn' ).frame = Math.floor( Math.random() * this.animations.getAnimation( 'burn' ).frameTotal );

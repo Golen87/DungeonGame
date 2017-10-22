@@ -12,6 +12,8 @@ function Spikes()
 	this.prepareDuration = 60;
 	this.autoDuration = 130;
 	this.autoTimer = this.autoDuration;
+
+	this.hidden = false;
 };
 
 Spikes.prototype.create = function ()
@@ -29,6 +31,17 @@ Spikes.prototype.create = function ()
 	this.sprite.anchor.set( 0.5, 3/8 );
 
 	this.setState( this.active, false );
+
+	// Tarragon
+	if ( pointCmp( this.getRoomPos(), [[4,0]] ) )
+	{
+		this.hide();
+	}
+};
+
+Spikes.prototype.destroy = function ()
+{
+	this.data.hidden = this.hidden;
 };
 
 Spikes.prototype.update = function ()
