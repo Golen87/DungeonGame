@@ -52,7 +52,7 @@ Enemy.prototype.update = function ()
 {
 	if ( this.aiState == 'idle' )
 	{
-		if ( Math.random() < 0.005 )
+		if ( Math.random() < 0.005 && !this.isHurting )
 			DungeonGame.Audio.play( this.sound, 'cry' );
 	}
 

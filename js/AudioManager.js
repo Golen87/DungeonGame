@@ -187,6 +187,7 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].markers = [];
 	this.sounds[name].markers['cry'] = ['cry_1', 'cry_2', 'cry_3', 'cry_4'];
 	this.sounds[name].markers['hurt'] = ['hurt_1', 'hurt_2', 'hurt_3', 'hurt_4'];
+	this.sounds[name].markers['groan'] = ['cry_3'];
 	this.sounds[name].markers['death'] = ['death_1'];
 
 	var name = 'spider';

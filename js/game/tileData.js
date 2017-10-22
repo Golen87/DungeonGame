@@ -83,6 +83,10 @@ var ENEMY_FRY = {
 	'name': 'fry',
 	'type': TYPE_ENEMY
 };
+var ENEMY_TARRAGON = {
+	'name': 'tarragon',
+	'type': TYPE_ENEMY
+};
 
 
 var PIXEL_TABLE = {
@@ -96,6 +100,7 @@ var PIXEL_TABLE = {
 
 	'255,0,0': ENEMY_SLURG,
 	'255,128,0': ENEMY_FRY,
+	'128,0,0': ENEMY_TARRAGON,
 
 	'255,0,255': OBJ_SPIKES,
 	'0,0,255': OBJ_DOOR,
@@ -119,6 +124,7 @@ var TILES = [
 
 	ENEMY_SLURG,
 	ENEMY_FRY,
+	ENEMY_TARRAGON,
 
 	OBJ_SPIKES,
 	OBJ_DOOR,
