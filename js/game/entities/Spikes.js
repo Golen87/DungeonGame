@@ -32,6 +32,11 @@ Spikes.prototype.create = function ()
 
 	this.setState( this.active, false );
 
+	// Secret Grail Block puzzle
+	if ( pointCmp( this.getRoomPos(), [[3,8]] ) )
+	{
+		this.silent = true;
+	}
 
 	// Any Monster room
 	if ( pointCmp( this.getRoomPos(), DungeonGame.World.monsterRooms ) )

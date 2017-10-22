@@ -25,8 +25,7 @@ World.prototype.create = function ()
 
 	this.roomManager = new RoomManager( this.entities );
 	this.nextRoomOffset = 8;
-	this.currentArea = [9,11-1];
-	//this.currentArea = [1,1];
+	this.currentArea = [3,9-1];
 	this.roomManager.loadRoom( this.currentArea[0], this.currentArea[1] );
 
 	this.Player.create(
@@ -320,10 +319,18 @@ World.prototype.onOpen = function ( entity )
 	if ( Chest.prototype.isPrototypeOf( entity ) )
 	{
 		var item = null;
-		if ( pointCmp( entity.getRoomPos(), [[7,10]] ) )
+		if ( pointCmp( entity.getRoomPos(), [[1,8]] ) )
 			item = 1; // Basic sword
+		else if ( pointCmp( entity.getRoomPos(), [[3,3]] ) )
+			item = 14; // Advanced sword
+		else if ( pointCmp( entity.getRoomPos(), [[6,2]] ) )
+			item = 7; // Golden sword
+		else if ( pointCmp( entity.getRoomPos(), [[2,1]] ) )
+			item = 62; // Power glove
+		else if ( pointCmp( entity.getRoomPos(), [[3,8]] ) )
+			item = 71; // Holy grail
 		else
-			item = 69; // 68-69 Key
+			item = 69;
 
 		this.Player.giveItem( item );
 		DungeonGame.Gui.showNewItem( entity.sprite.x, entity.sprite.y, item );

@@ -68,12 +68,12 @@ Player.prototype.create = function ( x, y, group )
 	{
 		this.sprite.visible = false;
 		DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.1, function() {
-			DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 0.8, function() {
+			DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 1.0, function() {
 				DungeonGame.Particle.createSmokeBurst( this.sprite.x, this.sprite.y );
 				DungeonGame.Audio.play( 'monsterroom-spawn' );
 				this.sprite.visible = true;
 			}, this );
-			DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 1.9, function() {
+			DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 2.1, function() {
 				DungeonGame.cinematic = false;
 			}, this );
 		}, this );
@@ -214,7 +214,7 @@ Player.prototype.update = function ()
 
 	if ( this.keys.h.justDown )
 	{
-		this.health = Math.min( this.health + 15, 100 );
+		this.health = Math.min( this.health + 100, 100 );
 		DungeonGame.Gui.setHealth( this.health / 100, 0.0 );
 	}
 };
@@ -383,13 +383,18 @@ Player.prototype.giveItem = function ( itemIndex )
 {
 	if ( itemIndex < 16 )
 	{
-		for ( var i=0; i<16; i++ )
-			this.takeItem( i );
+		this.items[0] = itemIndex;
 		this.sword.frame = itemIndex;
 	}
+	else
+	{
+		this.items.push( itemIndex );
+	}
 
-	this.items.push( itemIndex );
 	this.updateItemGui();
+
+	this.health = Math.min( this.health + 30, 100 );
+	DungeonGame.Gui.setHealth( this.health / 100, 0.0 );
 };
 
 Player.prototype.takeItem = function ( itemIndex )
@@ -408,6 +413,33 @@ Player.prototype.hasItem = function ( itemIndex )
 
 Player.prototype.updateItemGui = function ()
 {
+	if ( this.items.length >= 1 )
+	{
+		DungeonGame.Gui.itemSlot[0].visible = true;
+		DungeonGame.Gui.itemSlot[0].frame = this.items[0];
+		DungeonGame.Gui.itemSlot[0].label.text = "";
+	}
+	else
+	{
+		DungeonGame.Gui.itemSlot[0].visible = false;
+		DungeonGame.Gui.itemSlot[0].label.text = "";
+	}
+
+	var keycount = this.items.count( 69 );
+	if ( keycount >= 1 )
+	{
+		DungeonGame.Gui.itemSlot[1].visible = true;
+		DungeonGame.Gui.itemSlot[1].frame = 69;
+		DungeonGame.Gui.itemSlot[1].label.text = keycount > 1 ? keycount.toString() : " ";
+	}
+	else
+	{
+		DungeonGame.Gui.itemSlot[1].visible = false;
+		DungeonGame.Gui.itemSlot[1].label.text = "";
+	}
+
+	// Make this more dynamic once there's an actual inventory menu.
+	/*
 	for ( var i = 0; i < DungeonGame.Gui.invSize; i++ )
 	{
 		DungeonGame.Gui.itemSlot[i].visible = false;
@@ -420,4 +452,5 @@ Player.prototype.updateItemGui = function ()
 			DungeonGame.Gui.itemSlot[i].label.text = count > 1 ? count.toString() : " ";
 		}
 	}
+	*/
 };

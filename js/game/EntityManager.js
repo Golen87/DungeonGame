@@ -305,6 +305,16 @@ EntityManager.prototype.scriptedTriggers = function ( trigger, spikes, immediate
 
 	if ( room_pos.x == spike_room.x && room_pos.y == spike_room.y )
 	{
+		// Secret Grail Block puzzle
+		if ( pointCmp( room_pos, [[3,8]] ) )
+		{
+			if ( this.blockPuzzle( trigger, spikes, immediate, room_pos, [[4,4], [4,8], [11,4], [11,8]] ) )
+			{
+				this.onAllKilled( room_pos, true );
+			}
+			return true;
+		}
+
 		// Monster rooms
 		if ( pointCmp( room_pos, DungeonGame.World.monsterRooms ) )
 		{

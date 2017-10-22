@@ -87,7 +87,11 @@ Block.prototype.overlap = function ( other )
 	var vx = 16 * other.sprite.body.velocity.x / other.speed;
 	var vy = 16 * other.sprite.body.velocity.y / other.speed;
 
-	this.isPushingBuffer = 4;
+	// Check if player has the Power Glove
+	if ( DungeonGame.World.Player.hasItem( 62 ) )
+	{
+		this.isPushingBuffer = 4;
+	}
 
 	if ( Math.abs(x) > Math.abs(y) && Math.abs(y) < 12 && Math.abs(vy) < 2 )
 	{

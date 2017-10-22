@@ -20,6 +20,12 @@ PressurePlate.prototype.create = function ()
 	this.bgSprite.reset( this.spawn.x*16 + 8, this.spawn.y*16 );
 	this.bgSprite.frame = 12;
 
+	// Secret Grail Block puzzle
+	if ( pointCmp( this.getRoomPos(), [[3,8]] ) )
+	{
+		this.hide();
+	}
+
 	this.onTrigger( this, true );
 };
 

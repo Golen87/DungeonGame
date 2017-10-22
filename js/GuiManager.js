@@ -21,6 +21,7 @@ GuiManager.prototype.create = function ()
 	this.fog = DungeonGame.game.add.sprite( 0, 0, 'fog' );
 	this.fog.blendMode = Phaser.blendModes.MULTIPLY;
 	this.guiGroup.add( this.fog );
+	this.fog.tint = 0xffeeee;
 
 
 	/* Cinematic mode GUI */
@@ -100,9 +101,15 @@ GuiManager.prototype.update = function ()
 	this.fog.x = DungeonGame.game.camera.view.x - 8;
 	this.fog.y = DungeonGame.game.camera.view.y - 8;
 
+	if ( this.startupTimer == null )
+		this.startupTimer = 3;
+	if ( this.startupTimer > 0 )
+		this.startupTimer -= 1;
+
 	if ( DungeonGame.cinematic )
 	{
-		this.cinemaValue += ( 2 - this.cinemaValue ) / 6;
+		if ( this.startupTimer == 0 )
+			this.cinemaValue += ( 2 - this.cinemaValue ) / 6;
 	}
 	else
 	{
@@ -188,7 +195,7 @@ GuiManager.prototype.setupMenus = function ()
 	};
 
 	this.confirmationMenu = [
-		[ 'quit', exit.bind(this) ],
+		[ 'sure', exit.bind(this) ],
 		[ 'no', back.bind(this) ],
 	];
 
@@ -278,7 +285,7 @@ GuiManager.prototype.setHealth = function ( hpPerc, staPerc )
 {
 	if ( hpPerc < this.hpGoal )
 	{
-		tweenTint( this.fog, 0xffdddd, 0xffffff, 200 );
+		tweenTint( this.fog, 0xffcccc, 0xffeeee, 200 );
 	}
 
 	if ( this.hpGoal != hpPerc )
@@ -340,7 +347,7 @@ GuiManager.prototype.showNewItem = function ( x, y, itemIndex )
 	DungeonGame.game.add.tween( this.chestBeam ).to({ y: y-16 }, 1500, Phaser.Easing.Exponential.Out, true );
 	DungeonGame.game.add.tween( this.chestItem ).to({ y: y-16 }, 1500, Phaser.Easing.Exponential.Out, true );
 
-	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 2.4, function() {
+	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 2.5, function() {
 		if ( this.chestBeam.alpha == 1.0 )
 		{
 			DungeonGame.game.add.tween( this.chestBeam ).to({ alpha: 0.0 }, 400, Phaser.Easing.Linear.In, true, 300 );

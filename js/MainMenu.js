@@ -55,7 +55,8 @@ DungeonGame.MainMenu.prototype = {
 
 		/* Subtitle */
 		y += 20;
-		var text = this.add.bitmapText( x, y, 'PixeladeFancy', 'Kill dragons and stuff', 13 );
+		//var text = this.add.bitmapText( x, y, 'PixeladeFancy', 'Kill dragons and stuff', 13 );
+		var text = this.add.bitmapText( x, y, 'PixeladeFancy', 'The secret grail', 13 );
 		text.anchor.x = 0.5;
 
 		/* Selection menu */
