@@ -101,7 +101,7 @@ Enemy.prototype.updateHurtState = function ()
 	}
 };
 
-Enemy.prototype.getHit = function ( other )
+Enemy.prototype.getHit = function ( other, power )
 {
 	// Ensure that monster has been colliding with sword at least 2 frames. This due to the swing setSize bug.
 	if ( this.hitBuffer > 0 )
@@ -118,7 +118,7 @@ Enemy.prototype.getHit = function ( other )
 		// Take damage
 		this.isHurting = true;
 		this.isFlashing = true;
-		this.health -= 1;
+		this.health -= power;
 		if ( this.health > 0 )
 		{
 			this.takeDamage();

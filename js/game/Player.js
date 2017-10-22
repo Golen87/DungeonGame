@@ -467,3 +467,13 @@ Player.prototype.updateItemGui = function ()
 	}
 	*/
 };
+
+
+Player.prototype.getAttackPower = function ()
+{
+	if ( this.hasItem( 14 ) )
+		return 2;
+	if ( this.hasItem( 7 ) )
+		return 3;
+	return 1;
+};

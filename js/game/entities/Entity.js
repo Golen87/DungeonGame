@@ -70,13 +70,13 @@ Entity.prototype.overlap = function ( other )
 
 Entity.prototype.overlapEntity = function ( other ) {};
 
-Entity.prototype.damage = function ()
+Entity.prototype.damage = function ( power )
 {
 	if ( this.hitBuffer > this.hitCooldown )
 	{
 		this.hitBuffer = this.hitCooldown;
 
-		this.hurt();
+		this.hurt( power );
 	}
 	if ( this.hitBuffer <= 0 )
 	{
@@ -84,9 +84,7 @@ Entity.prototype.damage = function ()
 	}
 };
 
-Entity.prototype.hurt = function ()
-{
-};
+Entity.prototype.hurt = function ( power ) {};
 
 
 Entity.prototype.getRoomPos = function ()

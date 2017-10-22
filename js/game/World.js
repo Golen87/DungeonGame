@@ -170,7 +170,9 @@ World.prototype.handleCollisions = function ()
 		var enemy = this.enemyManager.enemies[i];
 		if ( enemy && enemy.sprite.exists )
 		{
-			DungeonGame.game.physics.arcade.overlap( this.Player.swing, enemy.sprite, enemy.getHit, null, enemy );
+			DungeonGame.game.physics.arcade.overlap( this.Player.swing, enemy.sprite, function( swing, enemy ){
+				enemy.owner.getHit( swing, this.Player.getAttackPower() );
+			}, null, this );
 			DungeonGame.game.physics.arcade.overlap( this.Player.sprite, enemy.sprite, function(){
 				this.Player.damage( enemy.getAttackPower(), enemy.sprite.body.center );
 			}, null, this );
@@ -189,7 +191,9 @@ World.prototype.handleCollisions = function ()
 		var entity = this.entityManager.entities[i];
 		if ( entity && entity.sprite.exists )
 		{
-			DungeonGame.game.physics.arcade.overlap( this.Player.swing, entity.sprite, entity.damage, null, entity );
+			DungeonGame.game.physics.arcade.overlap( this.Player.swing, entity.sprite, function( swing, entity ) {
+				entity.owner.damage( this.Player.getAttackPower() );
+			}, null, this );
 			DungeonGame.game.physics.arcade.overlap( this.Player.sprite, entity.sprite, function(){
 				entity.overlap( this.Player );
 			}, null, this );

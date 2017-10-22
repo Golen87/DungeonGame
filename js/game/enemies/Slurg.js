@@ -335,7 +335,7 @@ Slurg.prototype.overlapEntity = function ( other )
 	{
 		if ( other.owner.hasPhysics() )
 		{
-			this.getHit( other );
+			this.getHit( other, 1 );
 			DungeonGame.game.physics.arcade.collide( this.sprite, other );
 		}
 	}

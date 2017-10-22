@@ -305,10 +305,10 @@ GuiManager.prototype.showVictory = function ()
 	this.darkBg.blendMode = Phaser.blendModes.OVERLAY;
 	DungeonGame.game.add.tween( this.darkBg ).to({ alpha: 0.5 }, 1500, Phaser.Easing.Linear.In, true );
 
-	this.choiceTitleBg = DungeonGame.game.add.bitmapText( x+1, y+1, 'OldWizard', 'You Won', 32 );
+	this.choiceTitleBg = DungeonGame.game.add.bitmapText( x+1, y+1, 'OldWizard', 'Victory', 32 );
 	this.choiceTitleBg.anchor.setTo( 0.5, 0.5 );
 	this.choiceTitleBg.tint = 0x000000;
-	this.choiceTitle = DungeonGame.game.add.bitmapText( x, y, 'OldWizard', 'You Won', 32 );
+	this.choiceTitle = DungeonGame.game.add.bitmapText( x, y, 'OldWizard', 'Victory', 32 );
 	this.choiceTitle.anchor.setTo( 0.5, 0.5 );
 	this.choiceTitle.tint = 0xFBC02D;
 

@@ -4,8 +4,8 @@ function Tarragon()
 {
 	Enemy.call( this );
 
-	this.health = 3;
-	this.speed = 32 / 60;
+	this.health = 30;
+	this.speed = 20 / 60;
 
 	this.sound = 'rhino';
 
@@ -19,7 +19,7 @@ Tarragon.prototype.create = function ()
 {
 	this.sprite.loadTexture( 'tarragon', 0 );
 
-	this.sprite.body.setSize( 55, 36, 8, 13 );
+	this.sprite.body.setSize( 55, 36, 8+3, 13+12 );
 	this.sprite.y -= 8;
 	this.sprite.x -= 8;
 	//this.sprite.anchor.set( (24)/48, (24+8)/48 );
@@ -33,35 +33,16 @@ Tarragon.prototype.setupAnimation = function ()
 {
 	var len = 0;
 	var idle = [0];
-	var walk = [0, 1, 2, 3, 3, 3, 3, 3];
-	var hurt = [4];
-	var idle = [0];
-	var walk = [0, 0, 0, 0, 0, 0, 0, 0];
-	var hurt = [0];
+	var walk_left = [0, 1, 2, 3, 4];
+	var walk_right = [0, 4, 3, 2, 1];
+	var hurt = [5, 6, 7, 8];
 
-	this.sprite.animations.add( 'idle_right', idle, 3, true );
-	this.sprite.animations.add( 'walk_right', walk, 8, true );
-	this.sprite.animations.add( 'hurt_right', hurt, 1, true );
-	idle = idle.map( n => n + len )
-	walk = walk.map( n => n + len )
-	hurt = hurt.map( n => n + len )
-	this.sprite.animations.add( 'idle_down', idle, 3, true );
-	this.sprite.animations.add( 'walk_down', walk, 8, true );
-	this.sprite.animations.add( 'hurt_down', hurt, 1, true );
-	idle = idle.map( n => n + len )
-	walk = walk.map( n => n + len )
-	hurt = hurt.map( n => n + len )
-	this.sprite.animations.add( 'idle_left', idle, 3, true );
-	this.sprite.animations.add( 'walk_left', walk, 8, true );
-	this.sprite.animations.add( 'hurt_left', hurt, 1, true );
-	idle = idle.map( n => n + len )
-	walk = walk.map( n => n + len )
-	hurt = hurt.map( n => n + len )
-	this.sprite.animations.add( 'idle_up', idle, 3, true );
-	this.sprite.animations.add( 'walk_up', walk, 8, true );
-	this.sprite.animations.add( 'hurt_up', hurt, 1, true );
+	this.sprite.animations.add( 'idle', idle, 1, true );
+	this.sprite.animations.add( 'left', walk_left, 4, true );
+	this.sprite.animations.add( 'right', walk_right, 4, true );
+	this.sprite.animations.add( 'hurt', hurt, 4, false );
 
-	this.setAnimation( 'idle', ['right', 'down', 'left', 'up'].choice() );
+	this.setAnimation( 'idle', 'left' );
 };
 
 Tarragon.prototype.setAnimation = function ( newState, newDirection )
@@ -69,7 +50,9 @@ Tarragon.prototype.setAnimation = function ( newState, newDirection )
 	var name = null;
 	if ( this.state != newState || this.direction != newDirection )
 	{
-		name = '{0}_{1}'.format( newState, newDirection );
+		name = '{0}'.format( newState );
+		if ( newState == 'walk' )
+			name = '{0}'.format( newDirection );
 		this.state = newState;
 		this.direction = newDirection;
 	}
@@ -90,15 +73,10 @@ Tarragon.prototype.update = function ()
 
 Tarragon.prototype.updateMovement = function ()
 {
-	if ( this.isFlashing )
+	if ( this.isStunned )
 	{
 		this.setAnimation( 'hurt', this.direction );
-		this.goalPos
 		return;
-	}
-	else if ( this.state == 'hurt' )
-	{
-		this.align();
 	}
 
 	this.idleTimer -= 1;
@@ -112,29 +90,17 @@ Tarragon.prototype.updateMovement = function ()
 	{
 		this.setAnimation( this.state, this.aboutToTurn );
 		this.aboutToTurn = null;
-		this.idleTimer = randInt(10, 20);
+		this.idleTimer = randInt(50, 100);
 		return;
 	}
 
-	//if ( this.isAligned() )
 	if ( this.atGoalPos() )
 	{
 		if ( this.canMove( this.dirToVec( this.direction ) ) )
 		{
-			var shouldContinue = this.findBestDir( this.direction, null );
-			if ( shouldContinue )
+			if ( Math.random() < 0.0 )
 			{
-				if ( Math.random() < 0.10 )
-				{
-					this.iWantToTurn = true;
-				}
-			}
-			else
-			{
-				if ( Math.random() < 0.70 )
-				{
-					this.iWantToTurn = true;
-				}
+				this.iWantToTurn = true;
 			}
 
 			var dirs = this.findAvailableTurns();
@@ -168,11 +134,8 @@ Tarragon.prototype.updateMovement = function ()
 	{
 		this.setAnimation( 'walk', this.direction );
 
-		if ( this.sprite.frame % 5 == 3 )
-		{
-			this.sprite.x += ( this.goalPos.x - this.sprite.x ).clamp(-this.speed, this.speed);
-			this.sprite.y += ( this.goalPos.y - this.sprite.y ).clamp(-this.speed, this.speed);
-		}
+		this.sprite.x += ( this.goalPos.x - this.sprite.x ).clamp(-this.speed, this.speed);
+		this.sprite.y += ( this.goalPos.y - this.sprite.y ).clamp(-this.speed, this.speed);
 	}
 };
 
@@ -182,52 +145,29 @@ Tarragon.prototype.dirToVec = function ( dir )
 		return [-1, 0];
 	if ( dir == "right" )
 		return [1, 0];
-	if ( dir == "up" )
-		return [0, -1];
-	if ( dir == "down" )
-		return [0, 1];
 	return [0, 0];
 };
 
-Tarragon.prototype.rotateDir = function ( dir, cw )
+Tarragon.prototype.rotateDir = function ( dir )
 {
-	var allDirs = ['right', 'down', 'left', 'up'];
+	var allDirs = ['right', 'left'];
 	var i = allDirs.indexOf( dir );
-	if ( cw )
-		i = (i + 1) % 4;
-	else
-		i = (i + 3) % 4;
-	return allDirs[i];
+	i = (i + 1) % 2;
+	return [allDirs[i]];
 };
 
 Tarragon.prototype.setDir = function ( dir, onTheMove=false )
 {
 	this.aboutToTurn = dir;
 	this.iWantToTurn = false;
-	this.idleTimer = randInt(10, 40);
+	this.idleTimer = randInt(50, 100);
 	if ( this.idleTimer )
 		this.idleTimer /= 2;
 };
 
 Tarragon.prototype.findAvailableTurns = function ()
 {
-	var d1 = this.rotateDir( this.direction, true );
-	var d2 = this.rotateDir( this.direction, false );
-
-	var available = [];
-	if ( this.canMove( this.dirToVec( d1 ) ) )
-		available.push(d1);
-	if ( this.canMove( this.dirToVec( d2 ) ) )
-		available.push(d2);
-
-	// Move towards player
-	if ( available.length == 2 )
-	{
-		var dir = this.findBestDir( d1, d2 );
-		return [dir];
-	}
-
-	return available;
+	return this.rotateDir( this.direction );
 };
 
 Tarragon.prototype.findBestDir = function ( dir1, dir2 )
@@ -250,6 +190,8 @@ Tarragon.prototype.findBestDir = function ( dir1, dir2 )
 Tarragon.prototype.canMove = function ( dir )
 {
 	var p = this.getGridPos();
+	if ( p.x + dir[0] <= 72 )
+		return false;
 	return ( !DungeonGame.World.checkPhysicsAt( p.x + dir[0], p.y + dir[1] ) );
 };
 
@@ -267,29 +209,14 @@ Tarragon.prototype.atGoalPos = function ()
 	return ( this.sprite.x == this.goalPos.x && this.sprite.y == this.goalPos.y );
 };
 
-Tarragon.prototype.align = function ()
+
+Tarragon.prototype.getGridPos = function ()
 {
-	var p = this.getGridPos();
-	this.goalPos.x = p.x * 16 + 8;
-	this.goalPos.y = p.y * 16 + 8;
-
-	var v = new Phaser.Point( this.goalPos.x - this.sprite.x, this.goalPos.y - this.sprite.y );
-	if ( v.getMagnitude() > 0 )
-	{
-		var direction;
-		if ( Math.abs( v.x ) >= Math.abs( v.y ) )
-			direction = v.x > 0 ? 'right' : 'left';
-		else
-			direction = v.y > 0 ? 'down' : 'up';
-		this.setAnimation( 'walk', direction );
-	}
-
-	//return (
-	//	Math.floor((this.sprite.x-8) / 16) == (this.sprite.x-8) / 16 &&
-	//	Math.floor((this.sprite.y-8) / 16) == (this.sprite.y-8) / 16
-	//);
+	return new Phaser.Point(
+		Math.floor(this.sprite.body.center.x / 16),
+		Math.floor(this.sprite.body.center.y / 16)
+	);
 };
-
 
 Tarragon.prototype.getPhysicsPos = function ()
 {
@@ -310,7 +237,7 @@ Tarragon.prototype.overlapEntity = function ( other )
 	{
 		if ( other.owner.hasPhysics() )
 		{
-			this.getHit( other );
+			this.getHit( other, 1 );
 			DungeonGame.game.physics.arcade.collide( this.sprite, other );
 		}
 	}

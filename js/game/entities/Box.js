@@ -146,11 +146,11 @@ Box.prototype.overlapEntity = function ( other )
 	}
 };
 
-Box.prototype.hurt = function ()
+Box.prototype.hurt = function ( power )
 {
 	DungeonGame.Audio.play( 'chop' );
 
-	this.health -= 1;
+	this.health -= power;
 	if ( this.health == 2 )
 		this.sprite.frame = 1;
 	if ( this.health == 1 )
