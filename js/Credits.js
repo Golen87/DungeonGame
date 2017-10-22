@@ -7,7 +7,7 @@ DungeonGame.Credits.prototype = {
 		DungeonGame.game.stage.backgroundColor = '#111111';
 		DungeonGame.game.camera.flash( 0x111111, 500 );
 
-		var y = 32;
+		var y = 30;
 		var text = this.add.bitmapText( SCREEN_WIDTH/2, y, 'PixeladeFancy', '- Made by -', 13 );
 		text.anchor.x = 0.5;
 
@@ -22,8 +22,10 @@ DungeonGame.Credits.prototype = {
 		y += 16;
 		var text = this.add.bitmapText( SCREEN_WIDTH/2, y, 'Pixelade', 'Magdalena "Camelopardia" Annell', 13 );
 		text.anchor.x = 0.5;
-		var icon = this.add.sprite( SCREEN_WIDTH - 48, y, 'camelopardia' );
-		icon.anchor.y = 0.5;
+		var icon = this.add.sprite( SCREEN_WIDTH - 32, y+4, 'camelopardia' );
+		icon.anchor.set( 0.5 );
+		var icon = this.add.sprite( 32, y+4, 'camelopardia' );
+		icon.anchor.set( 0.5 );
 
 		y += 16;
 		y += 16;
@@ -31,6 +33,9 @@ DungeonGame.Credits.prototype = {
 		text.anchor.x = 0.5;
 		y += 16;
 		var text = this.add.bitmapText( SCREEN_WIDTH/2, y, 'Pixelade', 'Jefferson "Justice Watch" Marshall', 13 );
+		text.anchor.x = 0.5;
+		y += 16;
+		var text = this.add.bitmapText( SCREEN_WIDTH/2, y, 'Pixelade', '0x72 Robert', 13 );
 		text.anchor.x = 0.5;
 
 		"A Game by Måns Gezelius (Golen)"
