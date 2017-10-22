@@ -46,4 +46,9 @@ Torch.prototype.update = function ()
 		this.lightSprite.tint = randInt(this.flickerMin, this.flickerMax) * 0x010101;
 };
 
+Torch.prototype.hasPhysics = function ()
+{
+	return false;
+};
+
 extend( Entity, Torch );

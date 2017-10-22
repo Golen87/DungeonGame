@@ -29,12 +29,14 @@ GuiManager.prototype.create = function ()
 	this.cinDist = 32;
 	this.cinOffset = 104;
 	this.cinematicTop = DungeonGame.game.add.graphics( 0, 0 );
-	this.cinematicTop.beginFill( 0x000000, 1.0 );
+	this.cinematicTop.beginFill( 0xFFFFFF, 1.0 );
+	this.cinematicTop.tint = 0x000000;
 	this.cinematicTop.drawRect( 0, -this.cinOffset, SCREEN_WIDTH, this.cinDist + this.cinOffset );
 	this.cinematicTop.endFill();
 	this.guiGroup.add( this.cinematicTop );
 	this.cinematicBottom = DungeonGame.game.add.graphics( 0, 0 );
-	this.cinematicBottom.beginFill( 0x000000, 1.0 );
+	this.cinematicBottom.beginFill( 0xFFFFFF, 1.0 );
+	this.cinematicBottom.tint = 0x000000;
 	this.cinematicBottom.drawRect( 0, SCREEN_HEIGHT - this.cinDist, SCREEN_WIDTH, this.cinDist + this.cinOffset );
 	this.cinematicBottom.endFill();
 	this.guiGroup.add( this.cinematicBottom );
@@ -227,8 +229,8 @@ GuiManager.prototype.showPauseMenu = function ()
 	this.choiceTitle = DungeonGame.game.add.bitmapText( x, y, 'OldWizard', 'Pause', 16 );
 	this.choiceTitle.anchor.setTo( 0.5, 0.5 );
 	y += 28;
-	this.menu = DungeonGame.game.add.sprite( x, y, 'items', randInt(0,8*9-1) );
-	this.menu.anchor.set( 0.5 );
+	this.menuItem = DungeonGame.game.add.sprite( x, y, 'items', randInt(0,8*9-1) );
+	this.menuItem.anchor.set( 0.5 );
 
 	y += 28;
 	this.menuManager.createMenu( x, y, this.pauseMenu );
@@ -242,7 +244,7 @@ GuiManager.prototype.hidePauseMenu = function ()
 
 	this.darkBg.clear();
 	this.darkFg.clear();
-	this.menu.kill();
+	this.menuItem.kill();
 	this.choiceTitle.kill();
 
 	this.menuManager.killMenu();
@@ -257,6 +259,14 @@ GuiManager.prototype.showGameOver = function ()
 
 	var x = c.x + SCREEN_WIDTH/2;
 	var y = c.y + SCREEN_HEIGHT/2;
+
+	this.darkBg = DungeonGame.game.add.graphics( c.x, c.y );
+	this.darkBg.beginFill( 0x000000, 0.75 );
+	this.darkBg.drawRect( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
+	this.darkBg.endFill();
+	this.darkBg.alpha = 0;
+	this.darkBg.blendMode = Phaser.blendModes.OVERLAY;
+	DungeonGame.game.add.tween( this.darkBg ).to({ alpha: 0.5 }, 1500, Phaser.Easing.Linear.In, true );
 
 	this.choiceTitleBg = DungeonGame.game.add.bitmapText( x+1, y+1, 'OldWizard', 'Game Over', 32 );
 	this.choiceTitleBg.anchor.setTo( 0.5, 0.5 );
@@ -277,6 +287,61 @@ GuiManager.prototype.showGameOver = function ()
 		var y = c.y + SCREEN_HEIGHT - 20;
 		this.menuManager.allowInput = true;
 		this.menuManager.createMenu( x, y, this.gameoverMenu );
+	}, this );
+};
+
+GuiManager.prototype.showVictory = function ()
+{
+	var c = DungeonGame.game.camera.view;
+
+	var x = c.x + SCREEN_WIDTH/2;
+	var y = c.y + SCREEN_HEIGHT/2;
+
+	this.darkBg = DungeonGame.game.add.graphics( c.x, c.y );
+	this.darkBg.beginFill( 0x000000, 0.75 );
+	this.darkBg.drawRect( 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
+	this.darkBg.endFill();
+	this.darkBg.alpha = 0;
+	this.darkBg.blendMode = Phaser.blendModes.OVERLAY;
+	DungeonGame.game.add.tween( this.darkBg ).to({ alpha: 0.5 }, 1500, Phaser.Easing.Linear.In, true );
+
+	this.choiceTitleBg = DungeonGame.game.add.bitmapText( x+1, y+1, 'OldWizard', 'You Won', 32 );
+	this.choiceTitleBg.anchor.setTo( 0.5, 0.5 );
+	this.choiceTitleBg.tint = 0x000000;
+	this.choiceTitle = DungeonGame.game.add.bitmapText( x, y, 'OldWizard', 'You Won', 32 );
+	this.choiceTitle.anchor.setTo( 0.5, 0.5 );
+	this.choiceTitle.tint = 0xFBC02D;
+
+	if ( DungeonGame.World.Player.hasItem( 71 ) )
+	{
+		this.grail = DungeonGame.game.add.sprite( c.x + SCREEN_WIDTH/2, c.y + SCREEN_HEIGHT - 16, 'items', 71 );
+		this.grail.anchor.set( 0.5 );
+		this.grail.alpha = 0;
+		DungeonGame.game.add.tween( this.grail ).to({ alpha: 1 }, 1500, Phaser.Easing.Quadratic.In, true );
+	}
+
+	this.choiceTitle.x -= 16;
+	this.choiceTitle.alpha = 0;
+	this.choiceTitleBg.x += 16;
+	this.choiceTitleBg.alpha = 0;
+	DungeonGame.game.add.tween( this.choiceTitle ).to({ x: x, alpha: 1 }, 1500, Phaser.Easing.Quadratic.Out, true );
+	DungeonGame.game.add.tween( this.choiceTitleBg ).to({ x: x+1, alpha: 1 }, 1500, Phaser.Easing.Quadratic.Out, true );
+
+	DungeonGame.game.time.events.add( 3000, function() {
+		this.startupTimer = -1;
+		DungeonGame.game.add.tween( this ).to({ cinemaValue: 4.5 }, 2000, Phaser.Easing.Quadratic.In, true );
+
+		DungeonGame.game.time.events.add( 1000, function() {
+			DungeonGame.game.add.tween( this.choiceTitle ).to({ alpha: 0 }, 700, Phaser.Easing.Quadratic.In, true );
+			DungeonGame.game.add.tween( this.choiceTitleBg ).to({ alpha: 0 }, 700, Phaser.Easing.Quadratic.In, true );
+			if ( this.grail )
+				DungeonGame.game.add.tween( this.grail ).to({ alpha: 0 }, 700, Phaser.Easing.Quadratic.In, true );
+			tweenTint( this.cinematicTop, 0x000000, 0x111111, 1500 );
+			tweenTint( this.cinematicBottom, 0x000000, 0x111111, 1500 );
+		}, this );
+		DungeonGame.game.time.events.add( 2600, function() {
+			DungeonGame.game.state.start( 'Credits' );
+		}, this );
 	}, this );
 };
 

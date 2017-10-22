@@ -4,7 +4,7 @@ function Tarragon()
 {
 	Enemy.call( this );
 
-	this.health = 30;
+	this.health = 3;
 	this.speed = 32 / 60;
 
 	this.sound = 'rhino';
@@ -19,8 +19,10 @@ Tarragon.prototype.create = function ()
 {
 	this.sprite.loadTexture( 'tarragon', 0 );
 
-	this.sprite.body.setSize( 35, 36, 8, 13 );
+	this.sprite.body.setSize( 55, 36, 8, 13 );
 	this.sprite.y -= 8;
+	this.sprite.x -= 8;
+	//this.sprite.anchor.set( (24)/48, (24+8)/48 );
 
 	this.goalPos = new Phaser.Point( this.sprite.x, this.sprite.y );
 
@@ -398,7 +400,7 @@ Tarragon.prototype.defeat = function ()
 
 	t += 2500;
 	DungeonGame.game.time.events.add( t, function() {
-		DungeonGame.cinematic = false;
+		DungeonGame.Gui.showVictory();
 	}, this );
 };
 
