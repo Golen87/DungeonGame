@@ -371,6 +371,12 @@ EntityManager.prototype.scriptedTriggers = function ( trigger, spikes, immediate
 			this.blockPuzzle( trigger, spikes, immediate, room_pos, [[2,4], [2,5]] );
 			return true;
 		}
+		// Golden sword
+		if ( pointCmp( room_pos, [[6,2]] ) )
+		{
+			this.blockPuzzle( trigger, spikes, immediate, room_pos, [[3,5], [11,5], [3,7], [11,7]] );
+			return true;
+		}
 
 		// Block puzzle (NOT IN GAME YET)
 		if ( pointCmp( room_pos, [[7,6]] ) )
@@ -382,12 +388,6 @@ EntityManager.prototype.scriptedTriggers = function ( trigger, spikes, immediate
 		if ( pointCmp( room_pos, [[7,7]] ) )
 		{
 			this.blockPuzzle( trigger, spikes, immediate, room_pos, [[7,3], [7,4]] );
-			return true;
-		}
-		// Block puzzle (NOT IN GAME)
-		if ( pointCmp( room_pos, [[3,9]] ) )
-		{
-			spikes.toggle( trigger.active, immediate );
 			return true;
 		}
 

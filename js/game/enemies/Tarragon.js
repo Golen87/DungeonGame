@@ -4,8 +4,8 @@ function Tarragon()
 {
 	Enemy.call( this );
 
-	this.health = 30;
-	this.speed = 20 / 60;
+	this.health = 60;
+	this.speed = 30 / 60;
 
 	this.sound = 'rhino';
 

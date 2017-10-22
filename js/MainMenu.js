@@ -24,6 +24,10 @@ DungeonGame.MainMenu.prototype = {
 		var y = 48;
 
 		/* Title */
+		var s = this.add.sprite( x, y-8, 'titleBg' )
+		s.scale.set(2);
+		s.anchor.set(0.5);
+
 		var text = this.add.bitmapText( x, y, 'Adventurer', 'Dragon\'s Crypt', 16 );
 		text.anchor.x = 0.5;
 

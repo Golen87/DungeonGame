@@ -181,14 +181,17 @@ Player.prototype.update = function ()
 		if ( this.keys.right.isDown || this.keys.d.isDown || DungeonGame.input.right )
 			p.x += 1;
 
-		if ( this.keys.i.justDown )
-			this.sprite.body.y -= SCREEN_HEIGHT - 16;
-		if ( this.keys.k.justDown )
-			this.sprite.body.y += SCREEN_HEIGHT - 16;
-		if ( this.keys.j.justDown )
-			this.sprite.body.x -= SCREEN_WIDTH - 16;
-		if ( this.keys.l.justDown )
-			this.sprite.body.x += SCREEN_WIDTH - 16;
+		if ( DungeonGame.skip )
+		{
+			if ( this.keys.i.justDown )
+				this.sprite.body.y -= SCREEN_HEIGHT - 16;
+			if ( this.keys.k.justDown )
+				this.sprite.body.y += SCREEN_HEIGHT - 16;
+			if ( this.keys.j.justDown )
+				this.sprite.body.x -= SCREEN_WIDTH - 16;
+			if ( this.keys.l.justDown )
+				this.sprite.body.x += SCREEN_WIDTH - 16;
+		}
 	}
 
 	p.setMagnitude( this.speed );

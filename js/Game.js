@@ -45,17 +45,20 @@ DungeonGame.Game.prototype =
 
 		DungeonGame.Gui.update();
 
-		if (this.debugToggle.justDown)
+		if ( DungeonGame.skip )
 		{
-			DungeonGame.debug = !DungeonGame.debug;
-			DungeonGame.game.debug.reset();
+			if (this.debugToggle.justDown)
+			{
+				DungeonGame.debug = !DungeonGame.debug;
+				DungeonGame.game.debug.reset();
+			}
+
+			if ( this.shadowToggle.justDown )
+				DungeonGame.shadow = !DungeonGame.shadow;
+
+			if ( this.cinemaToggle.justDown )
+				DungeonGame.cinematic = !DungeonGame.cinematic;
 		}
-
-		if ( this.shadowToggle.justDown )
-			DungeonGame.shadow = !DungeonGame.shadow;
-
-		if ( this.cinemaToggle.justDown )
-			DungeonGame.cinematic = !DungeonGame.cinematic;
 
 		this.handleMouseInput();
 	},
