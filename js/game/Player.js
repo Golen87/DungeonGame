@@ -397,7 +397,8 @@ Player.prototype.gameOver = function ()
 
 Player.prototype.giveItem = function ( itemIndex )
 {
-	if ( itemIndex < 16 )
+	// Don't overwrite Golden sword 7
+	if ( itemIndex < 16 && this.sword.frame != 7 )
 	{
 		this.items[0] = itemIndex;
 		this.sword.frame = itemIndex;
