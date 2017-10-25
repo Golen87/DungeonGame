@@ -4,7 +4,7 @@ function Entity()
 {
 	this.spawn = new Phaser.Point();
 
-	this.hitCooldown = 6;
+	this.hitCooldown = 8;
 	this.hitBuffer = 0;
 };
 

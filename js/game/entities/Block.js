@@ -59,8 +59,8 @@ Block.prototype.update = function ()
 		if ( this.trailCooldown < 0 )
 		{
 			this.trailCooldown = 4;
-			this.trail.x = this.sprite.body.center.x - mx*8;
-			this.trail.y = this.sprite.body.center.y - my*8;
+			this.trail.x = this.sprite.body.center.x - mx*8/speed;
+			this.trail.y = this.sprite.body.center.y - my*8/speed;
 			this.trail.start( true, 4000, null, 1 );
 		}
 	}

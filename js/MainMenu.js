@@ -79,7 +79,7 @@ DungeonGame.MainMenu.prototype = {
 		this.fog.blendMode = Phaser.blendModes.MULTIPLY;
 
 		/* Version */
-		var text = this.add.bitmapText( 1, SCREEN_HEIGHT+1, 'Pixelade', 'v1.0', 13 );
+		var text = this.add.bitmapText( 1, SCREEN_HEIGHT+1, 'Pixelade', 'v1.1', 13 );
 		text.anchor.set( 0, 1 );
 		text.tint = 0x555555;
 

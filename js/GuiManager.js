@@ -26,6 +26,7 @@ GuiManager.prototype.create = function ()
 
 	/* Cinematic mode GUI */
 
+	this.startupTimer = null;
 	this.cinDist = 32;
 	this.cinOffset = 104;
 	this.cinematicTop = DungeonGame.game.add.graphics( 0, 0 );

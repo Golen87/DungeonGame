@@ -68,7 +68,10 @@ Tarragon.prototype.update = function ()
 {
 	Enemy.prototype.update.call( this );
 
-	this.updateMovement();
+	if ( this.health > 0 )
+	{
+		this.updateMovement();
+	}
 };
 
 Tarragon.prototype.updateMovement = function ()
@@ -256,6 +259,8 @@ Tarragon.prototype.takeDamage = function ()
 
 Tarragon.prototype.defeat = function ()
 {
+	this.setAnimation( 'hurt', this.direction );
+
 	var c = this.sprite.body.center;
 	var randomSmoke = function( me )
 	{

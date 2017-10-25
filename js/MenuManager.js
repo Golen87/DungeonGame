@@ -197,7 +197,7 @@ MenuManager.prototype.nextChoice = function ( inc )
 				DungeonGame.game.add.tween( corner ).to({ y: y }, 200, Phaser.Easing.Exponential.Out, true );
 		}
 
-		if ( inc != 0 )
+		if ( inc != 0 && this.labels.length > 1 )
 			DungeonGame.Audio.play( 'menu', 'select' );
 	}
 };
