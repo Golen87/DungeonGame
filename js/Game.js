@@ -27,6 +27,9 @@ DungeonGame.Game.prototype =
 		this.cinemaToggle = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.C );
 		this.pauseToggle = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.ESC );
 
+		this.skipShift = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.SHIFT );
+		this.skipToggle = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.O );
+
 		var key = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.ESC );
 		key.onDown.add( this.togglePause, this );
 		var key = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.P );
@@ -45,9 +48,14 @@ DungeonGame.Game.prototype =
 
 		DungeonGame.Gui.update();
 
+		if ( this.skipShift.isDown && this.skipToggle.isDown )
+		{
+			DungeonGame.skip = true;
+		}
+
 		if ( DungeonGame.skip )
 		{
-			if (this.debugToggle.justDown)
+			if ( this.debugToggle.justDown )
 			{
 				DungeonGame.debug = !DungeonGame.debug;
 				DungeonGame.game.debug.reset();
