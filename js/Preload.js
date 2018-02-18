@@ -52,7 +52,7 @@ DungeonGame.Preload.prototype = {
 		this.load.spritesheet( 'rubble', 'assets/sprites/particles/rubble.png', 5, 5 );
 		this.load.spritesheet( 'fire', 'assets/sprites/particles/fire.png', 16, 16 );
 
-		var world = 'test';
+		var world = 'main';
 		this.load.image( 'floorMap', 'assets/rooms/{0}/floorMap.png'.format(world) );
 		this.load.image( 'wallMap', 'assets/rooms/{0}/wallMap.png'.format(world) );
 		this.load.image( 'entityMap', 'assets/rooms/{0}/entityMap.png'.format(world) );
