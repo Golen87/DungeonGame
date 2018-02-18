@@ -8,6 +8,7 @@ Player.prototype.create = function ( x, y, group )
 {
 	this.health = 100;
 	this.speed = 80;
+	this.velocity = new Phaser.Point( 0, 0 );
 
 	this.sprite = group.create( x, y, 'player', 0 );
 	DungeonGame.game.physics.arcade.enable( this.sprite, Phaser.Physics.ARCADE );
@@ -194,9 +195,18 @@ Player.prototype.update = function ()
 		}
 	}
 
+	// Reset velocity after collision
+	if ( this.sprite.body.velocity.x == 0 )
+		this.velocity.x = 0;
+	if ( this.sprite.body.velocity.y == 0 )
+		this.velocity.y = 0;
+
 	p.setMagnitude( this.speed );
-	this.sprite.body.velocity.x += ( p.x - this.sprite.body.velocity.x ) / 3;
-	this.sprite.body.velocity.y += ( p.y - this.sprite.body.velocity.y ) / 3;
+	var fac = 1 - Math.pow( 0.66, DungeonGame.game.time.elapsed * 0.06 );
+	this.velocity.x += ( p.x - this.velocity.x ) * fac;
+	this.velocity.y += ( p.y - this.velocity.y ) * fac;
+	this.sprite.body.velocity.x = this.velocity.x * DungeonGame.game.time.elapsed * 0.06;
+	this.sprite.body.velocity.y = this.velocity.y * DungeonGame.game.time.elapsed * 0.06;
 
 	this.swing.body.velocity.copyFrom( this.sprite.body.velocity );
 	this.sword.body.velocity.copyFrom( this.sprite.body.velocity );
@@ -252,12 +262,12 @@ Player.prototype.render = function ()
 Player.prototype.swingSword = function ()
 {
 	this.swing.reset(
-		Math.round(this.sprite.body.center.x + this.sprite.body.velocity.x/60),
-		Math.round(this.sprite.body.center.y + this.sprite.body.velocity.y/60)
+		Math.round(this.sprite.body.center.x/* + this.sprite.body.velocity.x/60*/),
+		Math.round(this.sprite.body.center.y/* + this.sprite.body.velocity.y/60*/)
 	);
 	this.sword.reset(
-		Math.round(this.sprite.body.center.x + this.sprite.body.velocity.x/60),
-		Math.round(this.sprite.body.center.y + this.sprite.body.velocity.y/60)
+		Math.round(this.sprite.body.center.x /*+ this.sprite.body.velocity.x/60*/),
+		Math.round(this.sprite.body.center.y /*+ this.sprite.body.velocity.y/60*/)
 	);
 	this.swing.animations.play( 'attack' );
 	this.swingTimer = 0;

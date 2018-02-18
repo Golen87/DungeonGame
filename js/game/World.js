@@ -88,6 +88,8 @@ World.prototype.create = function ()
 	this.Player.sprite.position.y += ROOM_HEIGHT * 16;
 	this.shiftRoom( 0, 1 );
 	this.camPos.y += ROOM_HEIGHT * 16;
+	DungeonGame.game.camera.x = Math.round( this.camPos.x );
+	DungeonGame.game.camera.y = Math.round( this.camPos.y );
 };
 
 World.prototype.update = function ()
@@ -115,8 +117,9 @@ World.prototype.update = function ()
 		this.shiftRoom( 0, -1 );
 	}
 
-	this.camPos.x += ( this.camGoal.x - this.camPos.x ) / 4;
-	this.camPos.y += ( this.camGoal.y - this.camPos.y ) / 4;
+	var fac = 1 - Math.pow( 0.75, DungeonGame.game.time.elapsed * 0.06 );
+	this.camPos.x += ( this.camGoal.x - this.camPos.x ) * fac;
+	this.camPos.y += ( this.camGoal.y - this.camPos.y ) * fac;
 
 	var d = this.camPos.distance( this.camGoal );
 	if ( d < 1 && d != 0 )
@@ -170,16 +173,16 @@ World.prototype.handleCollisions = function ()
 		var enemy = this.enemyManager.enemies[i];
 		if ( enemy && enemy.sprite.exists )
 		{
-			DungeonGame.game.physics.arcade.overlap( this.Player.swing, enemy.sprite, function( swing, enemy ){
+			DungeonGame.game.physics.arcade.overlap( this.Player.swing, enemy.sprite, function( swing, enemy ) {
 				enemy.owner.getHit( swing, this.Player.getAttackPower() );
 			}, null, this );
-			DungeonGame.game.physics.arcade.overlap( this.Player.sprite, enemy.sprite, function(){
+			DungeonGame.game.physics.arcade.overlap( this.Player.sprite, enemy.sprite, function() {
 				this.Player.damage( enemy.getAttackPower(), enemy.sprite.body.center );
 			}, null, this );
 
 			if ( !Fry.prototype.isPrototypeOf( enemy ) )
 			{
-				DungeonGame.game.physics.arcade.overlap( this.entityManager.sprites, enemy.sprite, function( other ){
+				DungeonGame.game.physics.arcade.overlap( this.entityManager.sprites, enemy.sprite, function( other ) {
 					enemy.overlapEntity( other );
 				}, null, this );
 			}
@@ -194,11 +197,11 @@ World.prototype.handleCollisions = function ()
 			DungeonGame.game.physics.arcade.overlap( this.Player.swing, entity.sprite, function( swing, entity ) {
 				entity.owner.damage( this.Player.getAttackPower() );
 			}, null, this );
-			DungeonGame.game.physics.arcade.overlap( this.Player.sprite, entity.sprite, function(){
+			DungeonGame.game.physics.arcade.overlap( this.Player.sprite, entity.sprite, function() {
 				entity.overlap( this.Player );
 			}, null, this );
 
-			DungeonGame.game.physics.arcade.overlap( this.entityManager.sprites, entity.sprite, function( other ){
+			DungeonGame.game.physics.arcade.overlap( this.entityManager.sprites, entity.sprite, function( other ) {
 				entity.overlapEntity( other );
 			}, null, this );
 		}
