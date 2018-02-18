@@ -111,7 +111,28 @@ DungeonGame.Game.prototype =
 				this.holdPosition.copyFrom( this.mousePosition );
 			}
 
-			if ( this.holdPosition.distance( this.mousePosition ) > 16 )
+			var playerScreenPos = new Phaser.Point(
+				DungeonGame.World.Player.sprite.position.x - DungeonGame.World.camPos.x,
+				DungeonGame.World.Player.sprite.position.y - DungeonGame.World.camPos.y
+			);
+
+			if ( playerScreenPos.distance( this.mousePosition ) > 4 )
+			{
+				var angle = playerScreenPos.angle( this.mousePosition );
+				DungeonGame.input.right = ( angle < Math.PI*3/8 && angle > -Math.PI*3/8 );
+				DungeonGame.input.left = ( angle < -Math.PI*5/8 || angle > Math.PI*5/8 );
+				DungeonGame.input.up = ( angle < -Math.PI*1/8 && angle > -Math.PI*7/8 );
+				DungeonGame.input.down = ( angle < Math.PI*7/8 && angle > Math.PI*1/8 );
+			}
+			else
+			{
+				DungeonGame.input.right = false;
+				DungeonGame.input.left = false;
+				DungeonGame.input.up = false;
+				DungeonGame.input.down = false;
+			}
+
+			/*if ( this.holdPosition.distance( this.mousePosition ) > 16 )
 			{
 				var angle = this.holdPosition.angle( this.mousePosition );
 				DungeonGame.input.right = ( angle < Math.PI*3/8 && angle > -Math.PI*3/8 );
@@ -123,7 +144,7 @@ DungeonGame.Game.prototype =
 			{
 				this.holdPosition.x += ( this.mousePosition.x - this.holdPosition.x ) / 3;
 				this.holdPosition.y += ( this.mousePosition.y - this.holdPosition.y ) / 3;
-			}
+			}*/
 		}
 		else
 		{
