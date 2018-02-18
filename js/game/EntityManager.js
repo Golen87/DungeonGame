@@ -348,9 +348,9 @@ EntityManager.prototype.scriptedTriggers = function ( trigger, spikes, immediate
 		if ( pointCmp( room_pos, [[2,2]] ) )
 		{
 			if ( pointCmp( spike_pos, [[8,4], [9,4], [8,9], [9,9]] ) )
-				spikes.toggle( !trigger.active, immediate );
-			if ( pointCmp( spike_pos, [[6,6], [11,6], [6,7], [11,7]] ) )
 				spikes.toggle( trigger.active, immediate );
+			if ( pointCmp( spike_pos, [[6,6], [11,6], [6,7], [11,7]] ) )
+				spikes.toggle( !trigger.active, immediate );
 			return true;
 		}
 		// Tarragon
