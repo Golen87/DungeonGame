@@ -14,8 +14,6 @@ var config = {
 	transparent: false,
 	antialias: false,
 	physicsConfig: null,
-	enableDebug: false,
-	multiTexture: false,
 }
 
 DungeonGame.game = new Phaser.Game( config );
@@ -27,8 +25,6 @@ DungeonGame.game.state.add( 'Game', DungeonGame.Game );
 DungeonGame.game.state.add( 'Credits', DungeonGame.Credits );
 
 DungeonGame.game.state.start( 'Boot' );
-
-DungeonGame.game.clearBeforeRender = false;
 
 DungeonGame.input = {};
 DungeonGame.inputScale = new Phaser.Point( 0, 0 );
