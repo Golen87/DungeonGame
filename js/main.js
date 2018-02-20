@@ -4,7 +4,21 @@ var ROOM_WIDTH = 16;
 var ROOM_HEIGHT = 13;
 var SCREEN_WIDTH = ROOM_WIDTH * 16;
 var SCREEN_HEIGHT = ROOM_HEIGHT * 16;
-DungeonGame.game = new Phaser.Game( SCREEN_WIDTH, SCREEN_HEIGHT, Phaser.CANVAS, 'DungeonGame', null, false, false );
+
+var config = {
+	width: SCREEN_WIDTH,
+	height: SCREEN_HEIGHT,
+	renderer: Phaser.CANVAS,
+	parent: 'DungeonGame',
+	state: null,
+	transparent: false,
+	antialias: false,
+	physicsConfig: null,
+	enableDebug: false,
+	multiTexture: false,
+}
+
+DungeonGame.game = new Phaser.Game( config );
 
 DungeonGame.game.state.add( 'Boot', DungeonGame.Boot );
 DungeonGame.game.state.add( 'Preload', DungeonGame.Preload );
@@ -13,6 +27,8 @@ DungeonGame.game.state.add( 'Game', DungeonGame.Game );
 DungeonGame.game.state.add( 'Credits', DungeonGame.Credits );
 
 DungeonGame.game.state.start( 'Boot' );
+
+DungeonGame.game.clearBeforeRender = false;
 
 DungeonGame.input = {};
 DungeonGame.inputScale = new Phaser.Point( 0, 0 );

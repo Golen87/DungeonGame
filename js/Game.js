@@ -57,6 +57,10 @@ DungeonGame.Game.prototype =
 		{
 			if ( this.debugToggle.justDown )
 			{
+				if (!DungeonGame.game.debug.game) {
+					DungeonGame.game.debug = new Phaser.Utils.Debug(this);
+					DungeonGame.game.debug.boot();
+				}
 				DungeonGame.debug = !DungeonGame.debug;
 				DungeonGame.game.debug.reset();
 			}
