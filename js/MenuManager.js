@@ -29,6 +29,8 @@ MenuManager.prototype.setupInput = function ()
 
 	var key = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.SPACEBAR );
 	key.onDown.add( function() {this.pickChoice();}, this );
+	var key = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.ENTER );
+	key.onDown.add( function() {this.pickChoice();}, this );
 };
 
 MenuManager.prototype.update = function ()

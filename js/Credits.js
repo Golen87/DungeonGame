@@ -58,6 +58,10 @@ DungeonGame.Credits.prototype = {
 		text.anchor.set( 0, 1 );
 		text.tint = 0x555555;
 
+		var text = this.add.bitmapText( SCREEN_WIDTH-1, SCREEN_HEIGHT+1, 'Pixelade', 'www.golen.nu', 13 );
+		text.anchor.set( 1, 1 );
+		text.tint = 0x555555;
+
 		//var text = this.add.bitmapText( SCREEN_WIDTH/2, SCREEN_HEIGHT - 32, 'Pixelade', 'Press [space] to play again', 13 );
 		//text.anchor.x = 0.5;
 
