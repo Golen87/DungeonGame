@@ -9,7 +9,7 @@ var config = {
 	width: SCREEN_WIDTH,
 	height: SCREEN_HEIGHT,
 	renderer: Phaser.CANVAS,
-	parent: 'DungeonGame',
+	parent: "Dragon's Crypt",
 	state: null,
 	transparent: false,
 	antialias: false,
