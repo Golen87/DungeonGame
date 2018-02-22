@@ -33,8 +33,8 @@ Tarragon.prototype.setupAnimation = function ()
 {
 	var len = 0;
 	var idle = [0];
-	var walk_left = [0, 1, 2, 3, 4];
-	var walk_right = [0, 4, 3, 2, 1];
+	var walk_left = [1, 2, 3, 4, 0];
+	var walk_right = [4, 3, 2, 1, 0];
 	var hurt = [5, 6, 7, 8];
 
 	this.sprite.animations.add( 'idle', idle, 1, true );
