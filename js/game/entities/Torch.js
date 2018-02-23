@@ -32,7 +32,7 @@ Torch.prototype.create = function ()
 };
 
 Torch.prototype.destroy = function () {
-	if ( this.fire )
+	if ( this.fire && this.fire.exists )
 		this.fire.destroy();
 	this.trail.destroy();
 };
@@ -49,6 +49,18 @@ Torch.prototype.update = function ()
 Torch.prototype.hasPhysics = function ()
 {
 	return false;
+};
+
+Torch.prototype.hurt = function ()
+{
+	if (this.lightSprite.alive) {
+		DungeonGame.Audio.play( 'chop' );
+		if (this.fire && this.fire.exists) {
+			this.fire.destroy();
+		}
+		this.trail.on = false;
+		this.lightSprite.kill();
+	}
 };
 
 extend( Entity, Torch );
