@@ -73,6 +73,7 @@ DungeonGame.Credits.prototype = {
 	update: function() {},
 
 	toMainMenu: function() {
+		DungeonGame.Audio.play( 'menu', 'click' );
 		this.state.start( 'MainMenu' );
 	},
 };

@@ -26,9 +26,6 @@ Fry.prototype.create = function ()
 	this.sprite.position.y += 8;
 	this.sprite.anchor.y = 1.0;
 
-	this.bgSprite.reset( this.spawn.x*16 + 8, this.spawn.y*16 );
-	this.bgSprite.frame = 6;
-
 	this.aiState = 'idle';
 	this.goalPos = new Phaser.Point( this.sprite.body.position.x, this.sprite.body.position.y );
 
