@@ -168,9 +168,10 @@ GuiManager.prototype.update = function ()
 
 GuiManager.prototype.clear = function ()
 {
+	var max = 4;
 	this.fowDraw.fill(0, 0, 0);
-	this.ambientCountSmooth += (this.ambientCount - this.ambientCountSmooth).clamp(-0.05, 0.05);
-	this.fowDraw.fill(255, 255, 255, Math.min(1, this.ambientCountSmooth/4) );
+	this.ambientCountSmooth += (Math.min(4,this.ambientCount) - this.ambientCountSmooth).clamp(-0.05, 0.05);
+	this.fowDraw.fill(255, 255, 255, Math.min(1, this.ambientCountSmooth/max) );
 	this.ambientCount = 0;
 };
 

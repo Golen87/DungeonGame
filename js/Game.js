@@ -43,10 +43,11 @@ DungeonGame.Game.prototype =
 
 	update: function()
 	{
-		DungeonGame.Gui.clear();
 
-		if ( !DungeonGame.paused )
+		if ( !DungeonGame.paused ) {
+			DungeonGame.Gui.clear();
 			this.World.update();
+		}
 
 		DungeonGame.Gui.update();
 

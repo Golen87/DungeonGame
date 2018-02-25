@@ -14,10 +14,10 @@ function EntityManager ( group, bgGroup, lightGroup, entityMap )
 		}
 	}
 
-	this.entities = Array( 64 );
-	this.sprites = Array( 64 );
-	this.bgSprites = Array( 64 );
-	this.lightSprites = Array( 64 );
+	this.entities = Array( 96 );
+	this.sprites = Array( 96 );
+	this.bgSprites = Array( 96 );
+	this.lightSprites = Array( 96 );
 
 	for ( var i = 0; i < this.sprites.length; i++ )
 	{
