@@ -44,6 +44,11 @@ Switch.prototype.update = function ()
 	this.lightSprite.y = this.sprite.position.y;
 
 	this.lightSprite.scale.set(this.lightSprite.fac);
+
+	if (this.active)
+		DungeonGame.Gui.drawLight(this.lightSprite.x, this.lightSprite.y);
+	else
+		DungeonGame.Gui.drawLight(this.lightSprite.x, this.lightSprite.y, 1);
 };
 
 Switch.prototype.toggle = function ( state, immediate=false )

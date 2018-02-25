@@ -23,6 +23,20 @@ GuiManager.prototype.create = function ()
 	this.guiGroup.add( this.fog );
 	this.fog.tint = 0xffeeee;
 
+	this.fowDraw = DungeonGame.game.make.bitmapData( SCREEN_WIDTH, SCREEN_HEIGHT );
+	this.fowDraw.fill( 0, 0, 0, 1 );
+	//for (var i=0; i<10; i++) {
+	//	this.fowDraw.draw('torchlight_alpha', x+i*32, y);
+	//}
+	this.fowSprite = this.guiGroup.create( 0, 0, this.fowDraw );
+	//this.fowSprite.blendMode = Phaser.blendModes.COLOR_DODGE;
+	this.fowSprite.blendMode = Phaser.blendModes.MULTIPLY;
+	this.fowSprite.alpha = 1;
+	//NORMAL, ADD, MULTIPLY, SCREEN, OVERLAY, DARKEN, LIGHTEN, COLOR_DODGE, COLOR_BURN, HARD_LIGHT, SOFT_LIGHT, DIFFERENCE, EXCLUSION, HUE, SATURATION, COLOR, LUMINOSITY
+
+	this.ambientCount = 4;
+	this.ambientCountSmooth = 4;
+
 
 	/* Cinematic mode GUI */
 
@@ -104,6 +118,9 @@ GuiManager.prototype.update = function ()
 	this.fog.x = DungeonGame.game.camera.view.x - 8;
 	this.fog.y = DungeonGame.game.camera.view.y - 8;
 
+	this.fowSprite.x = DungeonGame.game.camera.view.x;
+	this.fowSprite.y = DungeonGame.game.camera.view.y;
+
 	if ( this.startupTimer == null )
 		this.startupTimer = 3;
 	if ( this.startupTimer > 0 )
@@ -147,6 +164,14 @@ GuiManager.prototype.update = function ()
 	}
 
 	this.chestBeam.angle += 0.5;
+};
+
+GuiManager.prototype.clear = function ()
+{
+	this.fowDraw.fill(0, 0, 0);
+	this.ambientCountSmooth += (this.ambientCount - this.ambientCountSmooth).clamp(-0.05, 0.05);
+	this.fowDraw.fill(255, 255, 255, Math.min(1, this.ambientCountSmooth/4) );
+	this.ambientCount = 0;
 };
 
 
@@ -428,4 +453,24 @@ GuiManager.prototype.showNewItem = function ( x, y, itemIndex )
 			this.chestItem.kill();
 		}
 	}, this );
+};
+
+
+
+GuiManager.prototype.drawLight = function(x, y, small)
+{
+	var c = DungeonGame.game.camera.view;
+
+	var src = 'torchlight_alpha';
+	if (small) {
+		src += '2';
+	} else {
+		//this.fowDraw.fill(255, 255, 255, 0.2);
+		this.ambientCount += 1;
+	}
+
+	x -= c.x + Math.round(DungeonGame.game.cache.getImage(src).width/2);
+	y -= c.y + Math.round(DungeonGame.game.cache.getImage(src).height/2);
+	//this.fowDraw.circle(x, y, 50, 'rgb(255,255,255)');
+	this.fowDraw.draw(src, x, y);
 };

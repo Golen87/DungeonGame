@@ -30,7 +30,10 @@ DungeonGame.Preload.prototype = {
 
 		this.load.image( 'sunshine', 'assets/sprites/lighting/sunshine.png' );
 		this.load.image( 'glow', 'assets/sprites/lighting/glow.png' );
+		this.load.image( 'glow_alpha', 'assets/sprites/lighting/glow_alpha.png' );
 		this.load.image( 'torchlight', 'assets/sprites/lighting/torchlight.png' );
+		this.load.image( 'torchlight_alpha', 'assets/sprites/lighting/torchlight_alpha.png' );
+		this.load.image( 'torchlight_alpha2', 'assets/sprites/lighting/torchlight_alpha2.png' );
 		this.load.spritesheet( 'slurgLight', 'assets/sprites/lighting/slurg_light.png', 32, 32 );
 
 		this.load.spritesheet( 'player', 'assets/sprites/player/player_old.png', 16, 16 );

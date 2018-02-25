@@ -111,6 +111,8 @@ Slurg.prototype.update = function ()
 
 	this.lightSprite.x = this.sprite.x + this.lightOffset.x;
 	this.lightSprite.y = this.sprite.y + this.lightOffset.y;
+
+	DungeonGame.Gui.drawLight(this.lightSprite.x, this.lightSprite.y, 1);
 };
 
 Slurg.prototype.updateMovement = function ()

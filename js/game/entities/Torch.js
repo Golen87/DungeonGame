@@ -44,6 +44,9 @@ Torch.prototype.update = function ()
 	this.timer += 1;
 	if ( this.timer % 2 == 0 )
 		this.lightSprite.tint = randInt(this.flickerMin, this.flickerMax) * 0x010101;
+
+	if (this.lightSprite.alive)
+		DungeonGame.Gui.drawLight(this.sprite.x, this.sprite.y+8);
 };
 
 Torch.prototype.hasPhysics = function ()
