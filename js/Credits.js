@@ -67,6 +67,8 @@ DungeonGame.Credits.prototype = {
 
 		var start = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.SPACEBAR );
 		start.onDown.add( this.toMainMenu, this );
+		var start = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.ENTER );
+		start.onDown.add( this.toMainMenu, this );
 		var esc = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.ESC );
 		esc.onDown.add( this.toMainMenu, this );
 	},
