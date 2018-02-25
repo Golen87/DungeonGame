@@ -42,7 +42,7 @@ World.prototype.create = function ()
 	this.entityManager.triggerMonsterRoom = World.prototype.triggerMonsterRoom.bind( this );
 	this.entityManager.clearMonsterRoom = World.prototype.clearMonsterRoom.bind( this );
 
-	this.monsterRooms = [[0,1], [0,2], [2,6], [3,8], [4,2], [5,6]];
+	this.monsterRooms = [[0,0], [0,1], [0,2], [2,6], [3,8], [4,2], [5,2], [5,6]];
 	this.clearedMonsterRooms = [];
 	this.entityManager.clearedMonsterRooms = this.clearedMonsterRooms;
 	this.enemyManager.clearedMonsterRooms = this.clearedMonsterRooms;
