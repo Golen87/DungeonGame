@@ -233,6 +233,11 @@ Player.prototype.update = function ()
 	this.sprite.body.velocity.x = this.velocity.x * DungeonGame.game.time.elapsed * 0.06;
 	this.sprite.body.velocity.y = this.velocity.y * DungeonGame.game.time.elapsed * 0.06;
 
+	// Prevent clipping
+	if ( this.sprite.body.velocity.getMagnitude() > 16*60 ) {
+		this.sprite.body.velocity.setMagnitude( 16*60 );
+	}
+
 	this.swing.body.velocity.copyFrom( this.sprite.body.velocity );
 	this.sword.body.velocity.copyFrom( this.sprite.body.velocity );
 
