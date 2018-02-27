@@ -148,19 +148,7 @@ Player.prototype.setAnimation = function ( newState, newDirection )
 
 Player.prototype.update = function ()
 {
-	if ( ( this.keys.space.justDown || DungeonGame.input.space ) && !DungeonGame.cinematic )
-	{
-		if ( this.sword.frame > 0 )
-		this.swingSword();
-	}
-	if ( this.keys.space.justUp )
-	{
-		//this.swing.kill();
-	}
-	this.swing.alpha = (0.75 - this.swingTimer / 10).clamp( 0, 1 );
-	this.swingTimer += 1;
-
-	var p = new Phaser.Point( 0, 0 );
+	/* Footsteps */
 
 	var frame = this.sprite.animations.currentFrame.index % 6;
 	this.stepCooldown -= 1;
@@ -171,16 +159,24 @@ Player.prototype.update = function ()
 		this.stepCooldown = 10;
 	}
 
-	if ( !this.swing.exists && !DungeonGame.cinematic )
+
+	/* Walking input */
+
+	var inputDir = new Phaser.Point( 0, 0 );
+	if ( !(this.swing.exists || DungeonGame.cinematic) )
 	{
-		if ( this.keys.up.isDown || this.keys.w.isDown || DungeonGame.input.up )
-			p.y -= 1;
-		if ( this.keys.down.isDown || this.keys.s.isDown || DungeonGame.input.down )
-			p.y += 1;
-		if ( this.keys.left.isDown || this.keys.a.isDown || DungeonGame.input.left )
-			p.x -= 1;
-		if ( this.keys.right.isDown || this.keys.d.isDown || DungeonGame.input.right )
-			p.x += 1;
+		if ( this.keys.up.isDown || this.keys.w.isDown )
+			inputDir.y -= 1;
+		if ( this.keys.down.isDown || this.keys.s.isDown )
+			inputDir.y += 1;
+		if ( this.keys.left.isDown || this.keys.a.isDown )
+			inputDir.x -= 1;
+		if ( this.keys.right.isDown || this.keys.d.isDown )
+			inputDir.x += 1;
+
+		if (DungeonGame.input.direction) {
+			inputDir.copyFrom(DungeonGame.input.direction);
+		}
 
 		if ( DungeonGame.skip )
 		{
@@ -195,43 +191,68 @@ Player.prototype.update = function ()
 		}
 	}
 
-	// Reset velocity after collision
-	if ( this.sprite.body.velocity.x == 0 )
-		this.velocity.x = 0;
-	if ( this.sprite.body.velocity.y == 0 )
-		this.velocity.y = 0;
+	var direction = this.direction;
+	if ( inputDir.getMagnitude() > 0 ) {
+		if ( Math.abs( inputDir.x ) >= Math.abs( inputDir.y ) )
+			direction = inputDir.x > 0 ? 'right' : 'left';
+		else
+			direction = inputDir.y > 0 ? 'down' : 'up';
+	}
 
-	p.setMagnitude( this.speed );
+
+	/* Sword swinging */
+
+	var justSpace = this.keys.space.justDown || DungeonGame.input.space;
+	if ( justSpace && !DungeonGame.cinematic )
+	{
+		if ( this.sword.frame > 0 )
+		this.swingSword(direction);
+	}
+	this.swing.alpha = (0.75 - this.swingTimer / 10).clamp( 0, 1 );
+	this.swingTimer += 1;
+
+
+	// Reset velocity after collision
+	if ( this.sprite.body.velocity.x == 0 ) {
+		this.velocity.x = 0;
+	}
+	if ( this.sprite.body.velocity.y == 0 ) {
+		this.velocity.y = 0;
+	}
+
+	var inputVel = inputDir.clone();
+	if (justSpace) {
+		inputVel.setMagnitude( 0 );
+	} else {
+		inputVel.setMagnitude( this.speed );
+	}
+
 	var fac = 1 - Math.pow( 0.66, DungeonGame.game.time.elapsed * 0.06 );
-	this.velocity.x += ( p.x - this.velocity.x ) * fac;
-	this.velocity.y += ( p.y - this.velocity.y ) * fac;
+	this.velocity.x += ( inputVel.x - this.velocity.x ) * fac;
+	this.velocity.y += ( inputVel.y - this.velocity.y ) * fac;
 	this.sprite.body.velocity.x = this.velocity.x * DungeonGame.game.time.elapsed * 0.06;
 	this.sprite.body.velocity.y = this.velocity.y * DungeonGame.game.time.elapsed * 0.06;
 
 	this.swing.body.velocity.copyFrom( this.sprite.body.velocity );
 	this.sword.body.velocity.copyFrom( this.sprite.body.velocity );
 
-	if ( p.getMagnitude() > 0 )
+
+	if ( inputVel.getMagnitude() > 0 )
 	{
-		var direction;
-		if ( Math.abs( p.x ) >= Math.abs( p.y ) )
-			direction = p.x > 0 ? 'right' : 'left';
-		else
-			direction = p.y > 0 ? 'down' : 'up';
 		this.setAnimation( 'walk', direction );
 
 		this.trailCooldown -= 1;
 		if ( this.trailCooldown < 0 )
 		{
 			this.trailCooldown = 10;
-			this.trail.x = this.sprite.body.center.x - p.x/this.speed*4;
-			this.trail.y = this.sprite.body.center.y - p.y/this.speed*2 + 4;
+			this.trail.x = this.sprite.body.center.x - inputVel.x/this.speed*4;
+			this.trail.y = this.sprite.body.center.y - inputVel.y/this.speed*2 + 4;
 			this.trail.start( true, 4000, null, 1 );
 		}
 	}
 	else
 	{
-		this.setAnimation( 'idle', this.direction );
+		this.setAnimation( 'idle', direction );
 	}
 
 	this.prevGridPos.copyFrom( this.gridPos );
@@ -261,7 +282,7 @@ Player.prototype.render = function ()
 };
 
 
-Player.prototype.swingSword = function ()
+Player.prototype.swingSword = function (direction)
 {
 	this.swing.reset(
 		Math.round(this.sprite.body.center.x/* + this.sprite.body.velocity.x/60*/),
@@ -276,22 +297,22 @@ Player.prototype.swingSword = function ()
 
 	this.swing.scale.y *= -1;
 	this.sword.scale.y = -this.swing.scale.y;
-	if ( this.direction == 'right' )
+	if ( direction == 'right' )
 	{
 		this.swing.angle = 0;
 		this.swing.body.setSize( 15, 28, 28, 10 );
 	}
-	else if ( this.direction == 'down' )
+	else if ( direction == 'down' )
 	{
 		this.swing.angle = 90;
 		this.swing.body.setSize( 28, 15, 10, this.swing.scale.y == 1 ? 28 : 4 );
 	}
-	else if ( this.direction == 'left' )
+	else if ( direction == 'left' )
 	{
 		this.swing.angle = 180;
 		this.swing.body.setSize( 15, 28, 5, 10 );
 	}
-	else if ( this.direction == 'up' )
+	else if ( direction == 'up' )
 	{
 		this.swing.angle = 270;
 		this.swing.body.setSize( 28, 15, 10, this.swing.scale.y == 1 ? 5 : 27 );
@@ -316,13 +337,13 @@ Player.prototype.damage = function ( power, position )
 		DungeonGame.World.cameraShake( power / 5 );
 
 		// Knockback
-		var p = new Phaser.Point(
+		var dir = new Phaser.Point(
 			this.sprite.body.center.x - position.x,
 			this.sprite.body.center.y - position.y
 		).setMagnitude(400);
-		this.sprite.body.velocity.add( p.x, p.y );
-		this.sword.body.velocity.add( p.x, p.y );
-		this.swing.body.velocity.add( p.x, p.y );
+		this.sprite.body.velocity.add( dir.x, dir.y );
+		this.sword.body.velocity.add( dir.x, dir.y );
+		this.swing.body.velocity.add( dir.x, dir.y );
 
 		if ( this.health <= 0 )
 		{

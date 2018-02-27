@@ -24,15 +24,28 @@ DungeonGame.Boot.prototype = {
 	},
 
 	rescale: function() {
-		var element = document.getElementsByTagName('canvas')[0],
-		style = window.getComputedStyle(element),
-		zoom = style.getPropertyValue('zoom');
+		var isFirefox = false;
+
+		var element = document.getElementsByTagName('canvas')[0];
+		var style = window.getComputedStyle(element);
 		var rect = element.getBoundingClientRect();
+
+		var zoom = style.getPropertyValue('zoom') || style.getPropertyValue('-moz-transform');
+		if (isNaN(zoom)) { // Firefox
+			isFirefox = true;
+			var values = zoom.split('(')[1].split(')')[0].split(',');
+			zoom = values[0];
+			rect.x /= zoom;
+			rect.y /= zoom;
+		}
+		zoom = parseInt(zoom);
 
 		DungeonGame.inputScale.x = 1 / zoom;
 		DungeonGame.inputScale.y = 1 / zoom;
-		DungeonGame.inputOffset.x = rect.left * (1 - 1/zoom); //rect.width / zoom / 4
-		DungeonGame.inputOffset.y = rect.top * (1 - 1/zoom); //rect.height / zoom / 4
+		if (!isFirefox) {
+			DungeonGame.inputOffset.x = rect.left * (1 - 1/zoom);
+			DungeonGame.inputOffset.y = rect.top * (1 - 1/zoom);
+		}
 	},
 
 	readSettings: function() {
