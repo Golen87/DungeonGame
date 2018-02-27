@@ -120,12 +120,13 @@ DungeonGame.Game.prototype =
 			{
 				this.leftDown = true;
 				this.holdTimestamp = DungeonGame.game.time.totalElapsedSeconds();
-				this.clickTime = 0.15;
+				this.clickTime = 0.4;
+				this.moveTime = 0.1;
 				this.holdPosition.copyFrom( this.mousePosition );
 			}
 
 			var dt = DungeonGame.game.time.totalElapsedSeconds() - this.holdTimestamp;
-			if ( dt >= this.clickTime ) {
+			if ( dt >= this.moveTime ) {
 				this.checkDirection();
 			}
 		}
