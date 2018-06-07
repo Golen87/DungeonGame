@@ -57,11 +57,16 @@ Pushable.prototype.update = function ()
 			this.trail.y = this.sprite.body.center.y - dy * this.sprite.body.height/2;
 			this.trail.start( true, 4000, null, 1 );
 		}
+
+		if ( this.sprite.x == this.goalPos.x && this.sprite.y == this.goalPos.y )
+		{
+			this.isPushingBuffer = 0;
+		}
 	}
 	else if ( this.isPushingBuffer > 0 )
 	{
-		this.pushBuffer += 1;
-		if ( this.pushBuffer > 16 )
+		this.pushBuffer += DungeonGame.game.time.elapsed * 0.06;
+		if ( this.pushBuffer > 16 ) // ~0.25 seconds
 		{
 			var p = this.getGridPos();
 			if ( !DungeonGame.World.checkPhysicsAt( p.x + this.pushDir[0], p.y + this.pushDir[1] ) )
