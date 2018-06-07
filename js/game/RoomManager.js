@@ -532,7 +532,7 @@ RoomManager.prototype.loadRoom = function ( room_x, room_y )
 					}
 					else
 					{
-						console.error( "Out of Physics resources!" );
+						console.warn( "Out of Physics resources!" );
 					}
 				}
 			}
@@ -559,7 +559,7 @@ RoomManager.prototype.loadRoom = function ( room_x, room_y )
 						}
 						else
 						{
-							console.error( "Out of Background resources!" );
+							console.warn( "Out of Background resources!" );
 						}
 					}
 				}
@@ -577,7 +577,7 @@ RoomManager.prototype.loadRoom = function ( room_x, room_y )
 						}
 						else
 						{
-							console.error( "Out of Foreground resources!" );
+							console.warn( "Out of Foreground resources!" );
 						}
 					}
 				}
@@ -595,7 +595,7 @@ RoomManager.prototype.loadRoom = function ( room_x, room_y )
 						}
 						else
 						{
-							console.error( "Out of Decoration resources!" );
+							console.warn( "Out of Decoration resources!" );
 						}
 					}
 				}

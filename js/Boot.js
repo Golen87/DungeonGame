@@ -13,6 +13,8 @@ DungeonGame.Boot.prototype = {
 		this.game.physics.startSystem( Phaser.Physics.ARCADE );
 		this.game.time.advancedTiming = true; // Remote later?
 
+		//this.game.add.plugin(Phaser.Plugin.Debug);
+
 		this.rescale();
 		this.game.scale.setResizeCallback(function () {
 			this.rescale();

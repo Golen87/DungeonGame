@@ -248,32 +248,53 @@ World.prototype.render = function ()
 
 	if ( DungeonGame.debug )
 	{
-		DungeonGame.game.debug.text( 'fps: {0}'.format( DungeonGame.game.time.fps ), 0, 10 );
+		var y = 10;
+		DungeonGame.game.debug.text( 'fps: {0}'.format( DungeonGame.game.time.fps ), 0, y );
 
+		y += 15;
+		DungeonGame.game.debug.text( 'room: {0},{1}'.format( this.currentArea[0], this.currentArea[1] ), 0, y );
+
+		y += 15;
+		DungeonGame.game.debug.text( 'tile: {0},{1}'.format(
+			this.Player.gridPos.x/16 - this.currentArea[0]*ROOM_WIDTH,
+			this.Player.gridPos.y/16 - this.currentArea[1]*ROOM_HEIGHT
+		), 0, y );
+
+		y += 15;
 		var count = 0;
 		for ( var i = 0; i < this.roomManager.physics.children.length; i++ )
 			if ( this.roomManager.physics.children[i].exists ) count += 1;
-		DungeonGame.game.debug.text( 'phy: {0}'.format( count ), 0, 25 );
+		DungeonGame.game.debug.text( 'phy: {0}'.format( count ), 0, y );
 
+		y += 15;
 		var count = 0;
 		for ( var i = 0; i < this.roomManager.foreground.children.length; i++ )
 			if ( this.roomManager.foreground.children[i].exists ) count += 1;
-		DungeonGame.game.debug.text( 'fgr: {0}'.format( count ), 0, 40 );
+		DungeonGame.game.debug.text( 'fgr: {0}'.format( count ), 0, y );
 
+		y += 15;
 		var count = 0;
 		for ( var i = 0; i < this.roomManager.background.children.length; i++ )
 			if ( this.roomManager.background.children[i].exists ) count += 1;
-		DungeonGame.game.debug.text( 'bgr: {0}'.format( count ), 0, 55 );
+		DungeonGame.game.debug.text( 'bgr: {0}'.format( count ), 0, y );
 
+		y += 15;
 		var count = 0;
 		for ( var i = 0; i < this.enemyManager.sprites.length; i++ )
 			if ( this.enemyManager.sprites[i].exists ) count += 1;
-		DungeonGame.game.debug.text( 'enm: {0}'.format( count ), 0, 70 );
+		DungeonGame.game.debug.text( 'enm: {0}'.format( count ), 0, y );
 
+		y += 15;
 		var count = 0;
 		for ( var i = 0; i < this.entityManager.sprites.length; i++ )
 			if ( this.entityManager.sprites[i].exists ) count += 1;
-		DungeonGame.game.debug.text( 'obj: {0}'.format( count ), 0, 85 );
+		DungeonGame.game.debug.text( 'obj: {0}'.format( count ), 0, y );
+
+		y += 15;
+		var count = 0;
+		for ( var i = 0; i < this.projectileManager.sprites.length; i++ )
+			if ( this.projectileManager.sprites[i].exists ) count += 1;
+		DungeonGame.game.debug.text( 'pro: {0}'.format( count ), 0, y );
 	}
 };
 
@@ -281,6 +302,7 @@ World.prototype.pause = function ( isPaused )
 {
 	this.Player.sprite.animations.paused = isPaused;
 	this.enemyManager.pause( isPaused );
+	this.entityManager.pause( isPaused );
 }
 
 World.prototype.collision = function ( player, item )

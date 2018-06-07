@@ -102,6 +102,9 @@ DungeonGame.MainMenu.prototype = {
 		if ( this.timer % 2 == 1 )
 			this.light2.tint = randInt(0x40, 0x90) * 0x010101;
 	},
+	render: function() {
+		//DungeonGame.game.debug.text( 'fps: {0}'.format( DungeonGame.game.time.fps ), 0, 10 );
+	},
 };
 
 
@@ -132,11 +135,16 @@ DungeonGame.MainMenu.prototype.setupMenus = function ()
 		this.optionsMenu[this.menuManager.selection][0] = soundText();
 		return soundText();
 	};
+	var changelog = function() { this.state.start( 'Changelog' ); };
+	// 1.0 Release
+	// 1.1 Fixes?? Check github
+	// 1.2 Darkness, new level design, fps
 	var back = function() { this.menuManager.previousMenu(); };
 
 	this.optionsMenu = [
-		[ musicText(), music.bind(this) ],
+		//[ musicText(), music.bind(this) ],
 		[ soundText(), sound.bind(this) ],
+		//[ 'changelog', changelog.bind(this) ],
 		[ 'back', back.bind(this) ],
 	];
 };

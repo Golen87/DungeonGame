@@ -150,7 +150,7 @@ EntityManager.prototype.loadRoom = function ( room_x, room_y )
 					}
 					else
 					{
-						console.error( "Out of Entity resources!" );
+						console.warn( "Out of Entity resources!" );
 					}
 				}
 			}
@@ -467,7 +467,7 @@ EntityManager.prototype.getEntitiesAt = function ( roomPos, coordList )
 		if ( this.activeMap[coords[1]][coords[0]] )
 			result.push( this.activeMap[coords[1]][coords[0]] );
 		else
-			console.error( 'No trigger at ({0},{1})'.format( roomPos.x, roomPos.y ) );
+			console.warn( 'No trigger at ({0},{1})'.format( roomPos.x, roomPos.y ) );
 	}
 	return result;
 };
@@ -482,3 +482,18 @@ EntityManager.prototype.getActiveAt = function ( roomPos, coordList )
 	}
 	return result;
 };
+
+
+EntityManager.prototype.pause = function ( isPaused )
+{
+	for ( var i = 0; i < this.entities.length; i++ )
+	{
+		if ( this.entities[i] && this.entities[i].sprite.exists )
+		{
+			if ( this.entities[i].sprite.animations.currentAnim )
+			{
+				this.entities[i].sprite.animations.paused = isPaused;
+			}
+		}
+	}
+}
