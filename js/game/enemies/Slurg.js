@@ -112,7 +112,7 @@ Slurg.prototype.update = function ()
 	this.lightSprite.x = this.sprite.x + this.lightOffset.x;
 	this.lightSprite.y = this.sprite.y + this.lightOffset.y;
 
-	DungeonGame.Gui.drawLight(this.lightSprite.x, this.lightSprite.y, 1);
+	DungeonGame.Gui.drawLight(this.lightSprite.x, this.lightSprite.y);
 };
 
 Slurg.prototype.updateMovement = function ()
@@ -120,7 +120,6 @@ Slurg.prototype.updateMovement = function ()
 	if ( this.isFlashing )
 	{
 		this.setAnimation( 'hurt', this.direction );
-		this.goalPos
 		return;
 	}
 	else if ( this.state == 'hurt' )

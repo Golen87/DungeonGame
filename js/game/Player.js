@@ -270,7 +270,9 @@ Player.prototype.update = function ()
 		DungeonGame.Gui.setHealth( this.health / 100, 0.0 );
 	}
 
-	DungeonGame.Gui.drawLight(this.sprite.x, this.sprite.y, 1);
+	if (this.sprite.visible) {
+		DungeonGame.Gui.drawLight(this.sprite.x, this.sprite.y, 1);
+	}
 };
 
 Player.prototype.render = function ()

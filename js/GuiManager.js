@@ -34,8 +34,8 @@ GuiManager.prototype.create = function ()
 	this.fowSprite.alpha = 1;
 	//NORMAL, ADD, MULTIPLY, SCREEN, OVERLAY, DARKEN, LIGHTEN, COLOR_DODGE, COLOR_BURN, HARD_LIGHT, SOFT_LIGHT, DIFFERENCE, EXCLUSION, HUE, SATURATION, COLOR, LUMINOSITY
 
-	this.ambientCount = 4;
-	this.ambientCountSmooth = 4;
+	this.ambientCount = 2;
+	this.ambientCountSmooth = 2;
 
 
 	/* Cinematic mode GUI */
@@ -169,7 +169,10 @@ GuiManager.prototype.update = function ()
 		this.itemSlot[i].label.y = DungeonGame.game.camera.view.y + SCREEN_HEIGHT - 3 + this.cinDist * this.cinemaValue;
 	}
 
-	this.chestBeam.angle += 0.5;
+	if (this.chestItem.alive)
+	{
+		this.drawLight(this.chestItem.x, this.chestItem.y);
+	}
 };
 
 GuiManager.prototype.clear = function ()
@@ -435,12 +438,15 @@ GuiManager.prototype.showNewItem = function ( x, y, itemIndex )
 {
 	this.chestBeam.reset( x, y );
 	this.chestBeam.alpha = 0.0;
+	this.chestBeam.angle = 0.0;
 	this.chestItem.reset( x, y );
 	this.chestItem.alpha = 0.0;
 	this.chestItem.frame = itemIndex;
 
 	DungeonGame.game.add.tween( this.chestBeam ).to({ alpha: 1.0 }, 400, Phaser.Easing.Linear.In, true );
 	DungeonGame.game.add.tween( this.chestItem ).to({ alpha: 1.0 }, 400, Phaser.Easing.Linear.In, true, 300 );
+
+	DungeonGame.game.add.tween( this.chestBeam ).to({ angle: 4*30 }, 4000, Phaser.Easing.Linear.In, true );
 
 	DungeonGame.game.add.tween( this.chestBeam ).to({ y: y-16 }, 1500, Phaser.Easing.Exponential.Out, true );
 	DungeonGame.game.add.tween( this.chestItem ).to({ y: y-16 }, 1500, Phaser.Easing.Exponential.Out, true );
@@ -453,7 +459,7 @@ GuiManager.prototype.showNewItem = function ( x, y, itemIndex )
 		}
 	}, this );
 
-	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 3.0, function() {
+	DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 3.3, function() {
 		if ( this.chestBeam.alpha == 0.0 )
 		{
 			this.chestBeam.kill();
