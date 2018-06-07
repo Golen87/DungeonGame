@@ -11,7 +11,7 @@ World.prototype.create = function ()
 	this.worldWidth = DungeonGame.game.cache.getImage( 'floorMap' ).width / ROOM_WIDTH;
 	this.worldHeight = DungeonGame.game.cache.getImage( 'floorMap' ).height / ROOM_HEIGHT;
 	DungeonGame.game.world.setBounds( 0, 0, this.worldWidth * SCREEN_WIDTH, this.worldHeight * SCREEN_HEIGHT );
-	this.background = DungeonGame.game.add.tileSprite( 0, 0, this.worldWidth * ROOM_WIDTH * 16, this.worldHeight * ROOM_HEIGHT * 16, 'dungeon', 8 );
+	this.background = DungeonGame.game.add.tileSprite( 0, 0, this.worldWidth * ROOM_WIDTH * 16, this.worldHeight * ROOM_HEIGHT * 16, 'dungeon', sposToIndex(TILE_FLOOR.spos) );
 
 	this.ground = DungeonGame.game.add.group();
 	this.entities = DungeonGame.game.add.group();

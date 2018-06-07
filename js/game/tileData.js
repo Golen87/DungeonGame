@@ -24,7 +24,7 @@ var TILE_SPIRAL = {
 var TILE_FLOOR = {
 	'name': 'floor',
 	'type': TYPE_FLOOR,
-	'spos': [0,1]
+	'spos': [7,0]
 };
 var DECO_PILLAR = {
 	'name': 'pillar',
@@ -39,7 +39,7 @@ var FLOOR_RUBBLE = {
 var FLOOR_INDENT = {
 	'name': 'indent',
 	'type': TYPE_FLOOR,
-	'spos': [[6,2], [7,2], [6,3], [7,3], [6,4], [7,4]]
+	'spos': [[6,1], [7,1], [6,2], [7,2], [6,3], [7,3]]
 };
 
 var OBJ_BOX = {
@@ -140,7 +140,7 @@ var TILES = [
 var FG_EDGESHADE_LEFT = [2,0];
 var FG_EDGESHADE_RIGHT = [3,0];
 
-var FG_FLOORSHADE = [[1,1], [2,1], [3,1]];
+var FG_FLOORSHADE = [[4,0], [5,0], [6,0]];
 
 var FG_TOP_N = [1,7];
 var FG_TOP_W = [2,6];

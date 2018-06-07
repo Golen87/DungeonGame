@@ -91,7 +91,7 @@ RoomManager.prototype.addForeground = function ( x, y, spos )
 {
 	if ( spos.length != 2 || !isInt( spos[0] ) )
 		spos = Phaser.ArrayUtils.getRandomItem( spos );
-	var index = spos[0] + spos[1]*8;
+	var index = sposToIndex(spos);
 
 	if ( this.fgMap[y][x] == null )
 		this.fgMap[y][x] = [];
@@ -102,7 +102,7 @@ RoomManager.prototype.addBackground = function ( x, y, spos )
 {
 	if ( spos.length != 2 || !isInt( spos[0] ) )
 		spos = Phaser.ArrayUtils.getRandomItem( spos );
-	var index = spos[0] + spos[1]*8;
+	var index = sposToIndex(spos);
 
 	if ( this.bgMap[y][x] == null )
 		this.bgMap[y][x] = [];
@@ -113,7 +113,7 @@ RoomManager.prototype.addFloor = function ( x, y, spos )
 {
 	if ( spos.length != 2 || !isInt( spos[0] ) )
 		spos = Phaser.ArrayUtils.getRandomItem( spos );
-	var index = spos[0] + spos[1]*8;
+	var index = sposToIndex(spos);
 
 	if ( this.bgMap[y][x] == null )
 		this.bgMap[y][x] = [];
@@ -157,9 +157,11 @@ RoomManager.prototype.getTileType = function ( x, y )
 	var result = [];
 	if ( this.isWithin( x, y ) )
 	{
-		for ( var i=0; i<this.tileMap[y][x].length; i++ )
-		{
-			result.push( TILES[this.tileMap[y][x][i]]['type'] );
+		if (this.tileMap[y][x]) {
+			for ( var i=0; i<this.tileMap[y][x].length; i++ )
+			{
+				result.push( TILES[this.tileMap[y][x][i]].type );
+			}
 		}
 	}
 	return result;
@@ -170,9 +172,11 @@ RoomManager.prototype.getTileName = function ( x, y )
 	var result = [];
 	if ( this.isWithin( x, y ) )
 	{
-		for ( var i=0; i<this.tileMap[y][x].length; i++ )
-		{
-			result.push( TILES[this.tileMap[y][x][i]]['name'] );
+		if (this.tileMap[y][x]) {
+			for ( var i=0; i<this.tileMap[y][x].length; i++ )
+			{
+				result.push( TILES[this.tileMap[y][x][i]].name );
+			}
 		}
 	}
 	return result;
@@ -219,25 +223,25 @@ RoomManager.prototype.makeSpriteMap = function ()
 			{
 				this.addPhysics( x, y );
 
-				if ( this.getTileName( x, y ).contains( DECO_PILLAR['name'] ) )
+				if ( this.getTileName( x, y ).contains( DECO_PILLAR.name ) )
 				{
 					if ( this.isWall( x, y-1, true ) )
-						this.addBackground( x, y, TILE_WALL['spos'] );
+						this.addBackground( x, y, TILE_WALL.spos );
 					//else if ( this.isFloor( x, y-1, true ) )
-					//	this.addBackground( x, y, TILE_FLOOR['spos'] );
+					//	this.addBackground( x, y, TILE_FLOOR.spos );
 					if ( !this.isWall( x, y+1, true ) )
-					this.addDecoration( x, y, DECO_PILLAR['spos'] );
-					this.addForeground( x, y-1, [4,0] );
+					this.addDecoration( x, y, DECO_PILLAR.spos );
+					this.addForeground( x, y-1, [7,4] );
 				}
 				else if ( this.isFloor( x, y+1 ) )
 				{
-					if ( this.getTileName( x, y ).contains( TILE_WALL['name'] ) )
+					if ( this.getTileName( x, y ).contains( TILE_WALL.name ) )
 					{
-						this.addBackground( x, y, TILE_WALL['spos'] );
+						this.addBackground( x, y, TILE_WALL.spos );
 					}
-					if ( this.getTileName( x, y ).contains( TILE_SPIRAL['name'] ) )
+					if ( this.getTileName( x, y ).contains( TILE_SPIRAL.name ) )
 					{
-						this.addBackground( x, y, TILE_SPIRAL['spos'] );
+						this.addBackground( x, y, TILE_SPIRAL.spos );
 					}
 
 					if ( this.isFloor( x-1, y ) || ( this.isWall( x-1, y+1 ) ) )
@@ -254,10 +258,10 @@ RoomManager.prototype.makeSpriteMap = function ()
 						//this.addForeground( x, y, FG_TOP_N );
 
 						if ( this.isWall( x, y-1, true ) )
-							this.addBackground( x, y, TILE_WALL['spos'] );
+							this.addBackground( x, y, TILE_WALL.spos );
 						//else if ( this.isFloor( x, y-1, true ) )
-						//	this.addBackground( x, y, TILE_FLOOR['spos'] );
-						this.addDecoration( x, y, DECO_PILLAR['spos'] );
+						//	this.addBackground( x, y, TILE_FLOOR.spos );
+						this.addDecoration( x, y, DECO_PILLAR.spos );
 						this.addForeground( x, y-1, [4,0] );
 					}
 				}
@@ -265,7 +269,7 @@ RoomManager.prototype.makeSpriteMap = function ()
 				if ( !this.isFloor( x, y+1 ) )
 				{
 					// Out of bounds background
-					this.addForeground( x, y, TILE_NONE['spos'] );
+					this.addForeground( x, y, TILE_NONE.spos );
 
 					// Edges
 					if ( this.isFloor( x-1, y ) || this.isFloor( x-1, y+1 ) )
@@ -333,39 +337,39 @@ RoomManager.prototype.makeSpriteMap = function ()
 			// Add indent
 			else if ( this.isFloor( x, y ) && this.getTileName( x, y ).contains( 'indent' ) )
 			{
-				//this.addBackground( x, y, TILE_FLOOR['spos'] );
-				this.addFloor( x, y, FLOOR_INDENT['spos'] );
+				//this.addBackground( x, y, TILE_FLOOR.spos );
+				this.addFloor( x, y, FLOOR_INDENT.spos );
 			}
 			// Add rubble
 			else if ( this.isFloor( x, y ) && this.getTileName( x, y ).contains( 'rubble' ) )
 			{
-				//this.addBackground( x, y, TILE_FLOOR['spos'] );
+				//this.addBackground( x, y, TILE_FLOOR.spos );
 
 				var neighbours = '';
-				neighbours += this.getTileName( x-1, y ).contains('rubble') ? '<' : '-';
 				neighbours += this.getTileName( x, y-1 ).contains('rubble') ? '^' : '-';
 				neighbours += this.getTileName( x+1, y ).contains('rubble') ? '>' : '-';
 				neighbours += this.getTileName( x, y+1 ).contains('rubble') ? 'v' : '-';
+				neighbours += this.getTileName( x-1, y ).contains('rubble') ? '<' : '-';
 				
-				var r = 3 * randInt(0, 1);
+				//var r = 3 * randInt(0, 1);
 				var tiny = [4+randInt(0, 3), 5];
 				var spos = {
 					'----': tiny,
-					'---v': tiny, // missing
-					'-->-': tiny, // missing
-					'-->v': [0+r, 2],
-					'-^--': tiny, // missing
-					'-^-v': tiny, // missing
-					'-^>-': [0+r, 4],
-					'-^>v': [0+r, 3],
-					'<---': tiny, // missing
-					'<--v': [2+r, 2],
-					'<->-': tiny, // missing
-					'<->v': [1+r, 2],
-					'<^--': [2+r, 4],
-					'<^-v': [2+r, 3],
-					'<^>-': [1+r, 4],
-					'<^>v': [1+r, 3]
+					'---<': [1,1],
+					'--v-': [2,1],
+					'--v<': [3,1],
+					'->--': [0,2],
+					'->-<': [1,2],
+					'->v-': [2,2],
+					'->v<': [3,2],
+					'^---': [0,3],
+					'^--<': [1,3],
+					'^-v-': [2,3],
+					'^-v<': [3,3],
+					'^>--': [0,4],
+					'^>-<': [1,4],
+					'^>v-': [2,4],
+					'^>v<': [3,4],
 				}[neighbours]
 
 				if ( spos )
@@ -376,7 +380,7 @@ RoomManager.prototype.makeSpriteMap = function ()
 			// Add floor
 			else if ( this.isFloor( x, y ) )
 			{
-				//this.addBackground( x, y, TILE_FLOOR['spos'] );
+				//this.addBackground( x, y, TILE_FLOOR.spos );
 				//if ( this.isWall( x, y-1 ) )
 				//{
 				//	this.addBackground( x, y, FG_FLOORSHADE );
@@ -385,9 +389,9 @@ RoomManager.prototype.makeSpriteMap = function ()
 
 			for ( var i=0; i<TILES.length; i++ )
 			{
-				if ( TILES[i]['type'] == TYPE_OBJECT && this.getTileName( x, y ).contains( TILES[i]['name'] ) )
+				if ( TILES[i].type == TYPE_OBJECT && this.getTileName( x, y ).contains( TILES[i].name ) )
 				{
-					if ( TILES[i]['name'] == 'torch' )
+					if ( TILES[i].name == 'torch' )
 					{
 						if ( this.isFloor( x, y+1 ) )
 							this.addEntity( x, y, 'torch' );
@@ -395,11 +399,11 @@ RoomManager.prototype.makeSpriteMap = function ()
 							this.addEntity( x, y, 'torch_hidden' );
 					}
 					else
-						this.addEntity( x, y, TILES[i]['name'] );
+						this.addEntity( x, y, TILES[i].name );
 				}
-				if ( TILES[i]['type'] == TYPE_ENEMY && this.getTileName( x, y ).contains( TILES[i]['name'] ) )
+				if ( TILES[i].type == TYPE_ENEMY && this.getTileName( x, y ).contains( TILES[i].name ) )
 				{
-					this.addEnemy( x, y, TILES[i]['name'] );
+					this.addEnemy( x, y, TILES[i].name );
 				}
 			}
 		}

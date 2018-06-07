@@ -159,6 +159,11 @@ function readCookie(name) {
 	return null;
 }
 
+function sposToIndex( spos )
+{
+	return spos[0] + spos[1]*8;
+}
+
 var RED = 'rgba(255,0,0,0.4)';
 var YELLOW = 'rgba(255,255,0,0.4)';
 var GREEN = 'rgba(0,255,0,0.4)';
