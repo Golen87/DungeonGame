@@ -22,7 +22,10 @@ Player.prototype.create = function ( x, y, group )
 	this.updateItemGui();
 
 	this.sword = group.create( x, y+2, 'items', 0 );
-	if ( DungeonGame.skip ) this.sword.frame = 1;
+	if ( DungeonGame.skip ) {
+		this.sword.frame = 1;
+		this.giveItem(62);
+	}
 	DungeonGame.game.physics.arcade.enable( this.sword, Phaser.Physics.ARCADE );
 	this.sword.anchor.set( 0.5 );
 	this.sword.body.setSize( 0, 0, 0, 0 );
@@ -437,6 +440,9 @@ Player.prototype.gameOver = function ()
 
 Player.prototype.giveItem = function ( itemIndex )
 {
+	// 7 Golden sword
+	// 14 Axe
+
 	// Don't overwrite Golden sword 7
 	if ( itemIndex < 16 && this.sword.frame != 7 )
 	{
@@ -450,7 +456,7 @@ Player.prototype.giveItem = function ( itemIndex )
 
 	this.updateItemGui();
 
-	this.health = Math.min( this.health + 30, 100 );
+	this.health = 100;
 	DungeonGame.Gui.setHealth( this.health / 100, 0.0 );
 };
 
