@@ -11,11 +11,10 @@ function Block()
 
 Block.prototype.create = function ()
 {
+	Pushable.prototype.create.call( this );
+
 	this.sprite.frame = 11;
 	this.sprite.scale.x = [-1,1].choice();
-
-	if ( this.data.position )
-		this.sprite.position = this.data.position;
 
 	this.trail = DungeonGame.Particle.createWalkTrail( 0, 0 );
 	this.trailCooldown = 0;
@@ -24,15 +23,6 @@ Block.prototype.create = function ()
 
 Block.prototype.destroy = function () {
 	Pushable.prototype.destroy.call( this );
-
-	if ( this.lockState )
-	{
-		this.data.position = new Phaser.Point( this.sprite.position.x, this.sprite.position.y );
-	}
-	else
-	{
-		this.data.position = null;
-	}
 };
 
 

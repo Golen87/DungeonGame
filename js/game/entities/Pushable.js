@@ -8,8 +8,6 @@ function Pushable()
 	this.isPushingBuffer = 0;
 	this.pushBuffer = 0;
 	this.pushDir = [0,0];
-
-	this.moveBuffer = new Phaser.Point( 0, 0 );
 };
 
 Pushable.prototype.create = function ()
@@ -17,10 +15,24 @@ Pushable.prototype.create = function ()
 	this.trail = DungeonGame.Particle.createWalkTrail( 0, 0 );
 	this.trailCooldown = 0;
 	DungeonGame.World.entities.add( this.trail );
+
+	if ( this.data.position )
+		this.sprite.position = this.data.position;
+
+	this.goalPos = new Phaser.Point( this.sprite.x, this.sprite.y );
 };
 
 Pushable.prototype.destroy = function () {
 	this.trail.destroy();
+
+	if ( this.lockState )
+	{
+		this.data.position = new Phaser.Point( this.sprite.position.x, this.sprite.position.y );
+	}
+	else
+	{
+		this.data.position = null;
+	}
 };
 
 
@@ -28,28 +40,21 @@ Pushable.prototype.update = function ()
 {
 	Entity.prototype.update.call( this );
 
-	if ( this.moveBuffer.x != 0 || this.moveBuffer.y != 0 )
+	if ( this.sprite.x != this.goalPos.x || this.sprite.y != this.goalPos.y )
 	{
 		var speed = this.pushSpeed;
-		var mx = this.moveBuffer.x.clamp( -speed, speed ) * DungeonGame.game.time.elapsed * 0.06;
-		var my = this.moveBuffer.y.clamp( -speed, speed ) * DungeonGame.game.time.elapsed * 0.06;
-
-		if ( ( mx > 0 && mx > this.moveBuffer.x ) || ( mx < 0 && mx < this.moveBuffer.x ) )
-			mx = this.moveBuffer.x;
-		if ( ( my > 0 && my > this.moveBuffer.y ) || ( my < 0 && my < this.moveBuffer.y ) )
-			my = this.moveBuffer.y;
-
-		this.moveBuffer.x -= mx;
-		this.sprite.position.x += mx;
-		this.moveBuffer.y -= my;
-		this.sprite.position.y += my;
+		var dt = DungeonGame.game.time.elapsed * 0.06;
+		this.sprite.x = this.sprite.x + (this.goalPos.x - this.sprite.x).clamp( -speed*dt, speed*dt );
+		this.sprite.y = this.sprite.y + (this.goalPos.y - this.sprite.y).clamp( -speed*dt, speed*dt );
 
 		this.trailCooldown -= 1;
 		if ( this.trailCooldown < 0 )
 		{
 			this.trailCooldown = 4;
-			this.trail.x = this.sprite.body.center.x - mx*8/speed;
-			this.trail.y = this.sprite.body.center.y - my*8/speed;
+			var dx = (this.goalPos.x - this.sprite.x).clamp( -0.5, 0.5 );
+			var dy = (this.goalPos.y - this.sprite.y).clamp( -0.5, 0.5 );
+			this.trail.x = this.sprite.body.center.x - dx * this.sprite.body.width/2;
+			this.trail.y = this.sprite.body.center.y - dy * this.sprite.body.height/2;
 			this.trail.start( true, 4000, null, 1 );
 		}
 	}
@@ -61,8 +66,8 @@ Pushable.prototype.update = function ()
 			var p = this.getGridPos();
 			if ( !DungeonGame.World.checkPhysicsAt( p.x + this.pushDir[0], p.y + this.pushDir[1] ) )
 			{
-				this.moveBuffer.x = this.pushDir[0] * 16;
-				this.moveBuffer.y = this.pushDir[1] * 16;
+				this.goalPos.x = this.sprite.x + this.pushDir[0] * 16;
+				this.goalPos.y = this.sprite.y + this.pushDir[1] * 16;
 				this.pushDir = [0,0];
 				this.pushBuffer = 0;
 			}
