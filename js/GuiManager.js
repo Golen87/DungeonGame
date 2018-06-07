@@ -215,7 +215,7 @@ GuiManager.prototype.setupMenus = function ()
 	var back = function() { this.menuManager.previousMenu(); };
 
 	this.optionsMenu = [
-		[ musicText(), music.bind(this) ],
+		//[ musicText(), music.bind(this) ],
 		[ soundText(), sound.bind(this) ],
 		[ 'back', back.bind(this) ],
 	];
@@ -233,7 +233,7 @@ GuiManager.prototype.setupMenus = function ()
 	};
 
 	this.confirmationMenu = [
-		[ 'sure', exit.bind(this) ],
+		[ 'quit', exit.bind(this) ],
 		[ 'no', back.bind(this) ],
 	];
 
