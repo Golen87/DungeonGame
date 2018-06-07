@@ -7,6 +7,7 @@ function Box( onDeath )
 
 	this.health = 3;
 
+	this.sound = "boxPush";
 	this.pushSpeed = 1.0;
 };
 

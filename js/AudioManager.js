@@ -73,6 +73,24 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].sound = DungeonGame.game.add.audio( name );
 	this.sounds[name].sound.volume = vol;
 
+	var name = 'boxPush';
+	var vol = 0.4 * masterVol;
+	this.sounds[name] = {};
+	this.sounds[name].sound = DungeonGame.game.add.audio( name );
+	this.sounds[name].sound.addMarker( '1', 0.0, 0.4, vol );
+	this.sounds[name].sound.addMarker( '2', 0.5, 0.4, vol );
+	this.sounds[name].sound.addMarker( '3', 1.0, 0.4, vol );
+	this.sounds[name].markers = ['1', '2', '3'];
+
+	var name = 'blockPush';
+	var vol = 0.4 * masterVol;
+	this.sounds[name] = {};
+	this.sounds[name].sound = DungeonGame.game.add.audio( name );
+	this.sounds[name].sound.addMarker( '1', 0.0, 0.9, vol );
+	this.sounds[name].sound.addMarker( '2', 1.0, 0.9, vol );
+	this.sounds[name].sound.addMarker( '3', 2.0, 0.9, vol );
+	this.sounds[name].markers = ['1', '2', '3'];
+
 	var name = 'crystal';
 	var vol = 0.3 * masterVol;
 	this.sounds[name] = {};

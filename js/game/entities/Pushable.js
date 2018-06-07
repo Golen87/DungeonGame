@@ -5,6 +5,7 @@ function Pushable()
 	Entity.call( this );
 
 	this.pushSpeed = 1.0;
+	this.sound = "";
 	this.isPushingBuffer = 0;
 	this.pushBuffer = 0;
 	this.pushDir = [0,0];
@@ -75,6 +76,8 @@ Pushable.prototype.update = function ()
 				this.goalPos.y = this.sprite.y + this.pushDir[1] * 16;
 				this.pushDir = [0,0];
 				this.pushBuffer = 0;
+
+				DungeonGame.Audio.play( this.sound );
 			}
 		}
 	}

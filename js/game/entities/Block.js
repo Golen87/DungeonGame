@@ -6,6 +6,7 @@ function Block()
 
 	this.health = 3;
 
+	this.sound = "blockPush";
 	this.pushSpeed = 0.5;
 };
 
