@@ -1,5 +1,7 @@
 var DungeonGame = DungeonGame || {};
 
+VERSION = 'v1.3';
+
 const ROOM_WIDTH = 16;
 const ROOM_HEIGHT = 12;
 const SCREEN_WIDTH = ROOM_WIDTH * 16;
