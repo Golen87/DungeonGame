@@ -306,14 +306,14 @@ EntityManager.prototype.scriptedTriggers = function ( trigger, spikes, immediate
 	if ( room_pos.x == spike_room.x && room_pos.y == spike_room.y )
 	{
 		// Secret Grail Block puzzle
-		if ( pointCmp( room_pos, [[3,8]] ) )
-		{
-			if ( this.blockPuzzle( trigger, spikes, immediate, room_pos, [[4,4], [4,8], [11,4], [11,8]] ) )
-			{
-				this.onAllKilled( room_pos, true );
-			}
-			return true;
-		}
+		//if ( pointCmp( room_pos, [[3,8]] ) )
+		//{
+		//	if ( this.blockPuzzle( trigger, spikes, immediate, room_pos, [[4,4], [4,8], [11,4], [11,8]] ) )
+		//	{
+		//		this.onAllKilled( room_pos, true );
+		//	}
+		//	return true;
+		//}
 
 		// Monster rooms
 		if ( pointCmp( room_pos, DungeonGame.World.monsterRooms ) )
@@ -347,7 +347,7 @@ EntityManager.prototype.scriptedTriggers = function ( trigger, spikes, immediate
 		// Intersection switch
 		if ( pointCmp( room_pos, [[2,2]] ) )
 		{
-			if ( pointCmp( spike_pos, [[8,4], [9,4], [8,9], [9,9]] ) )
+			if ( pointCmp( spike_pos, [[8,5], [9,5], [8,8], [9,8]] ) )
 				spikes.toggle( trigger.active, immediate );
 			if ( pointCmp( spike_pos, [[6,6], [11,6], [6,7], [11,7]] ) )
 				spikes.toggle( !trigger.active, immediate );
@@ -362,7 +362,7 @@ EntityManager.prototype.scriptedTriggers = function ( trigger, spikes, immediate
 		// Block puzzle near golden sword
 		if ( pointCmp( room_pos, [[4,3]] ) )
 		{
-			this.blockPuzzle( trigger, spikes, immediate, room_pos, [[9,6], [7,9]] );
+			this.blockPuzzle( trigger, spikes, immediate, room_pos, [[8,6], [6,9]] );
 			return true;
 		}
 		// Block puzzle right before golden sword
@@ -374,26 +374,26 @@ EntityManager.prototype.scriptedTriggers = function ( trigger, spikes, immediate
 		// Block puzzle in center room
 		if ( pointCmp( room_pos, [[3,4]] ) )
 		{
-			this.blockPuzzle( trigger, spikes, immediate, room_pos, [[5,5], [5,9], [10,5], [10,9]] );
+			this.blockPuzzle( trigger, spikes, immediate, room_pos, [[5,5], [5,8], [10,5], [10,8]] );
 			return true;
 		}
 		// Golden sword
 		if ( pointCmp( room_pos, [[6,2]] ) )
 		{
-			this.blockPuzzle( trigger, spikes, immediate, room_pos, [[3,5], [11,5], [3,7], [11,7]] );
+			this.blockPuzzle( trigger, spikes, immediate, room_pos, [[3,4], [11,4], [3,6], [11,6]] );
 			return true;
 		}
 
-		// Block puzzle (NOT IN GAME YET)
-		if ( pointCmp( room_pos, [[7,6]] ) )
+		// Block puzzle Semi hard
+		if ( pointCmp( room_pos, [[5,2]] ) )
 		{
-			this.blockPuzzle( trigger, spikes, immediate, room_pos, [[9,2], [9,4]] );
+			this.blockPuzzle( trigger, spikes, immediate, room_pos, [[7,4], [7,5]] );
 			return true;
 		}
-		// Block puzzle (NOT IN GAME YET)
-		if ( pointCmp( room_pos, [[7,7]] ) )
+		// Block puzzle Hardest
+		if ( pointCmp( room_pos, [[5,1]] ) )
 		{
-			this.blockPuzzle( trigger, spikes, immediate, room_pos, [[7,3], [7,4]] );
+			this.blockPuzzle( trigger, spikes, immediate, room_pos, [[9,2], [9,4]] );
 			return true;
 		}
 

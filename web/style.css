@@ -2,7 +2,7 @@
 body {
 	background: black;
 	margin: auto;
-	padding: 1em;
+	padding: 0.5em;
 	text-align: center;
 	overflow: hidden;
 }
@@ -25,26 +25,52 @@ canvas {
 	transform-origin: 50% 0;
 }
 
-@media (min-width: 512px) and (min-height: 416px) {
+@media (min-width: 512px) and (min-height: 384px) {
 	canvas {
 		zoom: 2;
 		-moz-transform: scale(2);
 		transform-origin: 50% 0;
 	}
 }
-
-@media (min-width: 768px) and (min-height: 624px) {
+@media (min-width: 768px) and (min-height: 576px) {
 	canvas {
 		zoom: 3;
 		-moz-transform: scale(3);
 		transform-origin: 50% 0;
 	}
 }
-
-@media (min-width: 1024px) and (min-height: 832px) {
+@media (min-width: 1024px) and (min-height: 768px) {
 	canvas {
 		zoom: 4;
 		-moz-transform: scale(4);
+		transform-origin: 50% 0;
+	}
+}
+@media (min-width: 1280px) and (min-height: 960px) {
+	canvas {
+		zoom: 5;
+		-moz-transform: scale(5);
+		transform-origin: 50% 0;
+	}
+}
+@media (min-width: 1536px) and (min-height: 1152px) {
+	canvas {
+		zoom: 6;
+		-moz-transform: scale(6);
+		transform-origin: 50% 0;
+	}
+}
+@media (min-width: 1792px) and (min-height: 1344px) {
+	canvas {
+		zoom: 7;
+		-moz-transform: scale(7);
+		transform-origin: 50% 0;
+	}
+}
+@media (min-width: 2048px) and (min-height: 1536px) {
+	canvas {
+		zoom: 8;
+		-moz-transform: scale(8);
 		transform-origin: 50% 0;
 	}
 }

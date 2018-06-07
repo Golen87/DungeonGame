@@ -41,8 +41,8 @@ GuiManager.prototype.create = function ()
 	/* Cinematic mode GUI */
 
 	this.startupTimer = null;
-	this.cinDist = 32;
-	this.cinOffset = 104;
+	this.cinDist = 16;
+	this.cinOffset = SCREEN_HEIGHT / 2;
 	this.cinematicTop = DungeonGame.game.add.graphics( 0, 0 );
 	this.cinematicTop.beginFill( 0xFFFFFF, 1.0 );
 	this.cinematicTop.tint = 0x000000;
@@ -55,7 +55,13 @@ GuiManager.prototype.create = function ()
 	this.cinematicBottom.drawRect( 0, SCREEN_HEIGHT - this.cinDist, SCREEN_WIDTH, this.cinDist + this.cinOffset );
 	this.cinematicBottom.endFill();
 	this.guiGroup.add( this.cinematicBottom );
-	this.cinemaValue = 5;
+
+	// Cinematic bars and gui moves at (cinDist x cinemaValue)
+	this.CINEMATIC_NONE = 0;
+	this.CINEMATIC_NARROW = 2;
+	this.CINEMATIC_INTRO = ROOM_HEIGHT/2 + 2;
+	this.CINEMATIC_OUTRO = ROOM_HEIGHT/2 + 2;
+	this.cinemaValue = this.CINEMATIC_INTRO;
 
 
 	/* Health GUI */
@@ -122,24 +128,24 @@ GuiManager.prototype.update = function ()
 	this.fowSprite.y = DungeonGame.game.camera.view.y;
 
 	if ( this.startupTimer == null )
-		this.startupTimer = 3;
+		this.startupTimer = 4;
 	if ( this.startupTimer > 0 )
 		this.startupTimer -= 1;
 
 	if ( DungeonGame.cinematic )
 	{
 		if ( this.startupTimer == 0 )
-			this.cinemaValue += ( 2 - this.cinemaValue ) / 6;
+			this.cinemaValue += ( this.CINEMATIC_NARROW - this.cinemaValue ) / 6;
 	}
 	else
 	{
-		this.cinemaValue += ( 0 - this.cinemaValue ) / 6;
+		this.cinemaValue += ( this.CINEMATIC_NONE - this.cinemaValue ) / 6;
 	}
 
 	this.cinematicTop.x = DungeonGame.game.camera.view.x;
-	this.cinematicTop.y = DungeonGame.game.camera.view.y - this.cinDist * ( 2 - this.cinemaValue );
+	this.cinematicTop.y = DungeonGame.game.camera.view.y - this.cinDist * ( this.CINEMATIC_NARROW - this.cinemaValue );
 	this.cinematicBottom.x = DungeonGame.game.camera.view.x;
-	this.cinematicBottom.y = DungeonGame.game.camera.view.y + this.cinDist * ( 2 - this.cinemaValue );
+	this.cinematicBottom.y = DungeonGame.game.camera.view.y + this.cinDist * ( this.CINEMATIC_NARROW - this.cinemaValue );
 
 	this.hpBar.x = DungeonGame.game.camera.view.x + 29;
 	this.hpBar.y = DungeonGame.game.camera.view.y + SCREEN_HEIGHT - 21 + this.cinDist * this.cinemaValue;
@@ -356,7 +362,7 @@ GuiManager.prototype.showVictory = function ()
 
 	DungeonGame.game.time.events.add( 3000, function() {
 		this.startupTimer = -1;
-		DungeonGame.game.add.tween( this ).to({ cinemaValue: 4.5 }, 2000, Phaser.Easing.Quadratic.In, true );
+		DungeonGame.game.add.tween( this ).to({ cinemaValue: this.CINEMATIC_OUTRO }, 2000, Phaser.Easing.Quadratic.In, true );
 
 		DungeonGame.game.time.events.add( 1000, function() {
 			DungeonGame.game.add.tween( this.choiceTitle ).to({ alpha: 0 }, 700, Phaser.Easing.Quadratic.In, true );

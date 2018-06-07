@@ -30,7 +30,7 @@ World.prototype.create = function ()
 
 	this.Player.create(
 		this.currentArea[0] * SCREEN_WIDTH + SCREEN_WIDTH/2,
-		this.currentArea[1] * SCREEN_HEIGHT + SCREEN_HEIGHT*5/8,
+		this.currentArea[1] * SCREEN_HEIGHT + SCREEN_HEIGHT*9/16,
 		//this.currentArea[1] * SCREEN_HEIGHT + SCREEN_HEIGHT/2,
 		this.entities
 	);
@@ -42,7 +42,7 @@ World.prototype.create = function ()
 	this.entityManager.triggerMonsterRoom = World.prototype.triggerMonsterRoom.bind( this );
 	this.entityManager.clearMonsterRoom = World.prototype.clearMonsterRoom.bind( this );
 
-	this.monsterRooms = [[0,0], [0,1], [0,2], [2,6], [3,8], [4,2], [5,2], [5,6]];
+	this.monsterRooms = [[0,0], [0,1], [0,2], [2,6], [3,8], [4,2], [5,6]];
 	this.clearedMonsterRooms = [];
 	this.entityManager.clearedMonsterRooms = this.clearedMonsterRooms;
 	this.enemyManager.clearedMonsterRooms = this.clearedMonsterRooms;

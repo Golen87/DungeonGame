@@ -1,9 +1,9 @@
 var DungeonGame = DungeonGame || {};
 
-var ROOM_WIDTH = 16;
-var ROOM_HEIGHT = 13;
-var SCREEN_WIDTH = ROOM_WIDTH * 16;
-var SCREEN_HEIGHT = ROOM_HEIGHT * 16;
+const ROOM_WIDTH = 16;
+const ROOM_HEIGHT = 12;
+const SCREEN_WIDTH = ROOM_WIDTH * 16;
+const SCREEN_HEIGHT = ROOM_HEIGHT * 16;
 
 var config = {
 	width: SCREEN_WIDTH,
