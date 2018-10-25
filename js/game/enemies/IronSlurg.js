@@ -1,11 +1,11 @@
 
 // Constructor
-function Slurg()
+function IronSlurg()
 {
 	Enemy.call( this );
 
-	this.health = 3;
-	this.speed = 32 / 60;
+	this.health = 5;
+	this.speed = 24 / 60;
 
 	this.spriteIndexLength = 5;
 	this.sound = 'spider';
@@ -16,17 +16,11 @@ function Slurg()
 	this.aboutToTurn = null;
 };
 
-Slurg.prototype.create = function ()
+IronSlurg.prototype.create = function ()
 {
-	this.sprite.loadTexture( 'slurg', 0 );
+	this.sprite.loadTexture( 'ironslurg', 0 );
 
 	this.sprite.body.setSize( 12, 10, 2, 3 );
-
-	this.lightSprite.reset( this.spawn.x*16, this.spawn.y*16 );
-	this.lightSprite.loadTexture( 'slurgLight', 0 );
-	this.lightSprite.visible = true;
-	this.lightSprite.tint = 0x777777;
-	this.lightOffset = new Phaser.Point( 0, 0 );
 
 	this.sprite.body.drag.set( 1500 );
 	this.goalPos = new Phaser.Point( this.sprite.x, this.sprite.y );
@@ -34,11 +28,13 @@ Slurg.prototype.create = function ()
 	this.setupAnimation();
 };
 
-Slurg.prototype.setupAnimation = function ()
+IronSlurg.prototype.setupAnimation = function ()
 {
 	var idle = [0];
 	var walk = [0, 1, 2, 3, 3, 3, 3];
 	var hurt = [4];
+	var hide = [0,0,0,4,5,6,7,9,10,8,10,9,10];
+	var hide = [0,0,0,4,5,6,7,8,11,9,11,10,11];
 
 	this.sprite.animations.add( 'idle_right', idle, 3, true );
 	this.sprite.animations.add( 'walk_right', walk, 8, true );
@@ -65,7 +61,7 @@ Slurg.prototype.setupAnimation = function ()
 	this.setAnimation( 'idle', ['right', 'down', 'left', 'up'].choice() );
 };
 
-Slurg.prototype.setAnimation = function ( newState, newDirection )
+IronSlurg.prototype.setAnimation = function ( newState, newDirection )
 {
 	var name = null;
 	if ( this.state != newState || this.direction != newDirection )
@@ -73,27 +69,6 @@ Slurg.prototype.setAnimation = function ( newState, newDirection )
 		name = '{0}_{1}'.format( newState, newDirection );
 		this.state = newState;
 		this.direction = newDirection;
-
-		if ( this.direction == 'right' )
-		{
-			this.lightSprite.frame = 0;
-			this.lightOffset.set( -4, -2 );
-		}
-		else if ( this.direction == 'left' )
-		{
-			this.lightSprite.frame = 1;
-			this.lightOffset.set( 4, -2 );
-		}
-		else
-		{
-			this.lightSprite.frame = 2;
-			this.lightOffset.set( 0, 0 );
-		}
-
-		if ( this.isHurting )
-			this.lightSprite.tint = 0x555555;
-		else
-			this.lightSprite.tint = 0x777777;
 	}
 
 	if ( name )
@@ -103,19 +78,14 @@ Slurg.prototype.setAnimation = function ( newState, newDirection )
 };
 
 
-Slurg.prototype.update = function ()
+IronSlurg.prototype.update = function ()
 {
 	Enemy.prototype.update.call( this );
 
 	this.updateMovement();
-
-	this.lightSprite.x = this.sprite.x + this.lightOffset.x;
-	this.lightSprite.y = this.sprite.y + this.lightOffset.y;
-
-	DungeonGame.Light.drawFow( this.lightSprite.x, this.lightSprite.y, 2.0, 1.0 );
 };
 
-Slurg.prototype.updateMovement = function ()
+IronSlurg.prototype.updateMovement = function ()
 {
 	if ( this.isFlashing )
 	{
@@ -205,7 +175,7 @@ Slurg.prototype.updateMovement = function ()
 	}
 };
 
-Slurg.prototype.dirToVec = function ( dir )
+IronSlurg.prototype.dirToVec = function ( dir )
 {
 	if ( dir == "left" )
 		return [-1, 0];
@@ -218,7 +188,7 @@ Slurg.prototype.dirToVec = function ( dir )
 	return [0, 0];
 };
 
-Slurg.prototype.rotateDir = function ( dir, cw )
+IronSlurg.prototype.rotateDir = function ( dir, cw )
 {
 	var allDirs = ['right', 'down', 'left', 'up'];
 	var i = allDirs.indexOf( dir );
@@ -229,7 +199,7 @@ Slurg.prototype.rotateDir = function ( dir, cw )
 	return allDirs[i];
 };
 
-Slurg.prototype.setDir = function ( dir, onTheMove=false )
+IronSlurg.prototype.setDir = function ( dir, onTheMove=false )
 {
 	this.aboutToTurn = dir;
 	this.iWantToTurn = false;
@@ -238,7 +208,7 @@ Slurg.prototype.setDir = function ( dir, onTheMove=false )
 		this.idleTimer /= 2;
 };
 
-Slurg.prototype.findAvailableTurns = function ()
+IronSlurg.prototype.findAvailableTurns = function ()
 {
 	var d1 = this.rotateDir( this.direction, true );
 	var d2 = this.rotateDir( this.direction, false );
@@ -259,7 +229,7 @@ Slurg.prototype.findAvailableTurns = function ()
 	return available;
 };
 
-Slurg.prototype.findBestDir = function ( dir1, dir2 )
+IronSlurg.prototype.findBestDir = function ( dir1, dir2 )
 {
 	var vec1 = this.dirToVec( dir1 );
 	var vec2 = this.dirToVec( dir2 );
@@ -276,13 +246,13 @@ Slurg.prototype.findBestDir = function ( dir1, dir2 )
 		return [dis1, dis2].choice();
 };
 
-Slurg.prototype.canMove = function ( dir )
+IronSlurg.prototype.canMove = function ( dir )
 {
 	var p = this.getGridPos();
 	return ( !DungeonGame.World.checkPhysicsAt( p.x + dir[0], p.y + dir[1] ) );
 };
 
-Slurg.prototype.move = function ()
+IronSlurg.prototype.move = function ()
 {
 	var p = this.getGridPos();
 	var d = this.dirToVec( this.direction );
@@ -291,12 +261,12 @@ Slurg.prototype.move = function ()
 	this.setAnimation( 'walk', this.direction );
 };
 
-Slurg.prototype.atGoalPos = function ()
+IronSlurg.prototype.atGoalPos = function ()
 {
 	return ( this.sprite.x == this.goalPos.x && this.sprite.y == this.goalPos.y );
 };
 
-Slurg.prototype.align = function ()
+IronSlurg.prototype.align = function ()
 {
 	var p = this.getGridPos();
 	this.goalPos.x = p.x * 16 + 8;
@@ -320,7 +290,7 @@ Slurg.prototype.align = function ()
 };
 
 
-Slurg.prototype.getPhysicsPos = function ()
+IronSlurg.prototype.getPhysicsPos = function ()
 {
 	return new Phaser.Point(
 		Math.floor(this.goalPos.x / 16),
@@ -328,12 +298,12 @@ Slurg.prototype.getPhysicsPos = function ()
 	);
 };
 
-Slurg.prototype.overlap = function ( other )
+IronSlurg.prototype.overlap = function ( other )
 {
 	Enemy.prototype.overlap.call( this );
 };
 
-Slurg.prototype.overlapEntity = function ( other )
+IronSlurg.prototype.overlapEntity = function ( other )
 {
 	if ( Spikes.prototype.isPrototypeOf( other.owner ) )
 	{
@@ -349,14 +319,14 @@ Slurg.prototype.overlapEntity = function ( other )
 	}
 };
 
-Slurg.prototype.takeDamage = function ()
+IronSlurg.prototype.takeDamage = function ()
 {
 	Enemy.prototype.takeDamage.call( this );
 
 	//DungeonGame.game.add.tween( this.chestBeam ).to({ alpha: 1.0 }, 400, Phaser.Easing.Linear.In, true );
 };
 
-Slurg.prototype.knockback = function ( from )
+IronSlurg.prototype.knockback = function ( from )
 {
 	var p = new Phaser.Point(
 		this.sprite.body.center.x - from.x,
@@ -365,16 +335,16 @@ Slurg.prototype.knockback = function ( from )
 	this.sprite.body.velocity.add( p.x, p.y );
 };
 
-Slurg.prototype.defeat = function ()
+IronSlurg.prototype.defeat = function ()
 {
 	Enemy.prototype.defeat.call( this );
 
 	DungeonGame.Particle.createSmokeBurst( this.sprite.x, this.sprite.y );
 };
 
-Slurg.prototype.getAttackPower = function ()
+IronSlurg.prototype.getAttackPower = function ()
 {
 	return 15;
 };
 
-extend( Enemy, Slurg );
+extend( Enemy, IronSlurg );
