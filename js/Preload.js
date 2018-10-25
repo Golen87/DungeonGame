@@ -26,7 +26,7 @@ DungeonGame.Preload.prototype = {
 
 		this.load.spritesheet( 'entities16', 'assets/sprites/entities/entities16.png', 16, 32 );
 		this.load.spritesheet( 'entities32', 'assets/sprites/entities/entities32.png', 32, 32 );
-		this.load.spritesheet( 'items', 'assets/sprites/items.png', 16, 16 );
+		this.load.spritesheet( 'items', 'assets/sprites/misc/items.png', 16, 16 );
 
 		this.load.image( 'sunshine', 'assets/sprites/lighting/sunshine.png' );
 		this.load.image( 'glow', 'assets/sprites/lighting/glow.png' );
@@ -39,7 +39,6 @@ DungeonGame.Preload.prototype = {
 		this.load.spritesheet( 'player', 'assets/sprites/player/player_old.png', 16, 16 );
 		this.load.spritesheet( 'swing', 'assets/sprites/player/swing.png', 48, 48 );
 
-		this.load.spritesheet( 'imp', 'assets/sprites/enemies/imp.png', 16, 16 );
 		this.load.spritesheet( 'slurg', 'assets/sprites/enemies/slurg.png', 16, 16 );
 		this.load.spritesheet( 'fry', 'assets/sprites/enemies/fry.png', 16, 32 );
 		this.load.spritesheet( 'tarragon', 'assets/sprites/enemies/tarragon.png', 68, 68 );
@@ -60,7 +59,7 @@ DungeonGame.Preload.prototype = {
 		this.load.image( 'wallMap', 'assets/rooms/{0}/wallMap.png'.format(world) );
 		this.load.image( 'entityMap', 'assets/rooms/{0}/entityMap.png'.format(world) );
 
-		this.load.image( 'camelopardia', 'assets/sprites/camelopardia.png' );
+		this.load.image( 'camelopardia', 'assets/sprites/misc/camelopardia.png' );
 
 
 		this.load.audio( 'footsteps', 'assets/sounds/footsteps.ogg' );
