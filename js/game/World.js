@@ -42,6 +42,8 @@ World.prototype.create = function ()
 	this.entityManager.triggerMonsterRoom = World.prototype.triggerMonsterRoom.bind( this );
 	this.entityManager.clearMonsterRoom = World.prototype.clearMonsterRoom.bind( this );
 
+	this.projectileManager = new ProjectileManager( this.entities, this.ground, this.lighting, this.roomManager.physicsMap );
+
 	this.monsterRooms = [[0,0], [0,1], [0,2], [2,6], [3,8], [4,2], [5,6]];
 	this.clearedMonsterRooms = [];
 	this.entityManager.clearedMonsterRooms = this.clearedMonsterRooms;
@@ -98,6 +100,7 @@ World.prototype.update = function ()
 
 	this.enemyManager.update();
 	this.entityManager.update();
+	this.projectileManager.update();
 
 	this.handleCollisions();
 
@@ -124,11 +127,12 @@ World.prototype.update = function ()
 	var d = this.camPos.distance( this.camGoal );
 	if ( d < 1 && d != 0 )
 	{
-		this.camPos.x = this.camGoal.x
-		this.camPos.y = this.camGoal.y
+		this.camPos.x = this.camGoal.x;
+		this.camPos.y = this.camGoal.y;
 		this.roomManager.clearOutOfView();
 		this.enemyManager.clearOutOfView();
 		this.entityManager.clearOutOfView();
+		this.projectileManager.clearOutOfView();
 	}
 	//this.camPos.x += ( this.camGoal.x - this.camPos.x ).clamp(-2,2);
 	//this.camPos.y += ( this.camGoal.y - this.camPos.y ).clamp(-2,2);
@@ -207,6 +211,23 @@ World.prototype.handleCollisions = function ()
 		}
 	}
 
+	for ( var i = 0; i < this.projectileManager.projectiles.length; i++ )
+	{
+		var projectile = this.projectileManager.projectiles[i];
+		if ( projectile && projectile.sprite.exists )
+		{
+			DungeonGame.game.physics.arcade.collide( projectile.sprite, this.roomManager.physics, function( projectile ) {
+				projectile.owner.destroy();
+			}, null, this );
+			DungeonGame.game.physics.arcade.overlap( this.Player.swing, projectile.sprite, function( swing, projectile ) {
+				//projectile.owner.damage( this.Player.getAttackPower() );
+			}, null, this );
+			DungeonGame.game.physics.arcade.overlap( this.Player.sprite, projectile.sprite, function() {
+				//projectile.overlap( this.Player );
+			}, null, this );
+		}
+	}
+
 	for ( var i = 0; i < this.items.length; i++ )
 	{
 		DungeonGame.game.physics.arcade.overlap( this.Player.sprite, this.items[i].sprite, this.collision, null, this );
@@ -237,6 +258,7 @@ World.prototype.render = function ()
 	this.roomManager.render();
 	this.enemyManager.render();
 	this.entityManager.render();
+	this.projectileManager.render();
 
 	this.Player.render();
 

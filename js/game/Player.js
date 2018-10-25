@@ -332,6 +332,22 @@ Player.prototype.swingSword = function (direction)
 	this.sword.position.y += Math.round(14*Math.sin((this.sword.angle + this.swing.scale.y * 45) * Math.PI / 180));
 
 	DungeonGame.Audio.play( 'swing' );
+
+	const angles = {
+		'right':	0 * Math.PI/2,
+		'down':		1 * Math.PI/2,
+		'left':		2 * Math.PI/2,
+		'up':		3 * Math.PI/2,
+	}
+
+	/*
+	DungeonGame.World.projectileManager.createProjectile(
+		"fireball",
+		this.sprite.x,
+		this.sprite.y,
+		angles[direction] + randFloat(-Math.PI/40, Math.PI/40)
+	);
+	*/
 };
 
 Player.prototype.damage = function ( power, position )
