@@ -72,7 +72,12 @@ DungeonGame.Credits.prototype = {
 		var esc = DungeonGame.game.input.keyboard.addKey( Phaser.Keyboard.ESC );
 		esc.onDown.add( this.toMainMenu, this );
 	},
-	update: function() {},
+	update: function() {
+		if ( DungeonGame.game.input.activePointer.isDown )
+		{
+			this.toMainMenu();
+		}
+	},
 
 	toMainMenu: function() {
 		DungeonGame.Audio.play( 'menu', 'click' );
