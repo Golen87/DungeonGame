@@ -3,50 +3,63 @@
 function Torch( visible )
 {
 	Entity.call( this );
+	this.alive = true;
 
-	this.timer = 0;
 	this.visible = visible;
 
-	this.flickerMin = visible ? 0xe7 : 0xd7;
-	this.flickerMax = visible ? 0xff : 0xef;
+	this.flickerTimer = 0;
+	this.flickerMin = visible ? 0.90 : 0.84;
+	this.flickerMax = visible ? 1.00 : 0.94;
+	this.flicker = randFloat(this.flickerMin, this.flickerMax);
+
+	this.lightOffset = visible ? 4 : -2;
 };
 
 Torch.prototype.create = function ()
 {
+	if ( this.data.alive != null )
+	{
+		this.alive = this.data.alive;
+	}
+
 	this.sprite.frame = 18;
 
-	this.lightSprite.reset( this.spawn.x*16 + 8, this.spawn.y*16 + 8 + 4 );
-	this.lightSprite.loadTexture( 'torchlight' );
-	this.lightSprite.blendMode = Phaser.blendModes.COLOR_DODGE;
-
 	var behindWallOffset = this.visible ? 0 : 6;
-	this.lightSprite.position.y -= behindWallOffset;
 
-	if ( this.visible )
+	if ( this.alive )
 	{
-		this.fire = DungeonGame.Particle.createFire( this.spawn.x*16 + 8, this.spawn.y*16 + 8 - 2 );
-		DungeonGame.World.lighting.add( this.fire );
+		if ( this.visible )
+		{
+			this.fire = DungeonGame.Particle.createFire( this.spawn.x*16 + 8, this.spawn.y*16 + 8 - 2 );
+			DungeonGame.World.lighting.add( this.fire );
+		}
+		this.trail = DungeonGame.Particle.createSmokeTrail( this.spawn.x*16 + 8, this.spawn.y*16 + 8 - 2 - behindWallOffset );
+		DungeonGame.World.lighting.add( this.trail );
 	}
-	this.trail = DungeonGame.Particle.createSmokeTrail( this.spawn.x*16 + 8, this.spawn.y*16 + 8 - 2 - behindWallOffset );
-	DungeonGame.World.lighting.add( this.trail );
 };
 
 Torch.prototype.destroy = function () {
 	if ( this.fire && this.fire.exists )
 		this.fire.destroy();
-	this.trail.destroy();
+	if ( this.trail && this.trail.exists )
+		this.trail.destroy();
+
+	this.data.alive = this.alive;
 };
 
 Torch.prototype.update = function ()
 {
 	Entity.prototype.update.call( this );
 
-	this.timer += 1;
-	if ( this.timer % 2 == 0 )
-		this.lightSprite.tint = randInt(this.flickerMin, this.flickerMax) * 0x010101;
+	this.flickerTimer += 1;
+	if ( this.flickerTimer % 2 == 0 )
+		this.flicker = randFloat(this.flickerMin, this.flickerMax);// * 0x010101;
 
-	if (this.lightSprite.alive)
-		DungeonGame.Gui.drawLight(this.sprite.x, this.sprite.y+8);
+	if (this.alive)
+	{
+		DungeonGame.Light.drawFow( this.spawn.x*16 + 7, this.spawn.y*16 + 7 + this.lightOffset, 4.0, 1.0 );
+		DungeonGame.Light.drawLight( this.spawn.x*16 + 7, this.spawn.y*16 + 7 + this.lightOffset, 1.0, this.flicker );
+	}
 };
 
 Torch.prototype.hasPhysics = function ()
@@ -56,13 +69,13 @@ Torch.prototype.hasPhysics = function ()
 
 Torch.prototype.hurt = function ()
 {
-	if (this.lightSprite.alive) {
+	if (this.alive) {
 		DungeonGame.Audio.play( 'chop' );
 		if (this.fire && this.fire.exists) {
 			this.fire.destroy();
 		}
 		this.trail.on = false;
-		this.lightSprite.kill();
+		this.alive = false;
 	}
 };
 

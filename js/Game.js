@@ -19,6 +19,7 @@ DungeonGame.Game.prototype =
 		DungeonGame.cinematic = true;
 		DungeonGame.game.physics.arcade.isPaused = false;
 
+		DungeonGame.Light.create();
 		DungeonGame.Gui.create();
 		this.World.create();
 
@@ -45,10 +46,11 @@ DungeonGame.Game.prototype =
 	{
 
 		if ( !DungeonGame.paused ) {
-			DungeonGame.Gui.clear();
+			DungeonGame.Light.clear();
 			this.World.update();
 		}
 
+		DungeonGame.Light.update();
 		DungeonGame.Gui.update();
 
 		if ( this.skipShift.isDown && this.skipToggle.isDown )

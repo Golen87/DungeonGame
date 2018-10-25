@@ -37,12 +37,12 @@ World.prototype.create = function ()
 
 	this.enemyManager = new EnemyManager( this.entities, this.ground, this.lighting, this.roomManager.enemyMap, this.roomManager.physicsMap );
 
-	this.entityManager = new EntityManager( this.entities, this.ground, this.lighting, this.roomManager.entityMap );
+	this.entityManager = new EntityManager( this.entities, this.ground, this.roomManager.entityMap );
 	this.entityManager.onOpen = World.prototype.onOpen.bind( this );
 	this.entityManager.triggerMonsterRoom = World.prototype.triggerMonsterRoom.bind( this );
 	this.entityManager.clearMonsterRoom = World.prototype.clearMonsterRoom.bind( this );
 
-	this.projectileManager = new ProjectileManager( this.entities, this.ground, this.lighting, this.roomManager.physicsMap );
+	this.projectileManager = new ProjectileManager( this.entities, this.ground, this.roomManager.physicsMap );
 
 	this.monsterRooms = [[0,0], [0,1], [0,2], [2,6], [3,8], [4,2], [5,6]];
 	this.clearedMonsterRooms = [];
@@ -80,6 +80,7 @@ World.prototype.create = function ()
 	DungeonGame.game.world.bringToTop( this.ground );
 	DungeonGame.game.world.bringToTop( this.entities );
 	DungeonGame.game.world.bringToTop( this.roomManager.foreground );
+	DungeonGame.game.world.bringToTop( DungeonGame.Light.lightGroup );
 	DungeonGame.game.world.bringToTop( this.lighting );
 	DungeonGame.game.world.bringToTop( DungeonGame.Gui.guiGroup );
 

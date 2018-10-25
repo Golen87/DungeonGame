@@ -1,6 +1,6 @@
 
 // Constructor
-function EntityManager ( group, bgGroup, lightGroup, entityMap )
+function EntityManager ( group, bgGroup, entityMap )
 {
 	this.entityMap = entityMap;
 	this.activeMap = [...Array( entityMap.length ).keys()].map( i => Array( entityMap[0].length ) );
@@ -17,7 +17,6 @@ function EntityManager ( group, bgGroup, lightGroup, entityMap )
 	this.entities = Array( 96 );
 	this.sprites = Array( 96 );
 	this.bgSprites = Array( 96 );
-	this.lightSprites = Array( 96 );
 
 	for ( var i = 0; i < this.sprites.length; i++ )
 	{
@@ -27,11 +26,6 @@ function EntityManager ( group, bgGroup, lightGroup, entityMap )
 	for ( var i = 0; i < this.bgSprites.length; i++ )
 	{
 		this.bgSprites[i] = bgGroup.create( 0, 0, 'entities16', 0, false );
-	}
-	for ( var i = 0; i < this.lightSprites.length; i++ )
-	{
-		this.lightSprites[i] = lightGroup.create( 0, 0, 'entities16', 0, false );
-		this.lightSprites[i].blendMode = Phaser.blendModes.COLOR_DODGE;
 	}
 }
 
@@ -81,7 +75,6 @@ EntityManager.prototype.clearOutOfView = function ()
 			entity.destroy();
 			entity.sprite.kill();
 			entity.bgSprite.kill();
-			entity.lightSprite.kill();
 		}
 	}
 };
@@ -139,7 +132,7 @@ EntityManager.prototype.loadRoom = function ( room_x, room_y )
 
 						if ( this.entities[index] )
 						{
-							this.entities[index].init( this.sprites[index], this.bgSprites[index], this.lightSprites[index], this.dataMap[y][x], x, y );
+							this.entities[index].init( this.sprites[index], this.bgSprites[index], this.dataMap[y][x], x, y );
 							newEntities.push( this.entities[index] );
 							this.activeMap[y][x] = this.entities[index];
 						}
@@ -165,7 +158,6 @@ EntityManager.prototype.loadRoom = function ( room_x, room_y )
 		{
 			newEntities[i].sprite.visible = false;
 			newEntities[i].bgSprite.visible = false;
-			newEntities[i].lightSprite.visible = false;
 		}
 	}
 };
@@ -248,7 +240,6 @@ EntityManager.prototype.onDeath = function ( entity )
 
 	entity.sprite.kill();
 	entity.bgSprite.kill();
-	entity.lightSprite.kill();
 };
 
 
@@ -274,7 +265,6 @@ EntityManager.prototype.onAllKilled = function ( roomPos, manual=false )
 					DungeonGame.game.time.events.add( Phaser.Timer.SECOND * 1.0, function () {
 						this.sprite.visible = true;
 						this.bgSprite.visible = true;
-						this.lightSprite.visible = true;
 
 						DungeonGame.Particle.createSmokeBurst( this.sprite.x, this.sprite.y + 8 );
 						DungeonGame.Audio.play( 'monsterroom-spawn' );

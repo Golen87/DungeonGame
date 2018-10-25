@@ -159,9 +159,33 @@ function readCookie(name) {
 	return null;
 }
 
-function sposToIndex( spos )
-{
-	return spos[0] + spos[1]*8;
+
+const bitmapBlendModes = {
+	0: 'source-over',
+	1: 'lighter',
+	2: 'multiply',
+	3: 'screen',
+	4: 'overlay',
+	5: 'darken',
+	6: 'lighten',
+	7: 'color-dodge',
+	8: 'color-burn',
+	9: 'hard-light',
+	10: 'soft-light',
+	11: 'difference',
+	12: 'exclusion',
+	13: 'hue',
+	14: 'saturation',
+	15: 'color',
+	16: 'luminosity',
+	//'destination-atop',
+	//'destination-in',
+	//'destination-out',
+	//'destination-over',
+	//'source-atop',
+	//'source-in',
+	//'source-out',
+	//'xor',
 }
 
 var RED = 'rgba(255,0,0,0.4)';

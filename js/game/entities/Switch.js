@@ -15,10 +15,7 @@ Switch.prototype.create = function ()
 	this.bgSprite.reset( this.spawn.x*16 + 8, this.spawn.y*16 );
 	this.bgSprite.frame = 3;
 
-	this.lightSprite.reset( this.spawn.x*16 + 8, this.spawn.y*16 - 1 );
-	this.lightSprite.loadTexture( 'glow' );
-	this.lightSprite.blendMode = Phaser.blendModes.COLOR_DODGE;
-	this.lightSprite.fac = 0;
+	this.lightFac = 0;
 	this.lightTween = null;
 
 	this.TINT_ON = 0x555555;
@@ -40,15 +37,8 @@ Switch.prototype.update = function ()
 	this.sprite.position.y += ( this.spawn.y * 16 - h - this.sprite.position.y ) / 8;
 	this.sprite.body.offset.y += ( 16 + h - this.sprite.body.offset.y ) / 8;
 
-	this.lightSprite.x = this.sprite.position.x;
-	this.lightSprite.y = this.sprite.position.y;
-
-	this.lightSprite.scale.set(this.lightSprite.fac);
-
-	if (this.active)
-		DungeonGame.Gui.drawLight(this.lightSprite.x, this.lightSprite.y);
-	else
-		DungeonGame.Gui.drawLight(this.lightSprite.x, this.lightSprite.y, 1);
+	DungeonGame.Light.drawFow( this.sprite.x, this.sprite.y + h + 8, 1 + 3 * this.lightFac, 0.5 + 0.5 * this.lightFac );
+	DungeonGame.Light.drawLight( this.sprite.position.x, this.sprite.position.y, 1.0, 0.6 * this.lightFac );
 };
 
 Switch.prototype.toggle = function ( state, immediate=false )
@@ -63,13 +53,11 @@ Switch.prototype.toggle = function ( state, immediate=false )
 		if ( !immediate )
 		{
 			DungeonGame.Audio.play( 'crystal', 'on' );
-			tweenTint( this.lightSprite, this.TINT_OFF, this.TINT_ON, 200 );
-			this.lightTween = DungeonGame.game.add.tween( this.lightSprite ).to({ fac: 1.0 }, 600, Phaser.Easing.Elastic.Out, true );
+			this.lightTween = DungeonGame.game.add.tween( this ).to({ lightFac: 1.0 }, 600, Phaser.Easing.Elastic.Out, true );
 		}
 		else
 		{
-			this.lightSprite.tint = this.TINT_ON;
-			this.lightSprite.fac = 1.0;
+			this.lightFac = 1.0;
 		}
 	}
 	else
@@ -78,13 +66,11 @@ Switch.prototype.toggle = function ( state, immediate=false )
 		if ( !immediate )
 		{
 			DungeonGame.Audio.play( 'crystal', 'off' );
-			tweenTint( this.lightSprite, this.TINT_ON, this.TINT_OFF, 300 );
-			this.lightTween = DungeonGame.game.add.tween( this.lightSprite ).to({ fac: 0.0 }, 600, Phaser.Easing.Exponential.Out, true );
+			this.lightTween = DungeonGame.game.add.tween( this ).to({ lightFac: 0.0 }, 600, Phaser.Easing.Exponential.Out, true );
 		}
 		else
 		{
-			this.lightSprite.tint = this.TINT_OFF;
-			this.lightSprite.fac = 0.0;
+			this.lightFac = 0.0;
 		}
 	}
 };

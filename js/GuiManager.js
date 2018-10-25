@@ -16,28 +16,6 @@ GuiManager.prototype.create = function ()
 	this.menuManager.allowInput = false;
 
 
-	/* General darkness */
-
-	this.fog = DungeonGame.game.add.sprite( 0, 0, 'fog' );
-	this.fog.blendMode = Phaser.blendModes.MULTIPLY;
-	this.guiGroup.add( this.fog );
-	this.fog.tint = 0xffeeee;
-
-	this.fowDraw = DungeonGame.game.make.bitmapData( SCREEN_WIDTH, SCREEN_HEIGHT );
-	this.fowDraw.fill( 0, 0, 0, 1 );
-	//for (var i=0; i<10; i++) {
-	//	this.fowDraw.draw('torchlight_alpha', x+i*32, y);
-	//}
-	this.fowSprite = this.guiGroup.create( 0, 0, this.fowDraw );
-	//this.fowSprite.blendMode = Phaser.blendModes.COLOR_DODGE;
-	this.fowSprite.blendMode = Phaser.blendModes.MULTIPLY;
-	this.fowSprite.alpha = 1;
-	//NORMAL, ADD, MULTIPLY, SCREEN, OVERLAY, DARKEN, LIGHTEN, COLOR_DODGE, COLOR_BURN, HARD_LIGHT, SOFT_LIGHT, DIFFERENCE, EXCLUSION, HUE, SATURATION, COLOR, LUMINOSITY
-
-	this.ambientCount = 2;
-	this.ambientCountSmooth = 2;
-
-
 	/* Cinematic mode GUI */
 
 	this.startupTimer = null;
@@ -121,12 +99,6 @@ GuiManager.prototype.update = function ()
 {
 	this.menuManager.update();
 
-	this.fog.x = DungeonGame.game.camera.view.x - 8;
-	this.fog.y = DungeonGame.game.camera.view.y - 8;
-
-	this.fowSprite.x = DungeonGame.game.camera.view.x;
-	this.fowSprite.y = DungeonGame.game.camera.view.y;
-
 	if ( this.startupTimer == null )
 		this.startupTimer = 4;
 	if ( this.startupTimer > 0 )
@@ -171,17 +143,9 @@ GuiManager.prototype.update = function ()
 
 	if (this.chestItem.alive)
 	{
-		this.drawLight(this.chestItem.x, this.chestItem.y);
+		DungeonGame.Light.drawFow( this.chestItem.x, this.chestItem.y, 3.0, 1.0 );
+		DungeonGame.Light.drawLight( this.chestItem.x, this.chestItem.y, 1.0, 0.5 );
 	}
-};
-
-GuiManager.prototype.clear = function ()
-{
-	var max = 4;
-	this.fowDraw.fill(0, 0, 0);
-	this.ambientCountSmooth += (Math.min(4,this.ambientCount) - this.ambientCountSmooth).clamp(-0.05, 0.05);
-	this.fowDraw.fill(255, 255, 255, Math.min(1, this.ambientCountSmooth/max) );
-	this.ambientCount = 0;
 };
 
 
@@ -386,7 +350,7 @@ GuiManager.prototype.setHealth = function ( hpPerc, staPerc )
 {
 	if ( hpPerc < this.hpGoal )
 	{
-		tweenTint( this.fog, 0xffcccc, 0xffeeee, 200 );
+		tweenTint( DungeonGame.Light.fog, 0xffcccc, 0xffeeee, 200 );
 	}
 
 	if ( this.hpGoal != hpPerc )
@@ -466,24 +430,4 @@ GuiManager.prototype.showNewItem = function ( x, y, itemIndex )
 			this.chestItem.kill();
 		}
 	}, this );
-};
-
-
-
-GuiManager.prototype.drawLight = function(x, y, small)
-{
-	var c = DungeonGame.game.camera.view;
-
-	var src = 'torchlight_alpha';
-	if (small) {
-		src += '2';
-	} else {
-		//this.fowDraw.fill(255, 255, 255, 0.2);
-		this.ambientCount += 1;
-	}
-
-	x -= c.x + Math.round(DungeonGame.game.cache.getImage(src).width/2);
-	y -= c.y + Math.round(DungeonGame.game.cache.getImage(src).height/2);
-	//this.fowDraw.circle(x, y, 50, 'rgb(255,255,255)');
-	this.fowDraw.draw(src, x, y);
 };

@@ -155,3 +155,8 @@ var FG_INV_TOP_NW = [4,7];
 var FG_INV_TOP_SW = [4,6];
 var FG_INV_TOP_SE = [3,6];
 var FG_INV_TOP_NE = [3,7];
+function sposToIndex( spos )
+{
+	const tilesetWidth = 8;
+	return spos[0] + spos[1] * tilesetWidth;
+}

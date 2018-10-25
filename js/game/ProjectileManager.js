@@ -1,13 +1,12 @@
 
 // Constructor
-function ProjectileManager ( group, bgGroup, lightGroup, physicsMap )
+function ProjectileManager ( group, bgGroup, physicsMap )
 {
 	this.physicsMap = physicsMap;
 
 	this.projectiles = Array( 16 );
 	this.sprites = Array( 16 );
 	this.bgSprites = Array( 16 );
-	this.lightSprites = Array( 16 );
 
 	for ( var i = 0; i < this.sprites.length; i++ )
 	{
@@ -17,11 +16,6 @@ function ProjectileManager ( group, bgGroup, lightGroup, physicsMap )
 	for ( var i = 0; i < this.bgSprites.length; i++ )
 	{
 		this.bgSprites[i] = bgGroup.create( 0, 0, null, 0, false );
-	}
-	for ( var i = 0; i < this.lightSprites.length; i++ )
-	{
-		this.lightSprites[i] = lightGroup.create( 0, 0, null, 0, false );
-		this.lightSprites[i].blendMode = Phaser.blendModes.COLOR_DODGE;
 	}
 }
 

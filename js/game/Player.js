@@ -274,7 +274,7 @@ Player.prototype.update = function ()
 	}
 
 	if (this.sprite.visible) {
-		DungeonGame.Gui.drawLight(this.sprite.x, this.sprite.y, 1);
+		DungeonGame.Light.drawFow( this.sprite.x, this.sprite.y, 1.25, 0.6 );
 	}
 };
 

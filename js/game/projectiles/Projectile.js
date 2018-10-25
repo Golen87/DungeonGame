@@ -5,7 +5,7 @@ function Projectile( sprite )
 	this.spawn = new Phaser.Point();
 };
 
-Projectile.prototype.init = function ( sprite, bgSprite, lightSprite, x, y, direction )
+Projectile.prototype.init = function ( sprite, bgSprite, x, y, direction )
 {
 	this.sprite = sprite;
 	this.sprite.owner = this;
@@ -22,11 +22,6 @@ Projectile.prototype.init = function ( sprite, bgSprite, lightSprite, x, y, dire
 	this.bgSprite.anchor.set( 0.5, 0.5 );
 	this.bgSprite.kill();
 
-	this.lightSprite = lightSprite;
-	this.lightSprite.visible = false;
-	this.lightSprite.anchor.set( 0.5, 0.5 );
-	this.lightSprite.kill();
-
 	this.spawn.setTo( x, y );
 	this.sprite.reset( x, y );
 	//this.sprite.body.setSize( 16, 16, 4, 4 );
@@ -41,7 +36,6 @@ Projectile.prototype.create = function () {};
 Projectile.prototype.destroy = function () {
 	this.sprite.kill();
 	this.bgSprite.kill();
-	this.lightSprite.kill();
 };
 
 Projectile.prototype.update = function () {};
