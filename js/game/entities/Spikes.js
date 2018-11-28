@@ -89,9 +89,8 @@ Spikes.prototype.hide = function ()
 
 	this.hidden = true;
 
-	var spos = FLOOR_INDENT['spos'].choice();
-	var index = spos[0] + spos[1]*8;
-	this.bgSprite.loadTexture( 'dungeon', index );
+	var spos = Tiles.Indent.spos.choice();
+	this.bgSprite.loadTexture( 'dungeon', sposToIndex(spos) );
 	this.bgSprite.anchor.set( 0.5, 0 );
 };
 

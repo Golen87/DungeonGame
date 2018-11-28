@@ -92,7 +92,7 @@ ProjectileManager.prototype.createProjectile = function ( type, x, y, direction 
 
 		if ( this.projectiles[index] )
 		{
-			this.projectiles[index].init( this.sprites[index], this.bgSprites[index], this.lightSprites[index], x, y, direction );
+			this.projectiles[index].init( this.sprites[index], this.bgSprites[index], x, y, direction );
 			this.projectiles[index].create();
 		}
 		else

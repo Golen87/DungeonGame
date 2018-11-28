@@ -1,6 +1,6 @@
 var DungeonGame = DungeonGame || {};
 
-VERSION = 'v1.3';
+VERSION = 'v1.4';
 
 const ROOM_WIDTH = 16;
 const ROOM_HEIGHT = 12;

@@ -11,7 +11,7 @@ DungeonGame.Game.prototype =
 {
 	create: function()
 	{
-		this.stage.backgroundColor = '#403020';
+		this.stage.backgroundColor = '#000000'; //3D2E1E
 
 		DungeonGame.debug = false;
 		DungeonGame.shadow = false;

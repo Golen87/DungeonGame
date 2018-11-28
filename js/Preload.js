@@ -22,7 +22,6 @@ DungeonGame.Preload.prototype = {
 		//this.load.bitmapFont( '04b24', 'assets/fonts/04b24/font.png', 'assets/fonts/04b24/font.fnt' ); // 8
 
 		this.load.spritesheet( 'dungeon', 'assets/sprites/environment/dungeon.png', 16, 16 );
-		this.load.spritesheet( 'decoration', 'assets/sprites/environment/decoration.png', 16, 32 );
 
 		this.load.spritesheet( 'entities16', 'assets/sprites/entities/entities16.png', 16, 32 );
 		this.load.spritesheet( 'entities32', 'assets/sprites/entities/entities32.png', 32, 32 );

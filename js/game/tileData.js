@@ -1,162 +1,192 @@
-var TYPE_NONE = 'NONE';
-var TYPE_WALL = 'WALL';
-var TYPE_FLOOR = 'FLOOR';
-
-var TYPE_OBJECT = 'OBJECT';
-var TYPE_ENEMY = 'ENEMY';
-
-
-var TILE_NONE = {
-	'name': 'none',
-	'type': TYPE_NONE,
-	'spos': [7,6]
-};
-var TILE_WALL = {
-	'name': 'wall',
-	'type': TYPE_WALL,
-	'spos': [0,0]
-};
-var TILE_SPIRAL = {
-	'name': 'spiral',
-	'type': TYPE_WALL,
-	'spos': [1,0]
-};
-var TILE_FLOOR = {
-	'name': 'floor',
-	'type': TYPE_FLOOR,
-	'spos': [7,0]
-};
-var DECO_PILLAR = {
-	'name': 'pillar',
-	'type': TYPE_WALL,
-	'spos': [0],
+const TileTypes = {
+	'None': 1,
+	'Wall': 2,
+	'Pit': 3,
+	'Floor': 4,
+	'Entity': 5,
+	'Enemy': 6,
 };
 
-var FLOOR_RUBBLE = {
-	'name': 'rubble',
-	'type': TYPE_FLOOR
+const Tiles = {
+	'Wall': {
+		'type': TileTypes.Wall,
+		'color': [0, 0, 0],
+		'spos': [0,0]
+	},
+	'Spiral': {
+		'type': TileTypes.Wall,
+		'color': [32, 32, 64],
+		'spos': [1,0]
+	},
+	'Floor': {
+		'type': TileTypes.Floor,
+		'color': [255, 255, 255],
+		'spos': [9,4]
+	},
+	'Pillar': {
+		'type': TileTypes.Wall,
+		'color': [32, 64, 64],
+		'spos': [[15,0], [15,1], [15,2]],
+	},
+	'Rubble': {
+		'type': TileTypes.Floor,
+		'color': [255, 255, 128],
+		'spos': [
+			[[15,4], [15,5], [15,6], [15,7]], [12,4], [13,4], [14,4],
+			[11,5], [12,5], [13,5], [14,5],
+			[11,6], [12,6], [13,6], [14,6],
+			[11,7], [12,7], [13,7], [14,7]
+		]
+	},
+	'Indent': {
+		'type': TileTypes.Floor,
+		'color': [255, 128, 128],
+		'spos': [[9,5], [10,5], [9,6], [10,6], [9,7], [10,7]]
+	},
+
+
+	'Water': {
+		'type': TileTypes.Pit,
+		'color': [0, 128, 255],
+		'spos': [[13,0], [13,1]]
+	},
+	'WaterDithering': {
+		'type': TileTypes.Pit,
+		'spos': [[14,0], [14,1], [14,2]]
+	},
+
+
+	/* Ceiling */
+
+	'Ceiling': {
+		'name': 'Ceiling',
+		'type': TileTypes.None,
+		'spos': [1,6]
+	},
+
+	'Top_N': {
+		'spos': [1,7]
+	},
+	'Top_W': {
+		'spos': [2,6]
+	},
+	'Top_S': {
+		'spos': [1,5]
+	},
+	'Top_E': {
+		'spos': [0,6]
+	},
+	'Top_NW': {
+		'spos': [2,7]
+	},
+	'Top_SW': {
+		'spos': [2,5]
+	},
+	'Top_SE': {
+		'spos': [0,5]
+	},
+	'Top_NE': {
+		'spos': [0,7]
+	},
+
+	'Top_Inv_NW': {
+		'spos': [4,6]
+	},
+	'Top_Inv_SW': {
+		'spos': [4,5]
+	},
+	'Top_Inv_SE': {
+		'spos': [3,5]
+	},
+	'Top_Inv_NE': {
+		'spos': [3,6]
+	},
+
+
+	/* Shadows */
+
+	'Edgeshade_Left': {
+		'spos': [7,7]
+	},
+	'Edgeshade_Right': {
+		'spos': [6,7]
+	},
+
+	'Floorshade': {
+		'spos': [[3,7], [4,7], [5,7]]
+	},
+
+
+	/* Entities */
+
+	'Box': {
+		'type': TileTypes.Entity,
+		'color': [255, 255, 0]
+	},
+	'Block': {
+		'type': TileTypes.Entity,
+		'color': [128, 128, 0]
+	},
+	'Switch': {
+		'type': TileTypes.Entity,
+		'color': [0, 255, 255]
+	},
+	'Door': {
+		'type': TileTypes.Entity,
+		'color': [0, 0, 255]
+	},
+	'Chest': {
+		'type': TileTypes.Entity,
+		'color': [0, 255, 0]
+	},
+	'Spikes': {
+		'type': TileTypes.Entity,
+		'color': [255, 0, 255]
+	},
+	'PressurePlate': {
+		'type': TileTypes.Entity,
+		'color': [0, 128, 255]
+	},
+	'Torch': {
+		'type': TileTypes.Entity,
+		'color': [128, 64, 0]
+	},
+	'Torch_Hidden': {
+		'type': TileTypes.Entity,
+	},
+
+	
+	/* Enemies */
+
+	'Slurg': {
+		'type': TileTypes.Enemy,
+		'color': [255, 0, 0]
+	},
+	'Fry': {
+		'type': TileTypes.Enemy,
+		'color': [255, 128, 0]
+	},
+	'Tarragon': {
+		'type': TileTypes.Enemy,
+		'color': [128, 0, 0]
+	},
 };
-var FLOOR_INDENT = {
-	'name': 'indent',
-	'type': TYPE_FLOOR,
-	'spos': [[6,1], [7,1], [6,2], [7,2], [6,3], [7,3]]
-};
-
-var OBJ_BOX = {
-	'name': 'box',
-	'type': TYPE_OBJECT
-};
-var OBJ_BLOCK = {
-	'name': 'block',
-	'type': TYPE_OBJECT
-};
-var OBJ_SWITCH = {
-	'name': 'switch',
-	'type': TYPE_OBJECT
-};
-var OBJ_DOOR = {
-	'name': 'door',
-	'type': TYPE_OBJECT
-};
-var OBJ_CHEST = {
-	'name': 'chest',
-	'type': TYPE_OBJECT
-};
-var OBJ_SPIKES = {
-	'name': 'spikes',
-	'type': TYPE_OBJECT
-};
-var OBJ_PRESSUREPLATE = {
-	'name': 'pressureplate',
-	'type': TYPE_OBJECT
-};
-var OBJ_TORCH = {
-	'name': 'torch',
-	'type': TYPE_OBJECT
-};
-
-var ENEMY_SLURG = {
-	'name': 'slurg',
-	'type': TYPE_ENEMY
-};
-var ENEMY_FRY = {
-	'name': 'fry',
-	'type': TYPE_ENEMY
-};
-var ENEMY_TARRAGON = {
-	'name': 'tarragon',
-	'type': TYPE_ENEMY
-};
 
 
-var PIXEL_TABLE = {
-	'255,255,255': TILE_FLOOR,
-	'255,255,128': FLOOR_RUBBLE,
-	'255,128,128': FLOOR_INDENT,
-
-	'0,0,0': TILE_WALL,
-	'32,32,64': TILE_SPIRAL,
-	'32,64,64': DECO_PILLAR,
-
-	'255,0,0': ENEMY_SLURG,
-	'255,128,0': ENEMY_FRY,
-	'128,0,0': ENEMY_TARRAGON,
-
-	'255,0,255': OBJ_SPIKES,
-	'0,0,255': OBJ_DOOR,
-	'0,255,255': OBJ_SWITCH,
-	'0,128,255': OBJ_PRESSUREPLATE,
-	'0,255,0': OBJ_CHEST,
-	'255,255,0': OBJ_BOX,
-	'128,128,0': OBJ_BLOCK,
-	'128,64,0': OBJ_TORCH,
-}
-
-var TILES = [
-	TILE_NONE,
-	TILE_WALL,
-	TILE_SPIRAL,
-	TILE_FLOOR,
-	DECO_PILLAR,
-
-	FLOOR_RUBBLE,
-	FLOOR_INDENT,
-
-	ENEMY_SLURG,
-	ENEMY_FRY,
-	ENEMY_TARRAGON,
-
-	OBJ_BOX,
-	OBJ_BLOCK,
-	OBJ_SPIKES,
-	OBJ_DOOR,
-	OBJ_SWITCH,
-	OBJ_CHEST,
-	OBJ_PRESSUREPLATE,
-	OBJ_TORCH,
-];
-
-
-var FG_EDGESHADE_LEFT = [2,0];
-var FG_EDGESHADE_RIGHT = [3,0];
-
-var FG_FLOORSHADE = [[4,0], [5,0], [6,0]];
-
-var FG_TOP_N = [1,7];
-var FG_TOP_W = [2,6];
-var FG_TOP_S = [1,5];
-var FG_TOP_E = [0,6];
-var FG_TOP_NW = [2,7];
-var FG_TOP_SW = [2,5];
-var FG_TOP_SE = [0,5];
-var FG_TOP_NE = [0,7];
-
-var FG_INV_TOP_NW = [4,7];
-var FG_INV_TOP_SW = [4,6];
-var FG_INV_TOP_SE = [3,6];
-var FG_INV_TOP_NE = [3,7];
 function sposToIndex( spos )
 {
-	const tilesetWidth = 8;
+	const tilesetWidth = 16;
 	return spos[0] + spos[1] * tilesetWidth;
+}
+
+function getTileByColor( color )
+{
+	for ( var key in Tiles )
+	{
+		var tile = Tiles[key];
+		if ( 'color' in tile && tile.color.toString() == color )
+		{
+			return tile;
+		}
+	}
 }

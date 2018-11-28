@@ -111,23 +111,23 @@ EntityManager.prototype.loadRoom = function ( room_x, room_y )
 					{
 						this.entities[index] = null;
 
-						if ( this.entityMap[y][x][i] == 'spikes' )
+						if ( this.entityMap[y][x][i] == Tiles.Spikes )
 							this.entities[index] = new Spikes();
-						else if ( this.entityMap[y][x][i] == 'door' )
+						else if ( this.entityMap[y][x][i] == Tiles.Door )
 							this.entities[index] = new Door( this.onOpen );
-						else if ( this.entityMap[y][x][i] == 'switch' )
+						else if ( this.entityMap[y][x][i] == Tiles.Switch )
 							this.entities[index] = new Switch( this.onTrigger.bind(this) );
-						else if ( this.entityMap[y][x][i] == 'pressureplate' )
+						else if ( this.entityMap[y][x][i] == Tiles.PressurePlate )
 							this.entities[index] = new PressurePlate( this.onTrigger.bind(this) );
-						else if ( this.entityMap[y][x][i] == 'chest' )
+						else if ( this.entityMap[y][x][i] == Tiles.Chest )
 							this.entities[index] = new Chest( this.onOpen );
-						else if ( this.entityMap[y][x][i] == 'box' )
+						else if ( this.entityMap[y][x][i] == Tiles.Box )
 							this.entities[index] = new Box( this.onDeath.bind(this) );
-						else if ( this.entityMap[y][x][i] == 'block' )
+						else if ( this.entityMap[y][x][i] == Tiles.Block )
 							this.entities[index] = new Block();
-						else if ( this.entityMap[y][x][i] == 'torch' )
+						else if ( this.entityMap[y][x][i] == Tiles.Torch )
 							this.entities[index] = new Torch( true );
-						else if ( this.entityMap[y][x][i] == 'torch_hidden' )
+						else if ( this.entityMap[y][x][i] == Tiles.Torch_Hidden )
 							this.entities[index] = new Torch( false );
 
 						if ( this.entities[index] )

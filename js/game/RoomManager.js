@@ -13,6 +13,17 @@ function RoomManager ( decoGroup )
 	this.makePixelMap( 'wallMap' );
 	this.makePixelMap( 'entityMap' );
 
+
+	this.background = DungeonGame.game.add.group();
+	this.foreground = DungeonGame.game.add.group();
+	// Testing bitmap
+	this.tilesSpriteTemp = this.background.create( 0, 0, 'dungeon', 0, false );
+	this.tilesBmdBg = DungeonGame.game.make.bitmapData( 16*this.width, 16*this.height );
+	this.tilesBmdBgAnchor = this.background.create( 0, 0, this.tilesBmdBg );
+	this.tilesBmdFg = DungeonGame.game.make.bitmapData( 16*this.width, 16*this.height );
+	this.tilesBmdFgAnchor = this.foreground.create( 0, 0, this.tilesBmdFg );
+
+
 	this.physicsMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
 	this.fgMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
 	this.bgMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
@@ -23,10 +34,10 @@ function RoomManager ( decoGroup )
 
 	this.activeMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
 
-	this.background = DungeonGame.game.add.group();
-	this.background.createMultiple( 2*ROOM_WIDTH*ROOM_HEIGHT, 'dungeon', 0, false );
-	this.foreground = DungeonGame.game.add.group();
-	this.foreground.createMultiple( 3*ROOM_WIDTH*ROOM_HEIGHT, 'dungeon', 0, false );
+	//this.background = DungeonGame.game.add.group();
+	//this.background.createMultiple( 2*ROOM_WIDTH*ROOM_HEIGHT, 'dungeon', 0, false );
+	//this.foreground = DungeonGame.game.add.group();
+	//this.foreground.createMultiple( 3*ROOM_WIDTH*ROOM_HEIGHT, 'dungeon', 0, false );
 	this.physics = DungeonGame.game.add.group();
 	this.physics.createMultiple( ROOM_WIDTH*ROOM_HEIGHT / 2, null, 0, false );
 	this.boundaries = DungeonGame.game.add.group();
@@ -35,7 +46,7 @@ function RoomManager ( decoGroup )
 	this.decorations = Array( 32 );
 	for ( var i = 0; i < this.decorations.length; i++ )
 	{
-		this.decorations[i] = decoGroup.create( 0, 0, 'decoration', 0, false );
+		this.decorations[i] = decoGroup.create( 0, 0, 'dungeon', 0, false );
 		this.decorations[i].anchor.set( 0.0, 0.0 );
 	}
 	
@@ -50,6 +61,73 @@ function RoomManager ( decoGroup )
 	}
 }
 
+
+RoomManager.prototype.test = function ( x, y )
+{
+	var index = TILES.map(function(e) { return e.name; }).indexOf( Tiles.Wall.name );
+	if ( this.tileMap[y][x] == null )
+		this.tileMap[y][x] = [];
+
+	if ( this.tileMap[y][x].contains(index) )
+	{
+		this.tileMap[y][x].splice(this.tileMap[y][x].indexOf( index ), 1);
+	}
+	else
+	{
+		this.tileMap[y][x].push( index );
+	}
+	//this.tileMap[y][x].push( index );
+
+	for ( var i = 0; i < this.physics.children.length; i++ )
+	{
+		this.physics.children[i].kill();
+	}
+	for ( var i = 0; i < this.boundaries.children.length; i++ )
+	{
+		this.boundaries.children[i].kill();
+	}
+	/*
+	for ( var i = 0; i < this.background.children.length; i++ )
+	{
+		var s = this.background.children[i];
+		if ( s.alive )
+		{
+			s.kill();
+			this.activeMap[s.position.y/16][s.position.x/16] = null;
+		}
+	}
+	for ( var i = 0; i < this.foreground.children.length; i++ )
+	{
+		var s = this.foreground.children[i];
+		if ( s.alive )
+		{
+			s.kill();
+			this.activeMap[s.position.y/16][s.position.x/16] = null;
+		}
+	}
+	*/
+	for ( var i = 0; i < this.decorations.children.length; i++ )
+	{
+		var s = this.decorations.children[i];
+		if ( s.alive )
+		{
+			s.kill();
+			this.activeMap[s.position.y/16][s.position.x/16] = null;
+		}
+	}
+
+	this.physicsMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
+	this.fgMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
+	this.bgMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
+	this.entityMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
+	this.enemyMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
+	this.decoMap = [...Array( this.height ).keys()].map( i => Array( this.width ) );
+
+	this.tilesBmdBg.clear();
+	this.tilesBmdFg.clear();
+
+	this.makeSpriteMap();
+}
 
 RoomManager.prototype.makePixelMap = function ( worldFile )
 {
@@ -66,28 +144,38 @@ RoomManager.prototype.makePixelMap = function ( worldFile )
 			var g = ( hex >>  8 ) & 0xFF;
 			var b = ( hex >> 16 ) & 0xFF;
 			var a = ( hex >> 24 ) & 0xFF;
-			var key = [r, g, b].toString();
+			var color = [r, g, b].toString();
 
 			if ( a == 0 )
+				continue;
+
+			var tile = getTileByColor( color );
+
+			if ( tile )
 			{
-			}
-			else if ( key in PIXEL_TABLE )
-			{
-				var index = TILES.map(function(e) { return e.name; }).indexOf( PIXEL_TABLE[key].name );
 				if ( this.tileMap[y][x] == null )
 					this.tileMap[y][x] = [];
-				this.tileMap[y][x].push( index );
+				this.tileMap[y][x].push( tile );
 			}
 			else
 			{
-				console.error( 'Unknown color: {0}'.format( key ) );
+				console.error( 'Unknown color: {0}'.format( color ) );
 			}
 		}
 	}
 }
 
 
-RoomManager.prototype.addForeground = function ( x, y, spos )
+RoomManager.prototype.addTile = function ( x, y, spos, blendMode = 0 )
+{
+	if ( spos.length != 2 || !isInt( spos[0] ) )
+		spos = Phaser.ArrayUtils.getRandomItem( spos );
+
+	this.tilesSpriteTemp.frame = sposToIndex(spos);
+	this.tilesBmd.draw(this.tilesSpriteTemp, 16*x, 16*y, 16, 16, bitmapBlendModes[blendMode], true);
+};
+
+RoomManager.prototype.addForeground = function ( x, y, spos, blendMode = 0 )
 {
 	if ( spos.length != 2 || !isInt( spos[0] ) )
 		spos = Phaser.ArrayUtils.getRandomItem( spos );
@@ -96,9 +184,12 @@ RoomManager.prototype.addForeground = function ( x, y, spos )
 	if ( this.fgMap[y][x] == null )
 		this.fgMap[y][x] = [];
 	this.fgMap[y][x].push( index );
+
+	this.tilesSpriteTemp.frame = index;
+	this.tilesBmdFg.draw( this.tilesSpriteTemp, 16*x, 16*y, 16, 16, bitmapBlendModes[blendMode], true );
 };
 
-RoomManager.prototype.addBackground = function ( x, y, spos )
+RoomManager.prototype.addBackground = function ( x, y, spos, blendMode = 0 )
 {
 	if ( spos.length != 2 || !isInt( spos[0] ) )
 		spos = Phaser.ArrayUtils.getRandomItem( spos );
@@ -106,10 +197,13 @@ RoomManager.prototype.addBackground = function ( x, y, spos )
 
 	if ( this.bgMap[y][x] == null )
 		this.bgMap[y][x] = [];
-	this.bgMap[y][x].push( index );
+	this.bgMap[y][x].push( [index, blendMode] );
+
+	this.tilesSpriteTemp.frame = index;
+	this.tilesBmdBg.draw( this.tilesSpriteTemp, 16*x, 16*y, 16, 16, bitmapBlendModes[blendMode], true );
 };
 
-RoomManager.prototype.addFloor = function ( x, y, spos )
+RoomManager.prototype.addFloor = function ( x, y, spos, blendMode = 0 )
 {
 	if ( spos.length != 2 || !isInt( spos[0] ) )
 		spos = Phaser.ArrayUtils.getRandomItem( spos );
@@ -117,7 +211,10 @@ RoomManager.prototype.addFloor = function ( x, y, spos )
 
 	if ( this.bgMap[y][x] == null )
 		this.bgMap[y][x] = [];
-	this.bgMap[y][x].unshift( index );
+	this.bgMap[y][x].unshift( [index, blendMode] );
+
+	//this.tilesSpriteTemp.frame = index;
+	//this.tilesBmd.draw(this.tilesSpriteTemp, 16*x, 16*y, 16, 16, null, true);
 };
 
 RoomManager.prototype.addPhysics = function ( x, y )
@@ -125,21 +222,25 @@ RoomManager.prototype.addPhysics = function ( x, y )
 	this.physicsMap[y][x] = true;
 };
 
-RoomManager.prototype.addEntity = function ( x, y, name )
+RoomManager.prototype.addEntity = function ( x, y, tile )
 {
 	if ( !this.entityMap[y][x] )
 		this.entityMap[y][x] = [];
-	this.entityMap[y][x].push( name );
+	this.entityMap[y][x].push( tile );
 };
 
-RoomManager.prototype.addEnemy = function ( x, y, name )
+RoomManager.prototype.addEnemy = function ( x, y, tile )
 {
-	this.enemyMap[y][x] = name;
+	if ( !this.enemyMap[y][x] )
+		this.enemyMap[y][x] = [];
+	this.enemyMap[y][x] = tile;
 };
 
 RoomManager.prototype.addDecoration = function ( x, y, spos )
 {
-	var index = Phaser.ArrayUtils.getRandomItem( spos );
+	if ( spos.length != 2 || !isInt( spos[0] ) )
+		spos = Phaser.ArrayUtils.getRandomItem( spos );
+	var index = sposToIndex(spos);
 
 	if ( this.decoMap[y][x] == null )
 		this.decoMap[y][x] = [];
@@ -152,6 +253,15 @@ RoomManager.prototype.isWithin = function ( x, y )
 	return ( x >= 0 ) && ( y >= 0 ) && ( x < this.width ) && ( y < this.height );
 };
 
+RoomManager.prototype.getTiles = function ( x, y )
+{
+	if ( this.isWithin( x, y ) )
+	{
+		return this.tileMap[y][x];
+	}
+	return [];
+};
+
 RoomManager.prototype.getTileType = function ( x, y )
 {
 	var result = [];
@@ -160,26 +270,21 @@ RoomManager.prototype.getTileType = function ( x, y )
 		if (this.tileMap[y][x]) {
 			for ( var i=0; i<this.tileMap[y][x].length; i++ )
 			{
-				result.push( TILES[this.tileMap[y][x][i]].type );
+				result.push( this.tileMap[y][x][i].type );
 			}
 		}
 	}
 	return result;
 };
 
-RoomManager.prototype.getTileName = function ( x, y )
+RoomManager.prototype.checkTile = function ( x, y, tile )
 {
-	var result = [];
-	if ( this.isWithin( x, y ) )
+	var tiles = this.getTiles( x, y );
+	if (tiles)
 	{
-		if (this.tileMap[y][x]) {
-			for ( var i=0; i<this.tileMap[y][x].length; i++ )
-			{
-				result.push( TILES[this.tileMap[y][x][i]].name );
-			}
-		}
+		return tiles.contains( tile );
 	}
-	return result;
+	return false;
 };
 
 RoomManager.prototype.isWall = function ( x, y, allowVoid=false )
@@ -189,26 +294,26 @@ RoomManager.prototype.isWall = function ( x, y, allowVoid=false )
 	{
 		return true;
 	}
-	return ( typeList.contains(TYPE_WALL) );
+	return ( typeList.contains(TileTypes.Wall) );
 };
 
 RoomManager.prototype.isFloor = function ( x, y )
 {
 	var typeList = this.getTileType( x, y );
-	return !this.isWall(x,y) && typeList.contains(TYPE_FLOOR);
-	//return ( typeList == TYPE_FLOOR || typeList == TYPE_OBJECT || typeList == TYPE_ENEMY );
+	return !this.isWall(x,y) && typeList.contains(TileTypes.Floor);
+	//return ( typeList == TileTypes.Floor || typeList == TileTypes.Entity || typeList == TileTypes.Enemy );
 };
 
 RoomManager.prototype.isEntity = function ( x, y )
 {
 	var typeList = this.getTileType( x, y );
-	return ( typeList.contains(TYPE_OBJECT) );
+	return ( typeList.contains(TileTypes.Entity) );
 };
 
 RoomManager.prototype.isEnemy = function ( x, y )
 {
 	var typeList = this.getTileType( x, y );
-	return ( typeList.contains(TYPE_ENEMY) );
+	return ( typeList.contains(TileTypes.Enemy) );
 };
 
 
@@ -218,192 +323,192 @@ RoomManager.prototype.makeSpriteMap = function ()
 	{
 		for ( var x = 0; x < this.width; x++ )
 		{
+			// Add void
+			if ( this.checkTile( x, y, Tiles.Water ) )
+			{
+				this.tilesBmdBg.rect( 16*x, 16*y+4, 16, 16, '#5793b577' ); // 33CCDD55
+				if ( this.isFloor( x, y-1 ) )
+				{
+					//this.addBackground( x, y, Tiles.Wall.spos );
+					this.addBackground( x, y, Tiles.WaterDithering.spos[0] );
+					this.addBackground( x, y, Tiles.Water.spos[0] );
+				}
+				else if ( this.isFloor( x, y-2 ) )
+				{
+					this.addBackground( x, y, Tiles.WaterDithering.spos[1] );
+					this.addBackground( x, y, Tiles.Water.spos[1] );
+				}
+				else if ( this.isFloor( x, y-3 ) )
+				{
+					this.addBackground( x, y, Tiles.WaterDithering.spos[2] );
+				}
+				//if ( !this.isFloor( x, y-1 ) && !this.isWall( x, y-1 ) && this.isFloor( x, y-2 ) )
+				//	this.addBackground( x, y, Tiles.Water.spos[2] );
+
+				//33AADD44
+			}
+
+			// Add floor
+			if ( this.isFloor( x, y ) || this.isWall( x, y ) )
+			{
+				//this.tilesBmdBg.rect( 16*x-1, 16*y+3, 18, 18, '#FF0000FF' );
+				this.addBackground( x, y, Tiles.Floor.spos );
+			}
+
+			// Add floor indent
+			if ( this.checkTile( x, y, Tiles.Indent ) )
+			{
+				this.addBackground( x, y, Tiles.Indent.spos );
+			}
+
+			// Add floor rubble
+			if ( this.checkTile( x, y, Tiles.Rubble ) )
+			{
+				var neighbours = 0;
+				neighbours += 8 * this.checkTile( x, y-1, Tiles.Rubble );
+				neighbours += 4 * this.checkTile( x+1, y, Tiles.Rubble );
+				neighbours += 2 * this.checkTile( x, y+1, Tiles.Rubble );
+				neighbours += 1 * this.checkTile( x-1, y, Tiles.Rubble );
+				this.addBackground( x, y, Tiles.Rubble.spos[neighbours] );
+			}
+
+			// Add wall shadow on floor
+			if ( this.isFloor( x, y ) && this.isWall( x, y-1 ) && this.isWall( x, y-2 ) )
+			{
+				this.addBackground( x, y, Tiles.Floorshade.spos, Phaser.blendModes.SOFT_LIGHT );
+			}
+
 			// Add wall
-			if ( this.isWall( x, y, true ) )
+			if ( this.isWall( x, y ) )
+			{
+				this.addPhysics( x, y );
+			}
+
+			// Add wall
+			if ( this.isWall( x, y ) )
 			{
 				this.addPhysics( x, y );
 
-				if ( this.getTileName( x, y ).contains( DECO_PILLAR.name ) )
+				// Add front facing wall
+				if ( this.isFloor( x, y+1 ) && this.isWall( x, y-1 ) )
 				{
-					if ( this.isWall( x, y-1, true ) )
-						this.addBackground( x, y, TILE_WALL.spos );
-					//else if ( this.isFloor( x, y-1, true ) )
-					//	this.addBackground( x, y, TILE_FLOOR.spos );
-					if ( !this.isWall( x, y+1, true ) )
-					this.addDecoration( x, y, DECO_PILLAR.spos );
-					this.addForeground( x, y-1, [7,4] );
-				}
-				else if ( this.isFloor( x, y+1 ) )
-				{
-					if ( this.getTileName( x, y ).contains( TILE_WALL.name ) )
+					if ( this.checkTile( x, y, Tiles.Spiral ) )
 					{
-						this.addBackground( x, y, TILE_WALL.spos );
+						this.addBackground( x, y, Tiles.Spiral.spos );
 					}
-					if ( this.getTileName( x, y ).contains( TILE_SPIRAL.name ) )
+					// ... more wall types
+					else
 					{
-						this.addBackground( x, y, TILE_SPIRAL.spos );
+						// Default to regular wall
+						this.addBackground( x, y, Tiles.Wall.spos );
 					}
 
+					// Add wall edge shadow
 					if ( this.isFloor( x-1, y ) || ( this.isWall( x-1, y+1 ) ) )
 					{
-						this.addBackground( x, y, FG_EDGESHADE_LEFT );
+						this.addBackground( x, y, Tiles.Edgeshade_Left.spos, Phaser.blendModes.SOFT_LIGHT );
 					}
 					if ( this.isFloor( x+1, y ) || ( this.isWall( x+1, y+1 ) ) )
 					{
-						this.addBackground( x, y, FG_EDGESHADE_RIGHT );
-					}
-
-					if ( this.isFloor( x, y-1 ) )
-					{
-						//this.addForeground( x, y, FG_TOP_N );
-
-						if ( this.isWall( x, y-1, true ) )
-							this.addBackground( x, y, TILE_WALL.spos );
-						//else if ( this.isFloor( x, y-1, true ) )
-						//	this.addBackground( x, y, TILE_FLOOR.spos );
-						this.addDecoration( x, y, DECO_PILLAR.spos );
-						this.addForeground( x, y-1, [4,0] );
+						this.addBackground( x, y, Tiles.Edgeshade_Right.spos, Phaser.blendModes.SOFT_LIGHT );
 					}
 				}
 
+				// Ceiling
 				if ( !this.isFloor( x, y+1 ) )
 				{
 					// Out of bounds background
-					this.addForeground( x, y, TILE_NONE.spos );
+					this.addForeground( x, y, Tiles.Ceiling.spos );
 
 					// Edges
 					if ( this.isFloor( x-1, y ) || this.isFloor( x-1, y+1 ) )
 					{
-						this.addForeground( x, y, FG_TOP_W );
+						this.addForeground( x, y, Tiles.Top_W.spos );
 					}
 					if ( this.isFloor( x+1, y ) || this.isFloor( x+1, y+1 ) )
 					{
-						this.addForeground( x, y, FG_TOP_E );
+						this.addForeground( x, y, Tiles.Top_E.spos );
 					}
 					if ( this.isFloor( x, y-1 ) )
 					{
-						this.addForeground( x, y, FG_TOP_N );
+						this.addForeground( x, y, Tiles.Top_N.spos );
 					}
 					if ( this.isFloor( x, y+2 ) )
 					{
-						this.addForeground( x, y, FG_TOP_S );
+						this.addForeground( x, y, Tiles.Top_S.spos );
 					}
 
 					// Floor corners
 					if ( ( this.isFloor( x-1, y+1 ) || this.isFloor( x-1, y ) ) && this.isFloor( x, y+2 ) )
 					{
-						this.addForeground( x, y, FG_INV_TOP_SW );
+						this.addForeground( x, y, Tiles.Top_Inv_SW.spos );
 					}
 					if ( ( this.isFloor( x+1, y+1 ) || this.isFloor( x+1, y ) ) && this.isFloor( x, y+2 ) )
 					{
-						this.addForeground( x, y, FG_INV_TOP_SE );
+						this.addForeground( x, y, Tiles.Top_Inv_SE.spos );
 					}
 					if ( ( this.isFloor( x-1, y ) || this.isFloor( x-1, y+1 ) ) && this.isFloor( x, y-1 ) )
 					{
-						this.addForeground( x, y, FG_INV_TOP_NW );
+						this.addForeground( x, y, Tiles.Top_Inv_NW.spos );
 					}
 					if ( ( this.isFloor( x+1, y ) || this.isFloor( x+1, y+1 ) ) && this.isFloor( x, y-1 ) )
 					{
-						this.addForeground( x, y, FG_INV_TOP_NE );
+						this.addForeground( x, y, Tiles.Top_Inv_NE.spos );
 					}
 
 					// Void corners
 					if ( this.isWall( x-1, y, true ) && this.isWall( x, y-1, true ) && this.isWall( x-1, y+1, true ) && this.isFloor( x-1, y-1 ) )
 					{
-						this.addForeground( x, y, FG_TOP_NW );
+						this.addForeground( x, y, Tiles.Top_NW.spos );
 					}
 					if ( this.isWall( x+1, y, true ) && this.isWall( x, y-1, true ) && this.isWall( x+1, y+1, true ) && this.isFloor( x+1, y-1 ) )
 					{
-						this.addForeground( x, y, FG_TOP_NE );
+						this.addForeground( x, y, Tiles.Top_NE.spos );
 					}
 					if ( this.isWall( x-1, y+1, true ) && this.isWall( x, y+2, true ) && this.isFloor( x-1, y+2 ) && this.isWall( x-1, y, true ) )
 					{
-						this.addForeground( x, y, FG_TOP_SW );
+						this.addForeground( x, y, Tiles.Top_SW.spos );
 					}
 					if ( this.isWall( x+1, y+1, true ) && this.isWall( x, y+2, true ) && this.isFloor( x+1, y+2 ) && this.isWall( x+1, y, true ) )
 					{
-						this.addForeground( x, y, FG_TOP_SE );
+						this.addForeground( x, y, Tiles.Top_SE.spos );
 					}
 				}
-				else
-				{
-					this.addBackground( x, y+1, FG_FLOORSHADE );
-				}
-
-				// For floor without wall? Like bottomless pit
-				//var spos = Phaser.ArrayUtils.getRandomItem( [[8,0], [7,1], [8,1]] );
-				//this.addForeground( x, y, spos[0], spos[1] );
 			}
-			// Add indent
-			else if ( this.isFloor( x, y ) && this.getTileName( x, y ).contains( 'indent' ) )
-			{
-				//this.addBackground( x, y, TILE_FLOOR.spos );
-				this.addFloor( x, y, FLOOR_INDENT.spos );
-			}
-			// Add rubble
-			else if ( this.isFloor( x, y ) && this.getTileName( x, y ).contains( 'rubble' ) )
-			{
-				//this.addBackground( x, y, TILE_FLOOR.spos );
 
-				var neighbours = '';
-				neighbours += this.getTileName( x, y-1 ).contains('rubble') ? '^' : '-';
-				neighbours += this.getTileName( x+1, y ).contains('rubble') ? '>' : '-';
-				neighbours += this.getTileName( x, y+1 ).contains('rubble') ? 'v' : '-';
-				neighbours += this.getTileName( x-1, y ).contains('rubble') ? '<' : '-';
-				
-				//var r = 3 * randInt(0, 1);
-				var tiny = [4+randInt(0, 3), 5];
-				var spos = {
-					'----': tiny,
-					'---<': [1,1],
-					'--v-': [2,1],
-					'--v<': [3,1],
-					'->--': [0,2],
-					'->-<': [1,2],
-					'->v-': [2,2],
-					'->v<': [3,2],
-					'^---': [0,3],
-					'^--<': [1,3],
-					'^-v-': [2,3],
-					'^-v<': [3,3],
-					'^>--': [0,4],
-					'^>-<': [1,4],
-					'^>v-': [2,4],
-					'^>v<': [3,4],
-				}[neighbours]
-
-				if ( spos )
+			// Add pillar decoration
+			const yCenter = 1;
+			for ( var dy = 0; dy <= 2; dy++ )
+			{
+				if ( ( this.isFloor( x, y+0-dy ) && this.isWall( x, y+1-dy ) && this.isFloor( x, y+2-dy ) ) || this.checkTile( x, y-dy+yCenter, Tiles.Pillar ) )
 				{
-					this.addFloor( x, y, [spos[0], spos[1]] );
+					if ( dy == 0 )
+						this.addForeground( x, y, Tiles.Pillar.spos[dy] );
+					else if ( dy == 1 )
+						this.addDecoration( x, y, Tiles.Pillar.spos[dy] );
+					else if ( dy == 2 )
+						this.addBackground( x, y, Tiles.Pillar.spos[dy] );
 				}
 			}
-			// Add floor
-			else if ( this.isFloor( x, y ) )
-			{
-				//this.addBackground( x, y, TILE_FLOOR.spos );
-				//if ( this.isWall( x, y-1 ) )
-				//{
-				//	this.addBackground( x, y, FG_FLOORSHADE );
-				//}
-			}
 
-			for ( var i=0; i<TILES.length; i++ )
+			for ( var key in Tiles )
 			{
-				if ( TILES[i].type == TYPE_OBJECT && this.getTileName( x, y ).contains( TILES[i].name ) )
+				var tile = Tiles[key];
+				if ( tile.type == TileTypes.Entity && this.checkTile( x, y, tile ) )
 				{
-					if ( TILES[i].name == 'torch' )
+					if ( tile == Tiles.Torch )
 					{
 						if ( this.isFloor( x, y+1 ) )
-							this.addEntity( x, y, 'torch' );
+							this.addEntity( x, y, Tiles.Torch );
 						else
-							this.addEntity( x, y, 'torch_hidden' );
+							this.addEntity( x, y, Tiles.Torch_Hidden );
 					}
 					else
-						this.addEntity( x, y, TILES[i].name );
+						this.addEntity( x, y, tile );
 				}
-				if ( TILES[i].type == TYPE_ENEMY && this.getTileName( x, y ).contains( TILES[i].name ) )
+				if ( tile.type == TileTypes.Enemy && this.checkTile( x, y, tile ) )
 				{
-					this.addEnemy( x, y, TILES[i].name );
+					this.addEnemy( x, y, tile );
 				}
 			}
 		}
@@ -455,6 +560,7 @@ RoomManager.prototype.clearOutOfView = function ( clearPhysics=false )
 			this.boundaries.children[i].kill();
 		}
 	}
+	/*
 	for ( var i = 0; i < this.background.children.length; i++ )
 	{
 		var s = this.background.children[i];
@@ -473,6 +579,7 @@ RoomManager.prototype.clearOutOfView = function ( clearPhysics=false )
 			this.activeMap[s.position.y/16][s.position.x/16] = null;
 		}
 	}
+	*/
 	for ( var i = 0; i < this.decorations.length; i++ )
 	{
 		var s = this.decorations[i];
@@ -546,6 +653,7 @@ RoomManager.prototype.loadRoom = function ( room_x, room_y )
 			if ( this.isWithin( x, y ) && !this.activeMap[y][x] )
 			{
 	
+				/*
 				if ( this.bgMap[y][x] )
 				{
 					for ( var i = 0; i < this.bgMap[y][x].length; i++ )
@@ -554,7 +662,8 @@ RoomManager.prototype.loadRoom = function ( room_x, room_y )
 						if ( s )
 						{
 							this.activeMap[y][x] = true;
-							s.frame = this.bgMap[y][x][i];
+							s.frame = this.bgMap[y][x][i][0];
+							//s.blendMode = this.bgMap[y][x][i][1];
 							s.reset( 16*x, 16*y );
 						}
 						else
@@ -581,6 +690,7 @@ RoomManager.prototype.loadRoom = function ( room_x, room_y )
 						}
 					}
 				}
+				*/
 
 				if ( this.decoMap[y][x] )
 				{
