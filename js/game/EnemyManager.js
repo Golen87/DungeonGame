@@ -121,6 +121,8 @@ EnemyManager.prototype.loadRoom = function ( room_x, room_y )
 
 					if ( this.enemyMap[y][x] == Tiles.Slurg )
 						this.enemies[index] = new Slurg();
+					else if ( this.enemyMap[y][x] == Tiles.IronSlurg )
+						this.enemies[index] = new IronSlurg();
 					else if ( this.enemyMap[y][x] == Tiles.Fry )
 						this.enemies[index] = new Fry();
 					else if ( this.enemyMap[y][x] == Tiles.Tarragon )

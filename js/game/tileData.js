@@ -47,12 +47,12 @@ const Tiles = {
 
 	'Water': {
 		'type': TileTypes.Pit,
-		'color': [0, 128, 255],
+		'color': [0, 192, 255],
 		'spos': [[13,0], [13,1]]
 	},
 	'WaterDithering': {
 		'type': TileTypes.Pit,
-		'spos': [[14,0], [14,1], [14,2]]
+		'spos': [[14,0], [14,1], [14,2], [14,3]]
 	},
 
 
@@ -152,7 +152,7 @@ const Tiles = {
 		'color': [128, 64, 0]
 	},
 	'Torch_Hidden': {
-		'type': TileTypes.Entity,
+		'type': TileTypes.Entity
 	},
 
 	
@@ -161,6 +161,10 @@ const Tiles = {
 	'Slurg': {
 		'type': TileTypes.Enemy,
 		'color': [255, 0, 0]
+	},
+	'IronSlurg': {
+		'type': TileTypes.Enemy,
+		'color': [128, 64, 64]
 	},
 	'Fry': {
 		'type': TileTypes.Enemy,
