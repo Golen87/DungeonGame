@@ -11,6 +11,7 @@ AudioManager.prototype.init = function ()
 {
 	//addMarker(name, start, duration, volume, loop)
 
+	this.masterVol = 0.8;
 	var masterVol = 0.8;
 
 	var name = 'footsteps';
@@ -259,7 +260,37 @@ AudioManager.prototype.init = function ()
 	this.sounds[name].markers['cry'] = ['cry_1', 'cry_2', 'cry_3', 'cry_4'];
 	this.sounds[name].markers['hurt'] = ['hurt_1', 'hurt_2', 'hurt_3'];
 	this.sounds[name].markers['death'] = ['death_1', 'death_2'];
+
+
+
+	this.addSound('music_bassline', 0.0, true);
+	this.addSound('music_drums_1', 0.5, true);
+	this.addSound('music_drums_2', 0.0, true);
+	this.addSound('music_main_1', 0.5, true);
+	this.addSound('music_main_2', 0.0, true);
+
+	this.sounds['music_main_1'].sound.onLoop.add(function(sound) {
+		this.sounds['music_bassline'].sound.stop();
+		this.sounds['music_bassline'].sound.play();
+		this.sounds['music_drums_1'].sound.stop();
+		this.sounds['music_drums_1'].sound.play();
+		this.sounds['music_drums_2'].sound.stop();
+		this.sounds['music_drums_2'].sound.play();
+		this.sounds['music_main_1'].sound.stop();
+		this.sounds['music_main_1'].sound.play();
+		this.sounds['music_main_2'].sound.stop();
+		this.sounds['music_main_2'].sound.play();
+	}, this);
 };
+
+AudioManager.prototype.addSound = function ( name, volume, loop=false )
+{
+	this.sounds[name] = {};
+	this.sounds[name].sound = DungeonGame.game.add.audio( name );
+	this.sounds[name].sound.volume = volume * this.masterVol;
+	this.sounds[name].sound.loop = loop;
+};
+
 
 AudioManager.prototype.getMarkers = function ( name, marker=null )
 {
@@ -291,4 +322,34 @@ AudioManager.prototype.play = function ( name, marker=null )
 	{
 		this.sounds[name].sound.play();
 	}
+};
+
+
+AudioManager.prototype.toggleMusic = function (type, value)
+{
+	if (type == 'enemy') {
+		this.setVolume('music_bassline', value ? 0.5 : 0.0);
+	}
+	if (type == 'sword') {
+		this.setVolume('music_drums_2', value ? 0.6 : 0.0);
+	}
+	if (type == 'spikes') {
+		this.setVolume('music_main_2', value ? 0.5 : 0.0);
+	}
+	if (type == 'light') {
+		this.setVolume('music_drums_1', value ? 0.5 : 0.0);
+	}
+};
+
+AudioManager.prototype.playMusic = function ()
+{
+	this.play( 'music_bassline' );
+	this.play( 'music_drums_1' );
+	this.play( 'music_drums_2' );
+	this.play( 'music_main_1' );
+	this.play( 'music_main_2' );
+};
+
+AudioManager.prototype.setVolume = function (name, volume) {
+	this.sounds[name].sound.volume = volume * this.masterVol;
 };

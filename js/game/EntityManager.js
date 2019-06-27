@@ -99,6 +99,8 @@ EntityManager.prototype.loadRoom = function ( room_x, room_y )
 	this.clearOutOfView();
 	var newEntities = [];
 
+	DungeonGame.Audio.toggleMusic('spikes', false);
+
 	for ( var y = offset_y; y < offset_y + ROOM_HEIGHT; y++ )
 	{
 		for ( var x = offset_x; x < offset_x + ROOM_WIDTH; x++ )

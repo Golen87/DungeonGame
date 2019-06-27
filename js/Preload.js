@@ -84,6 +84,12 @@ DungeonGame.Preload.prototype = {
 
 		this.load.audio( 'menu', 'assets/sounds/menu.ogg' );
 
+		this.load.audio( 'music_bassline', 'assets/sounds/music/d1_bassline.ogg' );
+		this.load.audio( 'music_drums_1', 'assets/sounds/music/d1_drums_1.ogg' );
+		this.load.audio( 'music_drums_2', 'assets/sounds/music/d1_drums_2.ogg' );
+		this.load.audio( 'music_main_1', 'assets/sounds/music/d1_main_1.ogg' );
+		this.load.audio( 'music_main_2', 'assets/sounds/music/d1_main_2.ogg' );
+
 
 		// Loading percentage text
 		//this.progress = this.game.add.text(this.game.world.centerX, this.game.world.centerY-30, '0%', {fill: 'white'});

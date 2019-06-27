@@ -93,6 +93,8 @@ World.prototype.create = function ()
 	this.camPos.y += ROOM_HEIGHT * 16;
 	DungeonGame.game.camera.x = Math.round( this.camPos.x );
 	DungeonGame.game.camera.y = Math.round( this.camPos.y );
+
+	DungeonGame.Audio.playMusic();
 };
 
 World.prototype.update = function ()
@@ -386,6 +388,7 @@ World.prototype.onOpen = function ( entity )
 
 		this.Player.giveItem( item );
 		DungeonGame.Gui.showNewItem( entity.sprite.x, entity.sprite.y, item );
+		DungeonGame.Audio.toggleMusic('sword', true);
 	}
 
 	if ( Door.prototype.isPrototypeOf( entity ) )

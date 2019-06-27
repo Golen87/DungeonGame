@@ -48,6 +48,10 @@ Spikes.prototype.create = function ()
 	{
 		this.hide();
 	}
+
+	if ( !this.hidden ) {
+		DungeonGame.Audio.toggleMusic('spikes', true);
+	}
 };
 
 Spikes.prototype.destroy = function ()
@@ -108,6 +112,8 @@ Spikes.prototype.unhide = function ( immediate=false )
 			DungeonGame.World.cameraShake( 4 );
 			DungeonGame.Particle.createFloorRubbleBurst( this.sprite.x, this.sprite.y+8 );
 		}
+
+		DungeonGame.Audio.toggleMusic('spikes', true);
 	}
 };
 

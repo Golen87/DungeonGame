@@ -107,6 +107,8 @@ EnemyManager.prototype.loadRoom = function ( room_x, room_y )
 	this.clearOutOfView();
 	var newEnemies = [];
 
+	DungeonGame.Audio.toggleMusic('enemy', false);
+
 	for ( var y = offset_y; y < offset_y + ROOM_HEIGHT; y++ )
 	{
 		for ( var x = offset_x; x < offset_x + ROOM_WIDTH; x++ )
@@ -156,6 +158,10 @@ EnemyManager.prototype.loadRoom = function ( room_x, room_y )
 			newEnemies[i].bgSprite.visible = false;
 			newEnemies[i].lightSprite.visible = false;
 		}
+		else
+		{
+			DungeonGame.Audio.toggleMusic('enemy', true);
+		}
 	}
 };
 
@@ -197,6 +203,7 @@ EnemyManager.prototype.activateEnemies = function ()
 
 				DungeonGame.Particle.createSmokeBurst( enemy.sprite.x, enemy.sprite.y );
 				DungeonGame.Audio.play( 'monsterroom-spawn' );
+				DungeonGame.Audio.toggleMusic('enemy', true);
 			}
 		}
 	}
@@ -222,6 +229,7 @@ EnemyManager.prototype.onDeath = function ( enemy )
 
 	if ( enemyCount == 0 )
 	{
+		DungeonGame.Audio.toggleMusic('enemy', false);
 		this.onAllKilled( enemy.getRoomPos() );
 	}
 };

@@ -57,6 +57,8 @@ LightManager.prototype.clear = function ()
 {
 	this.fowBmd.fill(24, 24, 24, 1.0);
 	this.lightBmd.fill(0, 0, 0, 1.0);
+
+	DungeonGame.Audio.toggleMusic('light', false);
 };
 
 
@@ -88,4 +90,6 @@ LightManager.prototype.drawLight = function(x, y, scale=1.0, alpha=1.0)
 	var px = x - Math.floor( w / 2 );
 	var py = y - Math.floor( h / 2 );
 	this.lightBmd.draw(this.lightSpriteTemp, px, py, w, h, 'exclusion', true);
+
+	DungeonGame.Audio.toggleMusic('light', true);
 };
